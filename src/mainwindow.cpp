@@ -6,6 +6,7 @@
 #include "accounttablewidget.h"
 #include <QMdiSubWindow>
 #include <QLabel>
+#include <QtSql>
 
 using namespace std;
 
@@ -19,9 +20,9 @@ MainWindow::MainWindow(QWidget *parent)
     ui->actionDisconnect->setEnabled(false);
 
     // Create Model instance
-    dbModel = new DatabaseModel();
-    QString dbStr = "/Users/florian/CppProjects/Accountancy/db/pyCompta_official_v2.db";
-    dbModel->setDatabaseString(dbStr);
+    dbModel = new DatabaseModel("/Users/florian/CppProjects/Accountancy/db/data.db");
+//    QString dbStr = "/Users/florian/CppProjects/Accountancy/db/data.db";
+//    dbModel->setDatabaseString(dbStr);
 
     // Connect Actions to Slots
     connect(ui->actionCredits, SIGNAL(triggered()), this, SLOT(showCredits()));
@@ -82,9 +83,12 @@ void MainWindow::showOwnersTable()
     qDebug() << "show Table: Owners";
     AccountTableWidget* ownerTableWidget = new AccountTableWidget();
     ownerTableWidget->setTableModel(dbModel->getOwnerModel());
+    dbModel->getOwnerModel()->select();
     QMdiSubWindow *ownerWindow = ui->mdiArea->addSubWindow(ownerTableWidget);
     ownerWindow->setAttribute(Qt::WA_DeleteOnClose);
     ownerWindow->setFocus();
-    qDebug() << ownerWindow;
-    qDebug() << ui->mdiArea->subWindowList();
+    ownerWindow->show();
+    qDebug() << "Model de la table Owner";
+    qDebug() << ownerTableWidget;
+    qDebug() << dbModel->getOwnerModel()->record(0).value("Name");
 }

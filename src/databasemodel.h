@@ -12,6 +12,7 @@ class DatabaseModel : public QObject
 
 public:
     explicit DatabaseModel(QObject *parent = nullptr);
+    DatabaseModel(QString dbStr, QObject *parent = nullptr);
     ~DatabaseModel();
     void initModel();
     bool isConnected();
