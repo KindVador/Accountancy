@@ -3,6 +3,7 @@
 
 #include <QWidget>
 #include <QAbstractItemModel>
+#include <QString>
 
 namespace Ui {
 class AccountTableWidget;
@@ -16,6 +17,7 @@ public:
     explicit AccountTableWidget(QWidget *parent = nullptr);
     ~AccountTableWidget();
     void setTableModel(QAbstractItemModel *model);
+    void setTitle(QString title);
 
 private:
     Ui::AccountTableWidget *ui;

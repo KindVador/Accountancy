@@ -24,3 +24,8 @@ void AccountTableWidget::setTableModel(QAbstractItemModel *model)
     ui->tableView->setModel(model);
     qDebug() << "setTableModel";
 }
+
+void AccountTableWidget::setTitle(QString title)
+{
+    ui->labelTitle->setText(title);
+}

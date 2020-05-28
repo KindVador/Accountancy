@@ -82,13 +82,11 @@ void MainWindow::showOwnersTable()
 {
     qDebug() << "show Table: Owners";
     AccountTableWidget* ownerTableWidget = new AccountTableWidget();
+    ownerTableWidget->setTitle("Account's owner table:");
     ownerTableWidget->setTableModel(dbModel->getOwnerModel());
     dbModel->getOwnerModel()->select();
     QMdiSubWindow *ownerWindow = ui->mdiArea->addSubWindow(ownerTableWidget);
     ownerWindow->setAttribute(Qt::WA_DeleteOnClose);
     ownerWindow->setFocus();
     ownerWindow->show();
-    qDebug() << "Model de la table Owner";
-    qDebug() << ownerTableWidget;
-    qDebug() << dbModel->getOwnerModel()->record(0).value("Name");
 }
