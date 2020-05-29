@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>AccountTableWidget</class>
- <widget class="QWidget" name="AccountTableWidget">
+ <class>DbTableWidget</class>
+ <widget class="QWidget" name="DbTableWidget">
   <property name="geometry">
    <rect>
     <x>0</x>
@@ -17,7 +17,7 @@
    <item>
     <widget class="QLabel" name="labelTitle">
      <property name="text">
-      <string>Database Table</string>
+      <string>Table's title</string>
      </property>
     </widget>
    </item>

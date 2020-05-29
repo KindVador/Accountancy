@@ -5,6 +5,7 @@
 #include <QSqlDatabase>
 #include <QSqlTableModel>
 #include <QString>
+#include <map>
 
 class DatabaseModel : public QObject
 {
@@ -18,7 +19,7 @@ public:
     bool isConnected();
     void setDatabaseString(QString dbStr);
     QString getDatabaseString();
-    QSqlTableModel* getOwnerModel();
+    QSqlTableModel* getModelForTable(QString tableName);
 
 signals:
 
@@ -29,13 +30,7 @@ public slots:
 private:
     QString dbString;
     QSqlDatabase db;
-    QSqlTableModel *ownerModel;
-    QSqlTableModel *bankModel;
-    QSqlTableModel *accountModel;
-    QSqlTableModel *categoryModel;
-    QSqlTableModel *retailerModel;
-    QSqlTableModel *subcategoryModel;
-    QSqlTableModel *transactionModel;
+    std::map<QString, QSqlTableModel*> models;
 };
 
 #endif // DATABASEMODEL_H

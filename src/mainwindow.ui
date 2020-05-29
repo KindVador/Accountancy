@@ -85,6 +85,8 @@
      <addaction name="separator"/>
      <addaction name="actionCategories"/>
      <addaction name="actionSubcategories"/>
+     <addaction name="actionBalanceNotes"/>
+     <addaction name="actionRetailers"/>
     </widget>
     <addaction name="actionConnect"/>
     <addaction name="actionDisconnect"/>
@@ -154,6 +156,16 @@
   <action name="actionSubcategories">
    <property name="text">
     <string>Subcategories</string>
+   </property>
+  </action>
+  <action name="actionBalanceNotes">
+   <property name="text">
+    <string>Balance Notes</string>
+   </property>
+  </action>
+  <action name="actionRetailers">
+   <property name="text">
+    <string>Retailers</string>
    </property>
   </action>
  </widget>

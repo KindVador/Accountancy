@@ -5,23 +5,19 @@
 
 using namespace std;
 
-DatabaseModel::DatabaseModel(QObject *parent) : QObject(parent)
-{
+DatabaseModel::DatabaseModel(QObject *parent) : QObject(parent) {
     initModel();
 }
 
-DatabaseModel::DatabaseModel(QString dbStr, QObject *parent) : QObject(parent), dbString(dbStr)
-{
+DatabaseModel::DatabaseModel(QString dbStr, QObject *parent) : QObject(parent), dbString(dbStr) {
     initModel();
 }
 
-DatabaseModel::~DatabaseModel()
-{
-    delete ownerModel;
+DatabaseModel::~DatabaseModel() {
+    // TODO iterate over models to delete all
 }
 
-void DatabaseModel::initModel()
-{
+void DatabaseModel::initModel() {
     connectToDatabase();
 
     // check if we are connected to the database
@@ -30,46 +26,25 @@ void DatabaseModel::initModel()
         return;
     }
 
-    // Account Owner
-    ownerModel = new QSqlTableModel(this, db);
-    ownerModel->setTable("account_owner");
-    ownerModel->setEditStrategy(QSqlTableModel::OnFieldChange);
-    ownerModel->setHeaderData(0, Qt::Horizontal, tr("PK"));
-    ownerModel->setHeaderData(1, Qt::Horizontal, tr("Name"));
-    ownerModel->select();
-    qDebug() << ownerModel->record(0).count();
-    qDebug() << ownerModel->record(0).field(0);
-    qDebug() << ownerModel->record(0).field(1);
-    qDebug() << db.isValid();
-    qDebug() << db.tables().join(";");
-    qDebug() << db.lastError();
-    qDebug() << db.driverName();
-    qDebug() << db.isDriverAvailable("QSQLITE");
-    qDebug() << db.record("account_owner");
-
-    //
-    QSqlQuery query;
-    query.prepare("SELECT * FROM account_owner");
-    if(!query.exec())
-      qWarning() << "ERROR: " << query.lastError().text();
-    if(query.first())
-      qDebug() << query.value(0).toString();
-    else
-      qDebug() << "No account owner found";
+    // iterate on tables to create a model for each table
+    QStringList tables = db.tables();
+    for (int i = 0; i < tables.size(); ++i) {
+        models[tables.at(i)] = new QSqlTableModel(this, db);
+        models[tables.at(i)]->setTable(tables.at(i));
+        models[tables.at(i)]->setEditStrategy(QSqlTableModel::OnFieldChange);
+        models[tables.at(i)]->select();
+    }
 }
 
-void DatabaseModel::setDatabaseString(QString dbStr)
-{
+void DatabaseModel::setDatabaseString(QString dbStr) {
     dbString = dbStr;
 }
 
-QString DatabaseModel::getDatabaseString()
-{
+QString DatabaseModel::getDatabaseString() {
     return dbString;
 }
 
-bool DatabaseModel::connectToDatabase()
-{
+bool DatabaseModel::connectToDatabase() {
     db = QSqlDatabase::addDatabase("QSQLITE");
     db.setDatabaseName(dbString);
     if (db.open()) {
@@ -85,17 +60,14 @@ bool DatabaseModel::connectToDatabase()
     }
 }
 
-bool DatabaseModel::isConnected()
-{
+bool DatabaseModel::isConnected() {
     return db.isOpen();
 }
 
-void DatabaseModel::disconnectFromDatabase()
-{
+void DatabaseModel::disconnectFromDatabase() {
     db.close();
 }
 
-QSqlTableModel* DatabaseModel::getOwnerModel()
-{
-    return ownerModel;
+QSqlTableModel* DatabaseModel::getModelForTable(QString tableName) {
+    return models[tableName];
 }

@@ -1,4 +1,4 @@
-QT       += core gui
+QT += core gui
 QT += sql
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
@@ -17,18 +17,18 @@ DEFINES += QT_DEPRECATED_WARNINGS
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
 SOURCES += \
-    accounttablewidget.cpp \
     databasemodel.cpp \
+    dbtablewidget.cpp \
     main.cpp \
     mainwindow.cpp
 
 HEADERS += \
-    accounttablewidget.h \
     databasemodel.h \
+    dbtablewidget.h \
     mainwindow.h
 
 FORMS += \
-    accounttablewidget.ui \
+    dbtablewidget.ui \
     mainwindow.ui
 
 TRANSLATIONS += \
@@ -41,6 +41,7 @@ else: unix:!android: target.path = /opt/$${TARGET}/bin
 !isEmpty(target.path): INSTALLS += target
 
 DISTFILES += \
-    Accountancy_en_US.ts
+    Accountancy_en_US.ts \
+    Accountancy_fr_FR.ts
 
 DESTDIR = ./dist
