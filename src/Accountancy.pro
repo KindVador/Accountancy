@@ -20,15 +20,18 @@ SOURCES += \
     databasemodel.cpp \
     dbtablewidget.cpp \
     main.cpp \
+    maindockwidget.cpp \
     mainwindow.cpp
 
 HEADERS += \
     databasemodel.h \
     dbtablewidget.h \
+    maindockwidget.h \
     mainwindow.h
 
 FORMS += \
     dbtablewidget.ui \
+    maindockwidget.ui \
     mainwindow.ui
 
 TRANSLATIONS += \

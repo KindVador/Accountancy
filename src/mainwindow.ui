@@ -56,9 +56,9 @@
      <string>Fichier</string>
     </property>
     <addaction name="actionImport"/>
-    <addaction name="actionQuitter"/>
+    <addaction name="actionClose"/>
    </widget>
-   <widget class="QMenu" name="menuComptes">
+   <widget class="QMenu" name="menuAccounts">
     <property name="title">
      <string>Comptes</string>
     </property>
@@ -68,7 +68,7 @@
      <string>Aide</string>
     </property>
     <addaction name="actionCredits"/>
-    <addaction name="actionA_propos"/>
+    <addaction name="actionAbout"/>
    </widget>
    <widget class="QMenu" name="menuDatabase">
     <property name="title">
@@ -94,7 +94,7 @@
    </widget>
    <addaction name="menuFichier"/>
    <addaction name="menuDatabase"/>
-   <addaction name="menuComptes"/>
+   <addaction name="menuAccounts"/>
    <addaction name="menuAide"/>
   </widget>
   <widget class="QStatusBar" name="statusbar"/>
@@ -103,7 +103,7 @@
     <string>Importer...</string>
    </property>
   </action>
-  <action name="actionQuitter">
+  <action name="actionClose">
    <property name="text">
     <string>Quitter</string>
    </property>
@@ -113,7 +113,7 @@
     <string>Credits</string>
    </property>
   </action>
-  <action name="actionA_propos">
+  <action name="actionAbout">
    <property name="text">
     <string>A propos</string>
    </property>
@@ -172,7 +172,7 @@
  <resources/>
  <connections>
   <connection>
-   <sender>actionQuitter</sender>
+   <sender>actionClose</sender>
    <signal>triggered()</signal>
    <receiver>MainWindow</receiver>
    <slot>close()</slot>

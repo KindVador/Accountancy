@@ -1,6 +1,7 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 #include "dbtablewidget.h"
+#include "maindockwidget.h"
 
 #include <QMessageBox>
 #include <QString>
@@ -8,12 +9,13 @@
 #include <QMdiSubWindow>
 #include <QLabel>
 #include <QtSql>
+#include <QModelIndex>
+#include <QAction>
 
 using namespace std;
 
-MainWindow::MainWindow(QWidget *parent)
-    : QMainWindow(parent)
-    , ui(new Ui::MainWindow) {
+MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWindow) {
+
     ui->setupUi(this);
 
     // Init Ui
@@ -38,6 +40,10 @@ MainWindow::MainWindow(QWidget *parent)
     // Add Menus
     createMenus();
 
+    //
+    MainDockWidget* sidePanel = new MainDockWidget(this);
+    addDockWidget(Qt::LeftDockWidgetArea, sidePanel);
+
     // Update of UI after database connection
     if (dbModel->isConnected()) {
         ui->actionConnect->setEnabled(false);
@@ -49,6 +55,29 @@ MainWindow::MainWindow(QWidget *parent)
 void MainWindow::createMenus() {
     // create one Menu for each Account Owner recorded in the database
     // TODO read owners list from the database
+    int i = 0;
+    QModelIndex idx;
+    QVariant v;
+    bool stopIterate = false;
+    do {
+        idx = dbModel->getModelForTable("account_owner")->index(i, 1);
+        v = dbModel->getModelForTable("account_owner")->data(idx);
+        if (v.isValid())
+        {
+            accountsActions[v.toString()] = ui->menuAccounts->addAction(v.toString(), OwnerDynamicSlot(this, v.toString()));
+            accountsActions[v.toString()]->setCheckable(true);
+            if (i == 0) {
+                // select first owner by default
+                accountsActions[v.toString()]->setChecked(true);
+                setCurrentOwner(v.toString());
+            }
+
+            qDebug() << i << " " << v.toString();
+            ++i;
+        } else {
+            stopIterate = true;
+        }
+    } while(!stopIterate);
 
 }
 
@@ -56,6 +85,17 @@ MainWindow::~MainWindow() {
     delete ui;
     delete dbModel;
     // TODO need to iterate on dbTableViews to delete all items ?
+}
+
+
+QString MainWindow::getCurrentOwner() {
+    return currentOwner;
+}
+
+void MainWindow::setCurrentOwner(QString owner) {
+    currentOwner = owner;
+    // TODO update UI with the new current Owner
+    qDebug() << "MainWindow::setCurrentOwner" << owner;
 }
 
 void MainWindow::showCredits() {

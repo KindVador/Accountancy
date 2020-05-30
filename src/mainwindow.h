@@ -20,6 +20,8 @@ class MainWindow : public QMainWindow
 public:
     MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
+    QString getCurrentOwner();
+    void setCurrentOwner(QString owner);
 
 private slots:
     void showCredits();
@@ -38,9 +40,35 @@ private:
     Ui::MainWindow *ui;
     DatabaseModel *dbModel;
     std::map<QString, DbTableWidget*> dbTableViews;
+    std::map<QString, QAction*> accountsActions;
+    QString currentOwner;
 
     // Private methods
     void createMenus();
     void showDbTable(const QString tableName);
 };
+
+
+/*
+ * This class is a functor to connect actions which are create dynamicly at runtime
+*/
+
+class OwnerDynamicSlot
+{
+public:
+    OwnerDynamicSlot(MainWindow* mw, QString owner) : mainWindow(mw), name(owner)
+    {
+
+    }
+
+    void operator()()
+    {
+        mainWindow->setCurrentOwner(name);
+    }
+
+private:
+    MainWindow* mainWindow;
+    QString name;
+};
+
 #endif // MAINWINDOW_H
