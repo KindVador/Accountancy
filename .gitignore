@@ -53,3 +53,9 @@ compile_commands.json
 
 # Accountancy db files
 /db
+
+# resources folders
+/examples
+
+# macOS
+.DS_Store
