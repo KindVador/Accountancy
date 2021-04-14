@@ -54,8 +54,13 @@ compile_commands.json
 # Accountancy db files
 /db
 
-# resources folders
+# examples, resources and data folders
 /examples
+/data
+/resources
 
 # macOS
 .DS_Store
+
+# VSCode
+.VSCode
