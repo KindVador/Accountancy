@@ -36,6 +36,8 @@ private slots:
     void showSubCategoriesTable();
     void showRetailersTable();
 
+    void on_actionImport_triggered();
+
 private:
     Ui::MainWindow *ui;
     DatabaseModel *dbModel;

@@ -3,7 +3,14 @@ QT += sql
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
-CONFIG += c++11
+DEFINES+="ACC_MAJOR_VERSION=1"
+DEFINES+="ACC_MINOR_VERSION=0"
+DEFINES+="ACC_PATCH_VERSION=0"
+
+CONFIG += c++17
+
+# add this option to silence warnings related to SDK with macOS 11.x (Big Sur)
+CONFIG += sdk_no_version_check
 
 # The following define makes your compiler emit warnings if you use
 # any Qt feature that has been marked deprecated (the exact warnings
@@ -17,19 +24,28 @@ DEFINES += QT_DEPRECATED_WARNINGS
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
 SOURCES += \
+    account.cpp \
+    currency.cpp \
     databasemodel.cpp \
     dbtablewidget.cpp \
     main.cpp \
     maindockwidget.cpp \
-    mainwindow.cpp
+    mainwindow.cpp \
+    owner.cpp \
+    transaction.cpp
 
 HEADERS += \
+    account.h \
+    currency.h \
     databasemodel.h \
     dbtablewidget.h \
     maindockwidget.h \
-    mainwindow.h
+    mainwindow.h \
+    owner.h \
+    transaction.h
 
 FORMS += \
+    ImportDialogInDb.ui \
     dbtablewidget.ui \
     maindockwidget.ui \
     mainwindow.ui
@@ -48,3 +64,6 @@ DISTFILES += \
     Accountancy_fr_FR.ts
 
 DESTDIR = ./dist
+
+RESOURCES += \
+    Resources.qrc

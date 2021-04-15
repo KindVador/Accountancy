@@ -22,7 +22,7 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWi
     ui->actionDisconnect->setEnabled(false);
 
     // Create Model instance
-    dbModel = new DatabaseModel("/Users/florian/CppProjects/Accountancy/db/data.db");
+    dbModel = new DatabaseModel("/Users/florian/Library/Mobile Documents/com~apple~CloudDocs/Projects/Accountancy/db/data.db");
 
     // Connect Actions to Slots
     connect(ui->actionCredits, SIGNAL(triggered()), this, SLOT(showCredits()));
@@ -162,4 +162,9 @@ void MainWindow::showSubCategoriesTable() {
 
 void MainWindow::showRetailersTable() {
     showDbTable("retailer");
+}
+
+void MainWindow::on_actionImport_triggered()
+{
+    // TODO create a window to import data into DataBase
 }
