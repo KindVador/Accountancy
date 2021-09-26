@@ -25,29 +25,40 @@ DEFINES += QT_DEPRECATED_WARNINGS
 
 SOURCES += \
     account.cpp \
+    card.cpp \
+    checkbook.cpp \
+    csvreader.cpp \
     currency.cpp \
+    currencymodel.cpp \
     databasemodel.cpp \
+    dbmanager.cpp \
     dbtablewidget.cpp \
+    loanaccount.cpp \
     main.cpp \
-    maindockwidget.cpp \
     mainwindow.cpp \
     owner.cpp \
+    ownermodel.cpp \
     transaction.cpp
 
 HEADERS += \
-    account.h \
-    currency.h \
-    databasemodel.h \
-    dbtablewidget.h \
-    maindockwidget.h \
-    mainwindow.h \
-    owner.h \
-    transaction.h
+    account.hpp \
+    card.hpp \
+    checkbook.hpp \
+    csvreader.hpp \
+    currency.hpp \
+    currencymodel.hpp \
+    databasemodel.hpp \
+    dbmanager.hpp \
+    dbtablewidget.hpp \
+    loanaccount.hpp \
+    mainwindow.hpp \
+    owner.hpp \
+    ownermodel.hpp \
+    transaction.hpp
 
 FORMS += \
     ImportDialogInDb.ui \
     dbtablewidget.ui \
-    maindockwidget.ui \
     mainwindow.ui
 
 TRANSLATIONS += \

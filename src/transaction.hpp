@@ -4,7 +4,7 @@
 #include <iostream>
 #include <QString>
 
-#include "account.h"
+#include "account.hpp"
 
 #include <QDate>
 
@@ -16,6 +16,7 @@ public:
     Transaction();
 
 private:
+    int id = -1;
     Account accountFrom, accountTo;
     QString name, comment;
     TransactionStatus ts;

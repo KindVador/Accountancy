@@ -7,19 +7,33 @@
 #include <QString>
 #include <map>
 
+#include "dbmanager.hpp"
+#include "currencymodel.hpp"
+#include "ownermodel.hpp"
+
 class DatabaseModel : public QObject
 {
     Q_OBJECT
 
 public:
-    explicit DatabaseModel(QObject *parent = nullptr);
-    DatabaseModel(QString dbStr, QObject *parent = nullptr);
+    DatabaseModel(QString path, QObject *parent = nullptr);
     ~DatabaseModel();
     void initModel();
     bool isConnected();
     void setDatabaseString(QString dbStr);
     QString getDatabaseString();
     QSqlTableModel* getModelForTable(QString tableName);
+
+    CurrencyModel *getCurrencyModel() const;
+    void setCurrencyModel(CurrencyModel *value);
+
+    OwnerModel *getOwnerModel() const;
+    void setOwnerModel(OwnerModel *value);
+
+    DbManager *getDbm() const;
+    void setDbm(DbManager *value);
+
+    QSqlError addOwner(const QString &name, const QString &currencyName, const float &wngBalance, const QString &comment, const bool &hidden);
 
 signals:
 
@@ -29,7 +43,10 @@ public slots:
 
 private:
     QString dbString;
-    QSqlDatabase db;
+    DbManager* dbm;
+    CurrencyModel* currencyModel;
+    OwnerModel* ownerModel;
+
     std::map<QString, QSqlTableModel*> models;
 };
 

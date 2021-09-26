@@ -8,6 +8,9 @@ class Checkbook
 {
 public:
     Checkbook();
+
+private:
+    int id = -1;
 };
 
 #endif // CHECKBOOK_H

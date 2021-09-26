@@ -4,10 +4,10 @@
 #include <QString>
 #include <vector>
 
-#include "currency.h"
-#include "owner.h"
-#include "checkbook.h"
-#include "card.h"
+#include "currency.hpp"
+#include "owner.hpp"
+#include "checkbook.hpp"
+#include "card.hpp"
 
 enum AccountType: int {Checking, CreditCard, Savings, Cash, Assets, Loan, Investment};
 
@@ -17,6 +17,7 @@ public:
     Account();
 
 private:
+    int id = -1;
     Currency currency;
     std::vector<Owner> owners;
     float initialBalance = 0;

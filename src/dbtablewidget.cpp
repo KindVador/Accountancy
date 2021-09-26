@@ -1,4 +1,4 @@
-#include "dbtablewidget.h"
+#include "dbtablewidget.hpp"
 #include "ui_dbtablewidget.h"
 #include <QDebug>
 

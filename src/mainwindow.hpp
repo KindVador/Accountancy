@@ -6,8 +6,8 @@
 #include <QMainWindow>
 #include <QString>
 
-#include "dbtablewidget.h"
-#include "databasemodel.h"
+#include "databasemodel.hpp"
+#include "dbtablewidget.hpp"
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
@@ -27,14 +27,14 @@ private slots:
     void showCredits();
     void connectDatabase();
     void disconnectDatabase();
-    void showOwnersTable();
-    void showAccountsTable();
-    void showTransactionsTable();
-    void showBanksTable();
-    void showBalanceNotesTable();
-    void showCategoriesTable();
-    void showSubCategoriesTable();
-    void showRetailersTable();
+//    void showOwnersTable();
+//    void showAccountsTable();
+//    void showTransactionsTable();
+//    void showBanksTable();
+//    void showBalanceNotesTable();
+//    void showCategoriesTable();
+//    void showSubCategoriesTable();
+//    void showRetailersTable();
 
     void on_actionImport_triggered();
 
@@ -46,8 +46,8 @@ private:
     QString currentOwner;
 
     // Private methods
-    void createMenus();
-    void showDbTable(const QString tableName);
+    void updateOwners();
+//    void showDbTable(const QString tableName);
 };
 
 

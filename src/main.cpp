@@ -1,4 +1,4 @@
-#include "mainwindow.h"
+#include "mainwindow.hpp"
 
 #include <QApplication>
 #include <QTranslator>
@@ -9,6 +9,19 @@
 #include <QDebug>
 
 static QString VERSION_STRING = QString("%1.%2.%3").arg(ACC_MAJOR_VERSION).arg(ACC_MINOR_VERSION).arg(ACC_PATCH_VERSION);
+
+
+void loadFiles() {
+
+    //assume the directory exists and contains some files and you want all jpg and JPG files
+    QDir directory("/Users/florian/Library/Mobile Documents/com~apple~CloudDocs/Projects/Accountancy/data/florian/caisse_epargne/compte_depot");
+    QStringList csvFiles = directory.entryList(QStringList() << "*.csv" << "*.CSV",QDir::Files);
+
+    foreach(QString filename, csvFiles) {
+        //do whatever you need to do
+        std::cout << "Reading file: " << filename.toStdString() << std::endl;
+    }
+}
 
 inline int GetVersionNumber(QString str)
 {
@@ -24,6 +37,9 @@ inline int GetVersionNumber(QString str)
 }
 
 int main(int argc, char *argv[]) {
+
+    Q_INIT_RESOURCE(Resources);
+
     QApplication app(argc, argv);
     QCoreApplication::setOrganizationName("KindVador");
     QCoreApplication::setApplicationName("Accountancy");
@@ -36,7 +52,7 @@ int main(int argc, char *argv[]) {
     }
 
     // set ICON
-    QIcon app_icon("://resources/plotjuggler.svg");
+    QIcon app_icon(":/imgs/accountancy.svg");
     QApplication::setWindowIcon(app_icon);
 
     // Traduction de l'application
@@ -49,6 +65,8 @@ int main(int argc, char *argv[]) {
     // Création de la fenêtre principale
     MainWindow w;
     w.show();
+
+    loadFiles();
 
     // Lancement de l'application
     return app.exec();
