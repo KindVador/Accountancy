@@ -8,6 +8,9 @@
 #include <iostream>
 #include <QDebug>
 
+static QString ACC_MAJOR_VERSION = QString("1");
+static QString ACC_MINOR_VERSION = QString("0");
+static QString ACC_PATCH_VERSION = QString("0");
 static QString VERSION_STRING = QString("%1.%2.%3").arg(ACC_MAJOR_VERSION).arg(ACC_MINOR_VERSION).arg(ACC_PATCH_VERSION);
 
 
