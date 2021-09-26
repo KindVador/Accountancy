@@ -64,3 +64,6 @@ compile_commands.json
 
 # VSCode
 .VSCode
+
+# CLion
+.idea
