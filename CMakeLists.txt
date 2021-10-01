@@ -24,7 +24,7 @@ set(HEADER_FILES
         src/dbmanager.hpp
         src/dbtablewidget.hpp
         src/loanaccount.hpp
-        src/mainwindow.hpp
+        src/ui/mainwindow.hpp
         src/owner.hpp
         src/ownermodel.hpp
         src/transaction.hpp
@@ -42,14 +42,14 @@ set(SOURCE_FILES
         src/dbtablewidget.cpp
         src/loanaccount.cpp
         src/main.cpp
-        src/mainwindow.cpp
+        src/ui/mainwindow.cpp
         src/owner.cpp
         src/ownermodel.cpp
         src/transaction.cpp
         )
 
 set(UI_FILES
-        src/mainwindow.ui
+        src/ui/mainwindow.ui
         src/ImportDialogInDb.ui
         src/dbtablewidget.ui
         )
