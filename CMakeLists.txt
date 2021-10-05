@@ -1,6 +1,8 @@
-cmake_minimum_required(VERSION 3.5)
+cmake_minimum_required(VERSION 3.20)
 
-project(Accountancy VERSION 0.1 LANGUAGES CXX)
+project(Accountancy VERSION 0.1
+                    LANGUAGES CXX
+                    DESCRIPTION "Personnel application to manage accounts.")
 
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
@@ -13,6 +15,7 @@ set(CMAKE_INCLUDE_CURRENT_DIR ON)
 
 find_package(Qt6 COMPONENTS Widgets Sql REQUIRED)
 
+add_subdirectory(src/ui)
 set(HEADER_FILES
         src/account.hpp
         src/card.hpp
@@ -24,7 +27,6 @@ set(HEADER_FILES
         src/dbmanager.hpp
         src/dbtablewidget.hpp
         src/loanaccount.hpp
-        src/ui/mainwindow.hpp
         src/owner.hpp
         src/ownermodel.hpp
         src/transaction.hpp
@@ -42,14 +44,12 @@ set(SOURCE_FILES
         src/dbtablewidget.cpp
         src/loanaccount.cpp
         src/main.cpp
-        src/ui/mainwindow.cpp
         src/owner.cpp
         src/ownermodel.cpp
         src/transaction.cpp
         )
 
 set(UI_FILES
-        src/ui/mainwindow.ui
         src/ImportDialogInDb.ui
         src/dbtablewidget.ui
         )
@@ -85,7 +85,7 @@ ENDIF()
 
 # Since Qt 5.15, the CMake targets are also available as Qt::Core, Qt::Gui, and so on.
 # This eases writing CMake code that can work with both Qt 5 and Qt 6.
-target_link_libraries(Accountancy PRIVATE Qt::Widgets Qt::Sql)
+target_link_libraries(Accountancy PRIVATE Qt::Widgets Qt::Sql ui)
 
 set_target_properties(Accountancy PROPERTIES
         MACOSX_BUNDLE_GUI_IDENTIFIER kindvador.com
