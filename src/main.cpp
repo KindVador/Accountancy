@@ -1,4 +1,4 @@
-#include "mainwindow.hpp"
+#include "ui/mainwindow.hpp"
 
 #include <QApplication>
 #include <QTranslator>
@@ -18,7 +18,7 @@ void loadFiles() {
 
     //assume the directory exists and contains some files and you want all jpg and JPG files
     QDir directory("/Users/florian/Library/Mobile Documents/com~apple~CloudDocs/Projects/Accountancy/data/florian/caisse_epargne/compte_depot");
-    QStringList csvFiles = directory.entryList(QStringList() << "*.csv" << "*.CSV",QDir::Files);
+    QStringList csvFiles = directory.entryList(QStringList() << "*.csv" << "*.CSV", QDir::Files);
 
     foreach(QString filename, csvFiles) {
         //do whatever you need to do
@@ -59,11 +59,11 @@ int main(int argc, char *argv[]) {
     QApplication::setWindowIcon(app_icon);
 
     // Traduction de l'application
-    QString locale = QLocale::system().name();   //.section('_', 0, 0);
-    QTranslator translator;
-    translator.load("Accountancy_" + locale);
+//    QString locale = QLocale::system().name();   //.section('_', 0, 0);
+//    QTranslator translator;
+//    translator.load("Accountancy_" + locale);
 //    translator.load("Accountancy_en_US");
-    app.installTranslator(&translator);
+//    app.installTranslator(&translator);
 
     // Création de la fenêtre principale
     MainWindow w;

@@ -57,7 +57,6 @@ compile_commands.json
 # examples, resources and data folders
 /examples
 /data
-/resources
 
 # macOS
 .DS_Store
