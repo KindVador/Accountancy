@@ -9,6 +9,7 @@ class Owner
 {
 public:
     Owner();
+    Owner(const QString &name, const Currency &currency, float warningBalance, const QString &comment, bool isHidden);
 
     QString getName() const;
     void setName(const QString &value);

@@ -59,3 +59,6 @@ int Owner::getId() const
 {
     return id;
 }
+
+Owner::Owner(const QString &name, const Currency &currency, float warningBalance, const QString &comment, bool isHidden)
+        : name(name), currency(currency), warningBalance(warningBalance), comment(comment), isHidden(isHidden) {}

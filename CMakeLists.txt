@@ -20,15 +20,14 @@ add_subdirectory(src/core)
 add_subdirectory(src/data_loader)
 
 set(HEADER_FILES
-        src/csvreader.hpp
+        src/controller.hpp
         src/currencymodel.hpp
         src/databasemodel.hpp
-        src/dbmanager.hpp
         src/ownermodel.hpp
         )
 
 set(SOURCE_FILES
-        src/csvreader.cpp
+        src/controller.cpp
         src/currencymodel.cpp
         src/databasemodel.cpp
         src/main.cpp
