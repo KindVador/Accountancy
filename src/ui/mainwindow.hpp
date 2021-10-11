@@ -7,7 +7,7 @@
 #include <QString>
 
 #include "../databasemodel.hpp"
-#include "../dbtablewidget.hpp"
+#include "../ui/dbtablewidget.hpp"
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }

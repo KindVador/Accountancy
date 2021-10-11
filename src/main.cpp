@@ -59,7 +59,7 @@ int main(int argc, char *argv[]) {
     QApplication::setWindowIcon(app_icon);
 
     // Traduction de l'application
-    QString locale = QLocale::system().name();   //.section('_', 0, 0);
+//    QString locale = QLocale::system().name();   //.section('_', 0, 0);
 //    QTranslator translator;
 //    translator.load("Accountancy_" + locale);
 //    translator.load("Accountancy_en_US");

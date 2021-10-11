@@ -1,6 +1,6 @@
 #include "mainwindow.hpp"
 #include "ui_mainwindow.h"
-#include "../dbtablewidget.hpp"
+#include "dbtablewidget.hpp"
 #include "../core/owner.hpp"
 
 #include <QMessageBox>

@@ -7,7 +7,7 @@
 #include <QString>
 #include <map>
 
-#include "dbmanager.hpp"
+#include "data_loader/dbmanager.hpp"
 #include "currencymodel.hpp"
 #include "ownermodel.hpp"
 
