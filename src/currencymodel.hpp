@@ -8,7 +8,7 @@
 #include <QSqlRecord>
 #include <QDebug>
 
-#include "currency.hpp"
+#include "core/currency.hpp"
 
 class CurrencyModel : public QSqlTableModel
 {

@@ -6,8 +6,8 @@
 #include <QSqlDatabase>
 #include <map>
 
-#include "currency.hpp"
-#include "owner.hpp"
+#include "core/currency.hpp"
+#include "core/owner.hpp"
 
 
 class DbManager

@@ -8,7 +8,7 @@
 #include <QDebug>
 #include <vector>
 
-#include "owner.hpp"
+#include "core/owner.hpp"
 
 
 class OwnerModel : public QSqlRelationalTableModel

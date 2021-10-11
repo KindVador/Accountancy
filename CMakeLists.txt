@@ -16,37 +16,25 @@ set(CMAKE_INCLUDE_CURRENT_DIR ON)
 find_package(Qt6 COMPONENTS Widgets Sql REQUIRED)
 
 add_subdirectory(src/ui)
+add_subdirectory(src/core)
+
 set(HEADER_FILES
-        src/account.hpp
-        src/card.hpp
-        src/checkbook.hpp
         src/csvreader.hpp
-        src/currency.hpp
         src/currencymodel.hpp
         src/databasemodel.hpp
         src/dbmanager.hpp
         src/dbtablewidget.hpp
-        src/loanaccount.hpp
-        src/owner.hpp
         src/ownermodel.hpp
-        src/transaction.hpp
         )
 
 set(SOURCE_FILES
-        src/account.cpp
-        src/card.cpp
-        src/checkbook.cpp
         src/csvreader.cpp
-        src/currency.cpp
         src/currencymodel.cpp
         src/databasemodel.cpp
         src/dbmanager.cpp
         src/dbtablewidget.cpp
-        src/loanaccount.cpp
         src/main.cpp
-        src/owner.cpp
         src/ownermodel.cpp
-        src/transaction.cpp
         )
 
 set(UI_FILES
@@ -85,7 +73,7 @@ ENDIF()
 
 # Since Qt 5.15, the CMake targets are also available as Qt::Core, Qt::Gui, and so on.
 # This eases writing CMake code that can work with both Qt 5 and Qt 6.
-target_link_libraries(Accountancy PRIVATE Qt::Widgets Qt::Sql ui)
+target_link_libraries(Accountancy PRIVATE Qt::Widgets Qt::Sql AccountancyCore AccountancyUi)
 
 set_target_properties(Accountancy PROPERTIES
         MACOSX_BUNDLE_GUI_IDENTIFIER kindvador.com

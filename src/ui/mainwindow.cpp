@@ -1,7 +1,7 @@
 #include "mainwindow.hpp"
 #include "ui_mainwindow.h"
 #include "../dbtablewidget.hpp"
-#include "../owner.hpp"
+#include "../core/owner.hpp"
 
 #include <QMessageBox>
 #include <QString>
