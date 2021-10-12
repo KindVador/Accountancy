@@ -1,6 +1,5 @@
 #include "checkbook.hpp"
 
-Checkbook::Checkbook()
-{
+Checkbook::Checkbook() {
 
 }

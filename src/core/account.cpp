@@ -1,6 +1,5 @@
 #include "account.hpp"
 
-Account::Account()
-{
+Account::Account() {
 
 }

@@ -4,8 +4,7 @@
 #include <QString>
 
 
-class Checkbook
-{
+class Checkbook {
 public:
     Checkbook();
 

@@ -1,17 +1,15 @@
 #ifndef TRANSACTION_H
 #define TRANSACTION_H
 
-#include <iostream>
-#include <QString>
-
 #include "account.hpp"
 
+#include <iostream>
+#include <QString>
 #include <QDate>
 
 enum TransactionStatus: int {Planned, Created, Imported, Cleared, Locked, Cancelled};
 
-class Transaction
-{
+class Transaction {
 public:
     Transaction();
 

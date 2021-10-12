@@ -11,8 +11,7 @@
 
 enum AccountType: int {Checking, CreditCard, Savings, Cash, Assets, Loan, Investment};
 
-class Account
-{
+class Account {
 public:
     Account();
 

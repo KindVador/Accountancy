@@ -9,8 +9,7 @@ namespace Ui {
 class DbTableWidget;
 }
 
-class DbTableWidget : public QWidget
-{
+class DbTableWidget : public QWidget {
     Q_OBJECT
 
 public:

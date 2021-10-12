@@ -2,8 +2,7 @@
 #define LOANACCOUNT_H
 
 
-class LoanAccount
-{
+class LoanAccount {
 public:
     LoanAccount();
 

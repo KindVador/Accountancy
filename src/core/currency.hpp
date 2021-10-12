@@ -3,8 +3,7 @@
 
 #include <QString>
 
-class Currency
-{
+class Currency {
 public:
     Currency();
     Currency(QString &name, QString &symbol);

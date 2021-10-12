@@ -2,8 +2,7 @@
 #define CARD_H
 
 
-class Card
-{
+class Card {
 public:
     Card();
 
