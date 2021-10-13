@@ -6,7 +6,6 @@
 #include <QMainWindow>
 #include <QString>
 
-#include "../databasemodel.hpp"
 #include "../ui/dbtablewidget.hpp"
 
 QT_BEGIN_NAMESPACE
@@ -40,7 +39,7 @@ private slots:
 
 private:
     Ui::MainWindow *ui;
-    DatabaseModel *dbModel;
+    //DatabaseModel *dbModel;
     std::map<QString, DbTableWidget*> dbTableViews;
     std::map<QString, QAction*> accountsActions;
     QString currentOwner;

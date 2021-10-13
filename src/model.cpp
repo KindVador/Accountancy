@@ -1,9 +1,9 @@
 #include "model.hpp"
 
-Model::Model() {
-    _owners.push_back(new Owner("User1", ));
+Model::Model(): _ownerModel(new OwnerModel), _currencyModel(new CurrencyModel) {
 }
 
 Model::~Model() {
-
+    delete _ownerModel;
+    delete _currencyModel;
 }

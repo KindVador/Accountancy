@@ -2,10 +2,10 @@
 
 #include <QFile>
 
-const auto CURRENCIES_SQL = QLatin1String(R"(CREATE TABLE currencies(id INTEGER PRIMARY KEY,  name VARCHAR, symbol VARCHAR))");
+const auto CURRENCIES_SQL = QLatin1String(R"(CREATE TABLE currencies(_id INTEGER PRIMARY KEY,  _name VARCHAR, symbol VARCHAR))");
 
-const auto OWNERS_SQL = QLatin1String(R"(CREATE TABLE owners(id INTEGER PRIMARY KEY, name VARCHAR, currency INTEGER, warningbalance REAL, comment VARCHAR, ishidden INTEGER,
-FOREIGN KEY(currency) REFERENCES currencies(id)))");
+const auto OWNERS_SQL = QLatin1String(R"(CREATE TABLE owners(_id INTEGER PRIMARY KEY, _name VARCHAR, _currency INTEGER, warningbalance REAL, _comment VARCHAR, ishidden INTEGER,
+FOREIGN KEY(_currency) REFERENCES currencies(_id)))");
 
 
 DbManager::DbManager(const QString& path) {

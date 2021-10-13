@@ -26,14 +26,15 @@ public:
     void setIsHidden(bool value);
 
     int getId() const;
+    void setId(int id);
 
 private:
-    int id = -1;
-    QString name;
-    Currency currency;
-    float warningBalance = 0;
-    QString comment;
-    bool isHidden = false;
+    int _id = -1;
+    QString _name;
+    Currency _currency;
+    float _warningBalance = 0;
+    QString _comment;
+    bool _isHidden = false;
 };
 
 #endif // OWNER_H

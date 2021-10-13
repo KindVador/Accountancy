@@ -1,5 +1,5 @@
-#include "ownermodel.hpp"
-#include <QSqlRecord>
+#include "src/sql_models/ownermodel.hpp"
+
 
 const auto INSERT_OWNER_SQL = QLatin1String(R"(INSERT INTO owners(name, currency, warningbalance, comment, ishidden) values(:name, :currency, :warningbalance ,:comment, :ishidden))");
 const auto SELECT_SQL = QLatin1String(R"(SELECT * FROM owners)");

@@ -2,6 +2,8 @@
 #define ACCOUNTANCY_MODEL_HPP
 
 #include "core/owner.hpp"
+#include "ownermodel.hpp"
+#include "currencymodel.hpp"
 
 class Model {
 
@@ -10,7 +12,8 @@ public:
     ~Model();
 
 private:
-    QList<Owner*> _owners;
+    OwnerModel* _ownerModel = nullptr;
+    CurrencyModel* _currencyModel = nullptr;
 };
 
 

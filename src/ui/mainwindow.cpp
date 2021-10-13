@@ -25,7 +25,7 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWi
 
     // Create Model instance
     QString dbPath = QString("/Users/florian/Library/Mobile Documents/com~apple~CloudDocs/Projects/Accountancy/db/data2.db");
-    dbModel = new DatabaseModel(dbPath, this);
+    //dbModel = new DatabaseModel(dbPath, this);
 
     // Connect Actions to Slots
     connect(ui->actionCredits, SIGNAL(triggered()), this, SLOT(showCredits()));
@@ -33,15 +33,15 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWi
     connect(ui->actionDisconnect, SIGNAL(triggered()), this, SLOT(disconnectDatabase()));
 
     // Init of UI after database connection
-    if (dbModel->isConnected()) {
-        ui->actionConnect->setEnabled(false);
-        ui->actionDisconnect->setEnabled(true);
-
-        updateOwners();
-
-    } else {
-        qDebug() << "ERROR: no connection  to Database to initialize" << Qt::endl;
-    }
+//    if (dbModel->isConnected()) {
+//        ui->actionConnect->setEnabled(false);
+//        ui->actionDisconnect->setEnabled(true);
+//
+//        updateOwners();
+//
+//    } else {
+//        qDebug() << "ERROR: no connection  to Database to initialize" << Qt::endl;
+//    }
 
 }
 
@@ -49,11 +49,11 @@ void MainWindow::updateOwners() {
     qDebug() << "MainWindow::updateOwners()" << Qt::endl;
 
     // For each Owner, create one Menu and add button in the left panel
-    std::vector<Owner> owners = dbModel->getOwnerModel()->getOwners();
-    qDebug() << owners.size() << Qt::endl;
-    for(auto &owner : owners) {
-        qDebug() << owner.getId() << " " << owner.getName() << " " << owner.getCurrency().getName() << Qt::endl;
-    }
+//    std::vector<Owner> owners = dbModel->getOwnerModel()->getOwners();
+//    qDebug() << owners.size() << Qt::endl;
+//    for(auto &owner : owners) {
+//        qDebug() << owner.getId() << " " << owner.getName() << " " << owner.getCurrency().getName() << Qt::endl;
+//    }
     // TODO read owners list from the database
 //    int i = 0;
 //    QModelIndex idx;
@@ -104,8 +104,8 @@ void MainWindow::showCredits() {
 
 void MainWindow::connectDatabase() {
     // open DB connection
-    if (!dbModel->isConnected())
-        dbModel->getDbm()->getDb().open();
+//    if (!dbModel->isConnected())
+//        dbModel->getDbm()->getDb().open();
     // Update UI
     ui->actionDisconnect->setEnabled(true);
     ui->actionConnect->setEnabled(false);
@@ -113,7 +113,7 @@ void MainWindow::connectDatabase() {
 
 void MainWindow::disconnectDatabase() {
     // close DB connection
-    dbModel->getDbm()->getDb().close();
+//    dbModel->getDbm()->getDb().close();
     // Update UI
     ui->actionDisconnect->setEnabled(false);
     ui->actionConnect->setEnabled(true);
