@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>800</width>
-    <height>724</height>
+    <width>1485</width>
+    <height>812</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -143,7 +143,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>800</width>
+     <width>1485</width>
      <height>24</height>
     </rect>
    </property>
@@ -208,7 +208,7 @@
   </widget>
   <action name="actionImport">
    <property name="icon">
-    <iconset resource="Resources.qrc">
+    <iconset>
      <normaloff>:/imgs/import_icon&amp;24.png</normaloff>:/imgs/import_icon&amp;24.png</iconset>
    </property>
    <property name="text">
