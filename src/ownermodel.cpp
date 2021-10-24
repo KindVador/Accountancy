@@ -6,19 +6,28 @@ OwnerModel::OwnerModel() {
 OwnerModel::~OwnerModel() {
 }
 
-void OwnerModel::addOwner(Owner *owner) {
+int OwnerModel::addOwner(Owner *owner) {
     if (owner == nullptr)
-        return;
+        return -1;
 
     _owners.insert(owner->getId(), owner);
+
+    return owner->getId();
 }
 
-void OwnerModel::addOwner(const QString &name, const Currency &currency, float warningBalance, const QString &comment,
+int OwnerModel::addOwner(const QString &name, const Currency &currency, float warningBalance, const QString &comment,
                           bool isHidden) {
-    int lastId = _owners.last()->getId();
-    auto* newOwner = new Owner(name, currency, warningBalance, comment, isHidden);
-    newOwner->setId(lastId +1 );
+    int nextId = -1;
+    if (_owners.isEmpty())
+        nextId = 0;
+    else
+        nextId = _owners.last()->getId();
+
+    auto *newOwner = new Owner(name, currency, warningBalance, comment, isHidden);
+    newOwner->setId(nextId);
     addOwner(newOwner);
+
+    return nextId;
 }
 
 void OwnerModel::removeOwner(Owner *owner) {

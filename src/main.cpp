@@ -1,30 +1,15 @@
-#include "ui/mainwindow.hpp"
+#include "controller.hpp"
 
 #include <QApplication>
 #include <QTranslator>
 #include <QString>
 #include <QSettings>
 #include <QDir>
-#include <iostream>
-#include <QDebug>
 
 static QString ACC_MAJOR_VERSION = QString("1");
 static QString ACC_MINOR_VERSION = QString("0");
 static QString ACC_PATCH_VERSION = QString("0");
-static QString VERSION_STRING = QString("%1.%2.%3").arg(ACC_MAJOR_VERSION).arg(ACC_MINOR_VERSION).arg(ACC_PATCH_VERSION);
-
-
-void loadFiles() {
-
-    //assume the directory exists and contains some files and you want all jpg and JPG files
-    QDir directory("/Users/florian/Library/Mobile Documents/com~apple~CloudDocs/Projects/Accountancy/data/florian/caisse_epargne/compte_depot");
-    QStringList csvFiles = directory.entryList(QStringList() << "*.csv" << "*.CSV", QDir::Files);
-
-    foreach(QString filename, csvFiles) {
-        //do whatever you need to do
-        std::cout << "Reading file: " << filename.toStdString() << std::endl;
-    }
-}
+static QString VERSION_STRING = QString("%1.%2.%3").arg(ACC_MAJOR_VERSION, ACC_MINOR_VERSION, ACC_PATCH_VERSION);
 
 inline int GetVersionNumber(QString str)
 {
@@ -51,25 +36,16 @@ int main(int argc, char *argv[]) {
     QSettings settings;
     if( !settings.isWritable())
     {
-        qDebug() << "ERROR: the file [" << settings.fileName() << "] is not writtable.";
+        qDebug() << "ERROR: the file [" << settings.fileName() << "] is not writable.";
     }
 
     // set ICON
     QIcon app_icon(":/imgs/accountancy.svg");
     QApplication::setWindowIcon(app_icon);
 
-    // Traduction de l'application
-//    QString locale = QLocale::system().name();   //.section('_', 0, 0);
-//    QTranslator translator;
-//    translator.load("Accountancy_" + locale);
-//    translator.load("Accountancy_en_US");
-//    app.installTranslator(&translator);
-
-    // Création de la fenêtre principale
-    MainWindow w;
-    w.show();
-
-    loadFiles();
+    // Controller
+    Controller controller = Controller();
+    controller.showMainWindow();
 
     // Lancement de l'application
     return app.exec();

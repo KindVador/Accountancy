@@ -11,8 +11,8 @@ public:
     OwnerModel();
     ~OwnerModel();
 
-    void addOwner(Owner* owner);
-    void addOwner(const QString &name, const Currency &currency, float warningBalance, const QString &comment, bool isHidden);
+    int addOwner(Owner* owner);
+    int addOwner(const QString &name, const Currency &currency, float warningBalance, const QString &comment, bool isHidden);
     void removeOwner(Owner* owner);
     void removeOwner(int id);
     Owner* getOwner(const QString& name);

@@ -11,6 +11,14 @@ public:
     explicit Model();
     ~Model();
 
+    // Getters
+    OwnerModel *getOwnerModel() const;
+    OwnerModel *getOwnerModel();
+    CurrencyModel *getCurrencyModel() const;
+    CurrencyModel *getCurrencyModel();
+
+    static float balanceForOwner(const Owner *owner);
+
 private:
     OwnerModel* _ownerModel = nullptr;
     CurrencyModel* _currencyModel = nullptr;

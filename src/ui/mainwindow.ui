@@ -38,7 +38,7 @@
         </widget>
        </item>
        <item>
-        <layout class="QVBoxLayout" name="vLayoutOwners"/>
+        <layout class="QVBoxLayout" name="ownersLayout"/>
        </item>
        <item>
         <widget class="Line" name="lineOwners">
@@ -55,7 +55,7 @@
         </widget>
        </item>
        <item>
-        <layout class="QVBoxLayout" name="vLayoutAccounts"/>
+        <layout class="QVBoxLayout" name="accountsLayout"/>
        </item>
        <item>
         <widget class="Line" name="lineAccounts">
@@ -144,7 +144,7 @@
      <x>0</x>
      <y>0</y>
      <width>1485</width>
-     <height>24</height>
+     <height>21</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuFichier">
@@ -281,9 +281,7 @@
    </property>
   </action>
  </widget>
- <resources>
-  <include location="Resources.qrc"/>
- </resources>
+ <resources/>
  <connections>
   <connection>
    <sender>actionClose</sender>

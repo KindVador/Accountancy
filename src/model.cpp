@@ -1,13 +1,29 @@
 #include "model.hpp"
 
 Model::Model(): _ownerModel(new OwnerModel), _currencyModel(new CurrencyModel) {
-    Currency euro = Currency();
-    euro.setName("Euro");
-    euro.setSymbol("€");
-    _ownerModel->addOwner("Florian", euro, 0, "", false);
 }
 
 Model::~Model() {
     delete _ownerModel;
     delete _currencyModel;
+}
+
+OwnerModel *Model::getOwnerModel() const {
+    return _ownerModel;
+}
+
+CurrencyModel *Model::getCurrencyModel() const {
+    return _currencyModel;
+}
+
+OwnerModel *Model::getOwnerModel() {
+    return _ownerModel;
+}
+
+CurrencyModel *Model::getCurrencyModel() {
+    return _currencyModel;
+}
+
+float Model::balanceForOwner(const Owner *owner) {
+    return 0;
 }
