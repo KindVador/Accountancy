@@ -3,12 +3,14 @@
 
 #include <string>
 #include <QString>
+#include <QMetaType>
 #include "currency.hpp"
 
 class Owner {
 public:
     Owner();
     Owner(const QString &name, const Currency &currency, float warningBalance, const QString &comment, bool isHidden);
+    ~Owner() = default;
 
     QString getName() const;
     void setName(const QString &value);
@@ -36,5 +38,7 @@ private:
     QString _comment;
     bool _isHidden = false;
 };
+
+Q_DECLARE_METATYPE(Owner)
 
 #endif // OWNER_H

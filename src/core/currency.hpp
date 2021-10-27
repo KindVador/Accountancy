@@ -7,7 +7,7 @@ class Currency {
 public:
     Currency();
     Currency(QString &name, QString &symbol);
-    ~Currency();
+    ~Currency() = default;
 
     QString getName() const;
     void setName(const QString &value);

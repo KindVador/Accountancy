@@ -17,7 +17,8 @@
 
 using namespace std;
 
-MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWindow) {
+MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWindow)
+{
 
     ui->setupUi(this);
 
@@ -35,7 +36,8 @@ MainWindow::~MainWindow()
 }
 
 
-void MainWindow::showCredits() {
+void MainWindow::showCredits()
+{
     QString text(tr("Icônes faites par Pixel perfect de www.flaticon.com"));  // In english, Icons made by Pixel perfect from www.flaticon.com
     QMessageBox::information(this, "Credits", text);
 }
@@ -69,17 +71,19 @@ void MainWindow::on_actionImport_triggered()
     }
 }
 
-void MainWindow::onOwnerModelUpdate() {
-
-
-//    ui->ownersLayout
-
+void MainWindow::onOwnerModelUpdate()
+{
 }
 
-Model *MainWindow::getModel() const {
+Model *MainWindow::getModel() const
+{
     return _model;
 }
 
-void MainWindow::setModel(Model *model) {
+void MainWindow::setModel(Model *model)
+{
     _model = model;
+
+    // connect Owner model
+    ui->ownersView->setModel(_model->getOwnerModel());
 }

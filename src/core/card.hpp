@@ -5,6 +5,7 @@
 class Card {
 public:
     Card();
+    ~Card() = default;
 
 private:
     int id = -1;

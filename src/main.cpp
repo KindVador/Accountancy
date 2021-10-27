@@ -24,8 +24,8 @@ inline int GetVersionNumber(QString str)
   return major * 10000 + minor * 100 + patch;
 }
 
-int main(int argc, char *argv[]) {
-
+int main(int argc, char *argv[])
+{
     Q_INIT_RESOURCE(Resources);
 
     QApplication app(argc, argv);

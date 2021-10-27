@@ -12,6 +12,7 @@ enum TransactionStatus: int {Planned, Created, Imported, Cleared, Locked, Cancel
 class Transaction {
 public:
     Transaction();
+    ~Transaction() = default;
 
 private:
     int id = -1;

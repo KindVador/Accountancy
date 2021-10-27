@@ -38,7 +38,7 @@
         </widget>
        </item>
        <item>
-        <layout class="QVBoxLayout" name="ownersLayout"/>
+        <widget class="QListView" name="ownersView"/>
        </item>
        <item>
         <widget class="Line" name="lineOwners">
@@ -55,7 +55,7 @@
         </widget>
        </item>
        <item>
-        <layout class="QVBoxLayout" name="accountsLayout"/>
+        <widget class="QListView" name="accountsView"/>
        </item>
        <item>
         <widget class="Line" name="lineAccounts">
@@ -144,7 +144,7 @@
      <x>0</x>
      <y>0</y>
      <width>1485</width>
-     <height>21</height>
+     <height>24</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuFichier">

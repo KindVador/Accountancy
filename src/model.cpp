@@ -1,29 +1,36 @@
 #include "model.hpp"
 
-Model::Model(): _ownerModel(new OwnerModel), _currencyModel(new CurrencyModel) {
+Model::Model(): _ownerModel(new OwnerModel), _currencyModel(new CurrencyModel)
+{
 }
 
-Model::~Model() {
+Model::~Model()
+{
     delete _ownerModel;
     delete _currencyModel;
 }
 
-OwnerModel *Model::getOwnerModel() const {
+OwnerModel *Model::getOwnerModel() const
+{
     return _ownerModel;
 }
 
-CurrencyModel *Model::getCurrencyModel() const {
+CurrencyModel *Model::getCurrencyModel() const
+{
     return _currencyModel;
 }
 
-OwnerModel *Model::getOwnerModel() {
+OwnerModel *Model::getOwnerModel()
+{
     return _ownerModel;
 }
 
-CurrencyModel *Model::getCurrencyModel() {
+CurrencyModel *Model::getCurrencyModel()
+{
     return _currencyModel;
 }
 
-float Model::balanceForOwner(const Owner *owner) {
+float Model::balanceForOwner(const Owner *owner)
+{
     return 0;
 }

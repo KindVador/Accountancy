@@ -1,5 +1,5 @@
 #include "loanaccount.hpp"
 
-LoanAccount::LoanAccount() {
-
+LoanAccount::LoanAccount()
+{
 }

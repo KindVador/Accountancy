@@ -1,5 +1,6 @@
 #include "currencymodel.hpp"
 
 
-CurrencyModel::CurrencyModel() {
+CurrencyModel::CurrencyModel()
+{
 }

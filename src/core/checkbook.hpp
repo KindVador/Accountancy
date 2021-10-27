@@ -7,6 +7,7 @@
 class Checkbook {
 public:
     Checkbook();
+    ~Checkbook() = default;
 
 private:
     int id = -1;

@@ -14,6 +14,7 @@ enum AccountType: int {Checking, CreditCard, Savings, Cash, Assets, Loan, Invest
 class Account {
 public:
     Account();
+    ~Account() = default;
 
 private:
     int id = -1;

@@ -5,6 +5,7 @@
 class LoanAccount {
 public:
     LoanAccount();
+    ~LoanAccount() = default;
 
 private:
     int id = -1;
