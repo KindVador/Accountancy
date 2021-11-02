@@ -6,8 +6,6 @@
 
 #include "currency.hpp"
 #include "owner.hpp"
-#include "checkbook.hpp"
-#include "card.hpp"
 
 enum AccountType: int {Checking, CreditCard, Savings, Cash, Assets, Loan, Investment};
 
@@ -28,8 +26,6 @@ private:
     bool isIncludedInTotal = true;
     bool isHidden = false;
     AccountType type = AccountType::Checking;
-    std::vector<Checkbook> vCheckbooks;
-    std::vector<Card> vCards;
 };
 
 #endif // ACCOUNT_H
