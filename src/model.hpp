@@ -4,6 +4,7 @@
 #include "core/owner.hpp"
 #include "ownermodel.hpp"
 #include "currencymodel.hpp"
+#include "accountmodel.hpp"
 
 class Model {
 
@@ -12,17 +13,17 @@ public:
     ~Model();
 
     // Getters
-    OwnerModel *getOwnerModel() const;
-    OwnerModel *getOwnerModel();
-    CurrencyModel *getCurrencyModel() const;
-    CurrencyModel *getCurrencyModel();
+    [[nodiscard]] OwnerModel *getOwnerModel() const;
+    [[nodiscard]] OwnerModel *getOwnerModel();
+    [[nodiscard]] CurrencyModel *getCurrencyModel() const;
+    [[nodiscard]] CurrencyModel *getCurrencyModel();
 
     static float balanceForOwner(const Owner *owner);
 
 private:
-    OwnerModel* _ownerModel = nullptr;
-    CurrencyModel* _currencyModel = nullptr;
+    OwnerModel *_ownerModel = nullptr;
+    CurrencyModel *_currencyModel = nullptr;
+    AccountModel *_accountModel = nullptr;
 };
-
 
 #endif //ACCOUNTANCY_MODEL_HPP

@@ -4,10 +4,12 @@ Controller::Controller(): _model(new Model), _mainWindow(new MainWindow)
 {
 
     // model init for debug
-    Currency euro = Currency();
-    euro.setName("Euro");
-    euro.setSymbol("€");
-    addOwner("Florian", euro, 0, "", false);
+    auto *euro = new Currency();
+    euro->setName("Euro");
+    euro->setSymbol("€");
+    auto *florian = new Owner("Florian", euro, 0, "", false);
+    addOwner(florian);
+    addAccount(AccountType::Checking, euro, florian, 100, 200, "xxyy", "my comment", true, false);
 
     // connect mainwindow to model
     if (_mainWindow != nullptr)
@@ -32,7 +34,7 @@ void Controller::showMainWindow()
     _mainWindow->show();
 }
 
-void Controller::addOwner(const QString &name, const Currency &currency, float warningBalance, const QString &comment, bool isHidden)
+void Controller::addOwner(const QString &name, const Currency *currency, float warningBalance, const QString &comment, bool isHidden)
 {
     if (_model == nullptr)
         return;
@@ -42,4 +44,14 @@ void Controller::addOwner(const QString &name, const Currency &currency, float w
 
     // view update
     _mainWindow->onOwnerModelUpdate();
+}
+
+void Controller::addAccount(Account *account) {
+
+}
+
+void Controller::addAccount(AccountType type, Currency *currency, const Owner *owner, float initialBalance,
+                            float warningBalance, const QString &accountNumber, const QString &comment,
+                            bool isIncludedInTotal, bool isHidden) {
+
 }

@@ -35,9 +35,8 @@ int main(int argc, char *argv[])
 
     QSettings settings;
     if( !settings.isWritable())
-    {
         qDebug() << "ERROR: the file [" << settings.fileName() << "] is not writable.";
-    }
+
 
     // set ICON
     QIcon app_icon(":/imgs/accountancy.svg");

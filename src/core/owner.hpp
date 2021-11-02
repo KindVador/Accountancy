@@ -9,14 +9,14 @@
 class Owner {
 public:
     Owner();
-    Owner(const QString &name, const Currency &currency, float warningBalance, const QString &comment, bool isHidden);
+    Owner(const QString &name, const Currency *currency, float warningBalance, const QString &comment, bool isHidden);
     ~Owner() = default;
 
     QString getName() const;
     void setName(const QString &value);
 
-    Currency getCurrency() const;
-    void setCurrency(const Currency &value);
+    const Currency* getCurrency() const;
+    void setCurrency(const Currency *value);
 
     float getWarningBalance() const;
     void setWarningBalance(float value);
@@ -33,7 +33,7 @@ public:
 private:
     int _id = -1;
     QString _name;
-    Currency _currency;
+    const Currency* _currency = nullptr;
     float _warningBalance = 0;
     QString _comment;
     bool _isHidden = false;

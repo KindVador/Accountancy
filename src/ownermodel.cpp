@@ -13,7 +13,7 @@ int OwnerModel::addOwner(Owner *owner)
     return owner->getId();
 }
 
-int OwnerModel::addOwner(const QString &name, const Currency &currency, float warningBalance, const QString &comment, bool isHidden)
+int OwnerModel::addOwner(const QString &name, const Currency *currency, float warningBalance, const QString &comment, bool isHidden)
 {
     int nextId = -1;
     if (_owners.isEmpty())

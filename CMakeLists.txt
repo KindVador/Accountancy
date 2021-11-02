@@ -24,6 +24,7 @@ set(HEADER_FILES
         src/controller.hpp
         src/currencymodel.hpp
         src/ownermodel.hpp
+        src/accountmodel.hpp
         )
 
 set(SOURCE_FILES
@@ -32,6 +33,7 @@ set(SOURCE_FILES
         src/currencymodel.cpp
         src/main.cpp
         src/ownermodel.cpp
+        src/accountmodel.cpp
         )
 
 set(UI_FILES
