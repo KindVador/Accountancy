@@ -11,4 +11,6 @@ private:
     int id = -1;
 };
 
+Q_DECLARE_METATYPE(LoanAccount*)
+
 #endif // LOANACCOUNT_H

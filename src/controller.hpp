@@ -6,11 +6,15 @@
 #include "model.hpp"
 #include "ui/mainwindow.hpp"
 
-class Controller {
+#include <QObject>
+
+class Controller : public QObject
+{
+    Q_OBJECT
 
 public:
     explicit Controller();
-    ~Controller();
+    ~Controller() override;
 
     void showMainWindow();
 
@@ -20,6 +24,10 @@ public:
     void addAccount(Account *account);
     void addAccount(AccountType type, Currency *currency, const Owner *owner, float initialBalance, float warningBalance,
                     const QString &accountNumber, const QString &comment, bool isIncludedInTotal, bool isHidden);
+
+private slots:
+    void onSelectedOwner(const QModelIndex &index);
+    void onSelectedAccount(const QModelIndex &index);
 
 private:
     Model *_model = nullptr;

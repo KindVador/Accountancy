@@ -1,16 +1,11 @@
 #include "mainwindow.hpp"
 #include "ui_mainwindow.h"
-#include "dbtablewidget.hpp"
-#include "../core/owner.hpp"
-#include "../model.hpp"
 
 #include <QMessageBox>
 #include <QString>
 #include <QDebug>
 #include <QMdiSubWindow>
 #include <QLabel>
-#include <QtSql>
-#include <QModelIndex>
 #include <QAction>
 #include <vector>
 #include <QFileDialog>
@@ -19,15 +14,15 @@ using namespace std;
 
 MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWindow)
 {
-
     ui->setupUi(this);
 
     // Init Ui
     ui->actionDisconnect->setEnabled(false);
 
     // Connect Actions to Slots
-    connect(ui->actionCredits, SIGNAL(triggered()), this, SLOT(showCredits()));
-
+    connect(ui->actionCredits, &QAction::triggered, this, &MainWindow::showCredits);
+    connect(ui->ownersView, &QListView::clicked, this, [this](const QModelIndex &index) { emit selectedOwnerChanged(index); });
+    connect(ui->accountsView, &QListView::clicked, this, [this](const QModelIndex &index) { emit selectedAccountChanged(index); });
 }
 
 MainWindow::~MainWindow()

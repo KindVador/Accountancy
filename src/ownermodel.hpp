@@ -7,7 +7,8 @@
 #include "core/owner.hpp"
 
 
-class OwnerModel : public QAbstractListModel {
+class OwnerModel : public QAbstractListModel
+{
     Q_OBJECT
 public:
     OwnerModel();

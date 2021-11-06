@@ -14,8 +14,7 @@ static QString VERSION_STRING = QString("%1.%2.%3").arg(ACC_MAJOR_VERSION, ACC_M
 inline int GetVersionNumber(QString str)
 {
   QStringList online_version = str.split('.');
-  if( online_version.size() != 3 )
-  {
+  if( online_version.size() != 3 ) {
     return 0;
   }
   int major = online_version[0].toInt();

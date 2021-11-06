@@ -24,9 +24,12 @@ public:
 public slots:
     void  onOwnerModelUpdate();
 
+signals:
+    void selectedOwnerChanged(const QModelIndex &ownerIndex);
+    void selectedAccountChanged(const QModelIndex &accountIndex);
+
 private slots:
     void showCredits();
-
     void on_actionImport_triggered();
 
 private:

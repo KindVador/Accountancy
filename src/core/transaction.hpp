@@ -23,4 +23,6 @@ private:
     double amount;
 };
 
+Q_DECLARE_METATYPE(Transaction*)
+
 #endif // TRANSACTION_H

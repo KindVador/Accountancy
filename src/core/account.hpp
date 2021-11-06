@@ -29,4 +29,6 @@ private:
     AccountType _type = AccountType::Checking;
 };
 
+Q_DECLARE_METATYPE(Account*)
+
 #endif // ACCOUNT_H

@@ -23,4 +23,6 @@ private:
     QString symbol;
 };
 
+Q_DECLARE_METATYPE(Currency*)
+
 #endif // CURRENCY_H

@@ -39,6 +39,6 @@ private:
     bool _isHidden = false;
 };
 
-Q_DECLARE_METATYPE(Owner)
+Q_DECLARE_METATYPE(Owner*)
 
 #endif // OWNER_H
