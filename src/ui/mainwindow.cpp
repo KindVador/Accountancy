@@ -81,4 +81,7 @@ void MainWindow::setModel(Model *model)
 
     // connect Owner model
     ui->ownersView->setModel(_model->getOwnerModel());
+
+    // connect Account model
+    ui->accountsView->setModel(_model->getAccountModel());
 }

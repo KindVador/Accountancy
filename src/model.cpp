@@ -1,6 +1,6 @@
 #include "model.hpp"
 
-Model::Model(): _ownerModel(new OwnerModel), _currencyModel(new CurrencyModel)
+Model::Model(): _ownerModel(new OwnerModel), _currencyModel(new CurrencyModel), _accountModel(new AccountModel)
 {
 }
 
@@ -33,4 +33,12 @@ CurrencyModel *Model::getCurrencyModel()
 float Model::balanceForOwner(const Owner *owner)
 {
     return 0;
+}
+
+AccountModel *Model::getAccountModel() const {
+    return _accountModel;
+}
+
+AccountModel *Model::getAccountModel() {
+    return _accountModel;
 }

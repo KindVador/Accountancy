@@ -3,7 +3,8 @@
 
 #include <QString>
 
-class Currency {
+class Currency
+{
 public:
     Currency();
     Currency(QString &name, QString &symbol);
@@ -23,6 +24,6 @@ private:
     QString symbol;
 };
 
-Q_DECLARE_METATYPE(Currency*)
+//Q_DECLARE_METATYPE(Currency*)
 
 #endif // CURRENCY_H

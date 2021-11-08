@@ -11,3 +11,15 @@ Account::Account(AccountType type, Currency *currency, const Owner *owner, float
     if (owner != nullptr)
         _owners.append(owner);
 }
+
+QString Account::getDisplayedName() const {
+    return QString("%1").arg(_accountNumber);
+}
+
+int Account::getId() const {
+    return _id;
+}
+
+void Account::setId(int id) {
+    _id = id;
+}

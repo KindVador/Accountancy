@@ -60,7 +60,12 @@ void Controller::addAccount(Account *account)
 
 void Controller::addAccount(AccountType type, Currency *currency, const Owner *owner, float initialBalance, float warningBalance, const QString &accountNumber, const QString &comment, bool isIncludedInTotal, bool isHidden)
 {
+    if (_model == nullptr)
+        return;
 
+    // model update
+    int accountId = _model->getAccountModel()->addAccount(type, currency, owner, initialBalance, warningBalance,
+    accountNumber, comment, isIncludedInTotal, isHidden);
 }
 
 void Controller::onSelectedOwner(const QModelIndex &index)

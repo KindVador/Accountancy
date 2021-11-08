@@ -17,6 +17,8 @@ public:
     [[nodiscard]] OwnerModel *getOwnerModel();
     [[nodiscard]] CurrencyModel *getCurrencyModel() const;
     [[nodiscard]] CurrencyModel *getCurrencyModel();
+    [[nodiscard]] AccountModel *getAccountModel() const;
+    [[nodiscard]] AccountModel *getAccountModel();
 
     static float balanceForOwner(const Owner *owner);
 

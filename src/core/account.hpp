@@ -16,8 +16,15 @@ public:
             const QString &accountNumber, const QString &comment, bool isIncludedInTotal, bool isHidden);
     ~Account() = default;
 
+    [[nodiscard]] int getId() const;
+    [[nodiscard]] QString getDisplayedName() const;
+
 private:
     int _id = -1;
+public:
+    void setId(int id);
+
+private:
     Currency* _currency;
     QList<const Owner*> _owners;
     float _initialBalance = 0;
