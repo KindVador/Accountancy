@@ -2,14 +2,13 @@
 
 #include <QFile>
 
-const auto CURRENCIES_SQL = QLatin1String(R"(CREATE TABLE currencies(id INTEGER PRIMARY KEY,  name VARCHAR, symbol VARCHAR))");
+const auto CURRENCIES_SQL = QLatin1String(R"(CREATE TABLE currencies(_id INTEGER PRIMARY KEY,  _name VARCHAR, symbol VARCHAR))");
 
-const auto OWNERS_SQL = QLatin1String(R"(CREATE TABLE owners(id INTEGER PRIMARY KEY, name VARCHAR, currency INTEGER, warningbalance REAL, comment VARCHAR, ishidden INTEGER,
-FOREIGN KEY(currency) REFERENCES currencies(id)))");
+const auto OWNERS_SQL = QLatin1String(R"(CREATE TABLE owners(_id INTEGER PRIMARY KEY, _name VARCHAR, _currency INTEGER, warningbalance REAL, _comment VARCHAR, ishidden INTEGER,
+FOREIGN KEY(_currency) REFERENCES currencies(_id)))");
 
 
-DbManager::DbManager(const QString& path)
-{
+DbManager::DbManager(const QString& path) {
     // test if path exist on disk
     if (!QFile::exists(path)) {
         qDebug() << "create a new empty database" << Qt::endl;
@@ -21,8 +20,7 @@ DbManager::DbManager(const QString& path)
 
 }
 
-QSqlError DbManager::createDb(const QString &path)
-{
+QSqlError DbManager::createDb(const QString &path) {
     db = QSqlDatabase::addDatabase("QSQLITE");
     db.setDatabaseName(path);
 
@@ -47,8 +45,7 @@ QSqlError DbManager::createDb(const QString &path)
     return QSqlError();
 }
 
-QSqlError DbManager::openDb(const QString &path)
-{
+QSqlError DbManager::openDb(const QString &path) {
     db = QSqlDatabase::addDatabase("QSQLITE");
     db.setDatabaseName(path);
 
@@ -60,18 +57,15 @@ QSqlError DbManager::openDb(const QString &path)
 
 }
 
-bool DbManager::isConnected()
-{
+bool DbManager::isConnected() {
     return db.isOpen();
 }
 
 
-QSqlDatabase DbManager::getDb() const
-{
+QSqlDatabase DbManager::getDb() const {
     return db;
 }
 
-void DbManager::setDb(const QSqlDatabase &value)
-{
+void DbManager::setDb(const QSqlDatabase &value) {
     db = value;
 }

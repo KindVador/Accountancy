@@ -10,8 +10,7 @@
 #include "../core/owner.hpp"
 
 
-class DbManager
-{
+class DbManager {
 public:
     DbManager(const QString& path);
     QSqlError createDb(const QString& path);

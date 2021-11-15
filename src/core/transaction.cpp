@@ -2,5 +2,4 @@
 
 Transaction::Transaction()
 {
-
 }

@@ -1,53 +1,75 @@
 #include "ownermodel.hpp"
-#include <QSqlRecord>
 
-const auto INSERT_OWNER_SQL = QLatin1String(R"(INSERT INTO owners(name, currency, warningbalance, comment, ishidden) values(:name, :currency, :warningbalance ,:comment, :ishidden))");
-const auto SELECT_SQL = QLatin1String(R"(SELECT * FROM owners)");
+constexpr const int ObjectRole = Qt::UserRole + 1;
 
-OwnerModel::OwnerModel()
+OwnerModel::OwnerModel() = default;
+
+OwnerModel::~OwnerModel() = default;
+
+int OwnerModel::addOwner(Owner *owner)
 {
-    this->setTable("owners");
-    this->setRelation(2, QSqlRelation("currencies", "id", "names"));
+    if (owner == nullptr)
+        return -1;
+
+    owner->setId(getLastId());
+    _owners.append(owner);
+    return owner->getId();
 }
 
-QSqlError OwnerModel::addOwner(const Owner &owner)
+int OwnerModel::addOwner(const QString &name, const Currency *currency, float warningBalance, const QString &comment, bool isHidden)
 {
-    return this->addOwner(owner.getName(), owner.getCurrency().getId(), owner.getWarningBalance(), owner.getComment(), owner.getIsHidden());
+    auto *newOwner = new Owner(name, currency, warningBalance, comment, isHidden);
+    newOwner->setId(getLastId());
+    addOwner(newOwner);
+    return newOwner->getId();
 }
 
-QSqlError OwnerModel::addOwner(const QString &name, const int &currencyId, const float &wngBalance, const QString &comment, const bool &hidden)
+void OwnerModel::removeOwner(Owner *owner)
 {
-    QSqlQuery query;
-    query.prepare(INSERT_OWNER_SQL);
-    query.bindValue(":name", name);
-    query.bindValue(":currency", currencyId);
-    query.bindValue(":wngbalance", wngBalance);
-    query.bindValue(":comment", comment);
-    query.bindValue(":ishidden", hidden);
-    if(query.exec()) {
-        return QSqlError();
-    } else {
-        QSqlError err = query.lastError();
-        qDebug() << "addCurrency error:" << err;
-        return err;
+
+}
+
+void OwnerModel::removeOwner(int id)
+{
+
+}
+
+Owner *OwnerModel::getOwner(const QString &name)
+{
+    return nullptr;
+}
+
+int OwnerModel::rowCount(const QModelIndex &parent) const
+{
+    return _owners.count();
+}
+
+QVariant OwnerModel::data(const QModelIndex &index, int role) const
+{
+    if (!index.isValid() || index.row() >= _owners.count() || index.row() < 0)
+        return {};
+
+    QVariant v;
+    switch (role) {
+        case Qt::DisplayRole:
+            v.setValue(_owners.at(index.row())->getName());
+            break;
+        case Qt::UserRole:
+            v.setValue(_owners.at(index.row())->getId());
+            break;
+        case ObjectRole:
+            v.setValue(_owners.at(index.row()));
+            break;
+        default:
+            break;
     }
+
+    return v;
 }
 
-std::vector<Owner> OwnerModel::getOwners()
-{
-    qDebug() << "std::vector<Owner> OwnerModel::getOwners()";
-    std::vector<Owner> owners;
-    QSqlQueryModel model;
-    model.setQuery(SELECT_SQL);
-    qDebug() << "model.rowCount() = "<< model.rowCount();
-    for (int i = 0; i < model.rowCount(); ++i) {
-        Owner o;
-        o.setName(model.record(i).value("name").toString());
-//        o.setCurrency(model.record(i).value("currency").toInt());
-        o.setWarningBalance(model.record(i).value("warningbalance").toReal());
-        o.setComment(model.record(i).value("comment").toString());
-        o.setIsHidden(model.record(i).value("").toBool());
-        owners.push_back(o);
-    }
-    return owners;
+int OwnerModel::getLastId() const {
+    if (_owners.isEmpty())
+        return 0;
+    else
+        return _owners.last()->getId() + 1;
 }

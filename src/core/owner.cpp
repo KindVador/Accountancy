@@ -2,60 +2,69 @@
 
 Owner::Owner()
 {
+}
 
+Owner::Owner(const QString &name, const Currency *currency, float warningBalance, const QString &comment, bool isHidden)
+        : _name(name), _currency(currency), _warningBalance(warningBalance), _comment(comment), _isHidden(isHidden)
+{
 }
 
 QString Owner::getName() const
 {
-    return name;
+    return _name;
 }
 
 void Owner::setName(const QString &value)
 {
-    name = value;
+    _name = value;
 }
 
-Currency Owner::getCurrency() const
+const Currency* Owner::getCurrency() const
 {
-    return currency;
+    return _currency;
 }
 
-void Owner::setCurrency(const Currency &value)
+void Owner::setCurrency(const Currency *value)
 {
-    currency = value;
+    _currency = value;
 }
 
 float Owner::getWarningBalance() const
 {
-    return warningBalance;
+    return _warningBalance;
 }
 
 void Owner::setWarningBalance(float value)
 {
-    warningBalance = value;
+    _warningBalance = value;
 }
 
 QString Owner::getComment() const
 {
-    return comment;
+    return _comment;
 }
 
 void Owner::setComment(const QString &value)
 {
-    comment = value;
+    _comment = value;
 }
 
 bool Owner::getIsHidden() const
 {
-    return isHidden;
+    return _isHidden;
 }
 
 void Owner::setIsHidden(bool value)
 {
-    isHidden = value;
+    _isHidden = value;
 }
 
 int Owner::getId() const
 {
-    return id;
+    return _id;
+}
+
+void Owner::setId(int id)
+{
+    _id = id;
 }

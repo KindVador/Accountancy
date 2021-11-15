@@ -2,20 +2,12 @@
 
 Currency::Currency()
 {
-
 }
-
 
 Currency::Currency(QString &name, QString &symbol)
 {
     this->name = name;
     this->symbol = symbol;
-}
-
-
-Currency::~Currency()
-{
-
 }
 
 QString Currency::getName() const

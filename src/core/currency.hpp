@@ -8,7 +8,7 @@ class Currency
 public:
     Currency();
     Currency(QString &name, QString &symbol);
-    ~Currency();
+    ~Currency() = default;
 
     QString getName() const;
     void setName(const QString &value);
@@ -23,5 +23,7 @@ private:
     QString name;
     QString symbol;
 };
+
+//Q_DECLARE_METATYPE(Currency*)
 
 #endif // CURRENCY_H
