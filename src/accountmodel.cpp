@@ -32,7 +32,12 @@ QVariant AccountModel::data(const QModelIndex &index, int role) const
             break;
     }
 
-    return v;
+    // apply owner filter
+    int ownerId = _accounts.at(index.row())->getId();
+    if (_ownerIdFilter != -1 && ownerId == _ownerIdFilter)
+        return v;
+    else
+        return {};
 }
 
 int AccountModel::addAccount(Account *account)
@@ -77,5 +82,7 @@ Account *AccountModel::getAccount(const QString &name)
 
 void AccountModel::setFilterOnOwner(int ownerId)
 {
-
+    beginResetModel();
+    _ownerIdFilter = ownerId;
+    endResetModel();
 }

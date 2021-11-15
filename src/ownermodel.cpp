@@ -11,23 +11,17 @@ int OwnerModel::addOwner(Owner *owner)
     if (owner == nullptr)
         return -1;
 
+    owner->setId(getLastId());
     _owners.append(owner);
     return owner->getId();
 }
 
 int OwnerModel::addOwner(const QString &name, const Currency *currency, float warningBalance, const QString &comment, bool isHidden)
 {
-    int nextId = -1;
-    if (_owners.isEmpty())
-        nextId = 0;
-    else
-        nextId = _owners.last()->getId();
-
     auto *newOwner = new Owner(name, currency, warningBalance, comment, isHidden);
-    newOwner->setId(nextId);
+    newOwner->setId(getLastId());
     addOwner(newOwner);
-
-    return nextId;
+    return newOwner->getId();
 }
 
 void OwnerModel::removeOwner(Owner *owner)
@@ -71,4 +65,11 @@ QVariant OwnerModel::data(const QModelIndex &index, int role) const
     }
 
     return v;
+}
+
+int OwnerModel::getLastId() const {
+    if (_owners.isEmpty())
+        return 0;
+    else
+        return _owners.last()->getId() + 1;
 }

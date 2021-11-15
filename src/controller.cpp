@@ -1,5 +1,7 @@
 #include "controller.hpp"
 
+constexpr const int ObjectRole = Qt::UserRole + 1;
+
 Controller::Controller(): _model(new Model), _mainWindow(new MainWindow)
 {
 
@@ -48,6 +50,7 @@ void Controller::addOwner(const QString &name, const Currency *currency, float w
 
     // model update
     int ownerId = _model->getOwnerModel()->addOwner(name, currency, warningBalance, comment, isHidden);
+    qDebug() << "addOwner" << name << ownerId;
 
     // view update
     _mainWindow->onOwnerModelUpdate();
@@ -76,10 +79,12 @@ void Controller::onSelectedOwner(const QModelIndex &index)
 
     OwnerModel *model = _model->getOwnerModel();
     auto ownerName = model->data(index, Qt::DisplayRole).value<QString>();
-    qDebug() << "onSelectedOwner" << index.isValid() << ownerName;
+    int ownerId = model->data(index, ObjectRole).value<Owner*>()->getId();
+    qDebug() << "onSelectedOwner" << index.isValid() << ownerName << ownerId;
 
     // Apply filtering on Account's model
-
+    AccountModel *accountModel = _model->getAccountModel();
+    accountModel->setFilterOnOwner(ownerId);
 }
 
 void Controller::onSelectedAccount(const QModelIndex &index)

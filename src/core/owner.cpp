@@ -66,5 +66,5 @@ int Owner::getId() const
 
 void Owner::setId(int id)
 {
-    id = id;
+    _id = id;
 }

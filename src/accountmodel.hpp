@@ -29,6 +29,7 @@ public:
 
 private:
     QList<Account*> _accounts;
+    int _ownerIdFilter = -1;
 };
 
 #endif //ACCOUNTANCY_ACCOUNTMODEL_HPP

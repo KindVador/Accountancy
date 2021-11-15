@@ -27,6 +27,8 @@ public:
 private:
     QList<Owner*> _owners;
 
+    int getLastId() const;
+
 };
 
 #endif // OWNERMODEL_H
