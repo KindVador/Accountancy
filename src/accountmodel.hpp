@@ -25,11 +25,8 @@ public:
     void removeAccount(int id);
     Account* getAccount(const QString &name);
 
-    void setFilterOnOwner(int ownerId);
-
 private:
     QList<Account*> _accounts;
-    int _ownerIdFilter = -1;
 };
 
 #endif //ACCOUNTANCY_ACCOUNTMODEL_HPP

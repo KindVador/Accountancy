@@ -23,3 +23,22 @@ int Account::getId() const {
 void Account::setId(int id) {
     _id = id;
 }
+
+const QList<const Owner *> &Account::getOwners() const
+{
+    return _owners;
+}
+
+QList<int> Account::getOwnersId() const
+{
+    if (_owners.isEmpty())
+        return {};
+
+    QList<int> ids;
+    for (const Owner *owner : qAsConst(_owners)) {
+        if (owner != nullptr)
+            ids.append(owner->getId());
+    }
+
+    return ids;
+}

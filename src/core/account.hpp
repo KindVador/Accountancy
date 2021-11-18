@@ -17,14 +17,13 @@ public:
     ~Account() = default;
 
     [[nodiscard]] int getId() const;
+    void setId(int id);
     [[nodiscard]] QString getDisplayedName() const;
+    [[nodiscard]] QList<int> getOwnersId() const;
+    [[nodiscard]] const QList<const Owner *> &getOwners() const;
 
 private:
     int _id = -1;
-public:
-    void setId(int id);
-
-private:
     Currency* _currency;
     QList<const Owner*> _owners;
     float _initialBalance = 0;
