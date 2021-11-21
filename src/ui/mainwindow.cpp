@@ -77,11 +77,12 @@ Model *MainWindow::getModel() const
 
 void MainWindow::setModel(Model *model)
 {
+    qWarning() << "MainWindow::setModel";
     _model = model;
 
     // connect Owner model
     ui->ownersView->setModel(_model->getOwnerModel());
 
-    // connect Account model
-    ui->accountsView->setModel(_model->getAccountModel());
+    // connect Account model through AccountFilder model
+    ui->accountsView->setModel(_model->getAccountFilter());
 }

@@ -1,13 +1,18 @@
 #include "model.hpp"
 
-Model::Model(): _ownerModel(new OwnerModel), _currencyModel(new CurrencyModel), _accountModel(new AccountModel)
+Model::Model(): _ownerModel(new OwnerModel), _currencyModel(new CurrencyModel), _accountModel(new AccountModel),
+                _accountFilteredModel(new AccountFilter)
 {
+    // set source model for AccountFilter
+    _accountFilteredModel->setSourceModel(_accountModel);
 }
 
 Model::~Model()
 {
     delete _ownerModel;
     delete _currencyModel;
+    delete _accountModel;
+    delete _accountFilteredModel;
 }
 
 OwnerModel *Model::getOwnerModel() const
@@ -41,4 +46,19 @@ AccountModel *Model::getAccountModel() const {
 
 AccountModel *Model::getAccountModel() {
     return _accountModel;
+}
+
+AccountFilter *Model::getAccountFilter() const
+{
+    qWarning() << "Model::getAccountFilter";
+    return _accountFilteredModel;
+}
+
+void Model::setOwnerFilter(int ownerId)
+{
+    if (_accountFilteredModel == nullptr)
+        return;
+
+    qWarning() << "Model::setOwnerFilter" << ownerId;
+    _accountFilteredModel->setActiveOwnerId(ownerId);
 }

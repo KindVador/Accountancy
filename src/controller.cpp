@@ -80,14 +80,16 @@ void Controller::onSelectedOwner(const QModelIndex &index)
     OwnerModel *model = _model->getOwnerModel();
     auto ownerName = model->data(index, Qt::DisplayRole).value<QString>();
     int ownerId = model->data(index, ObjectRole).value<Owner*>()->getId();
-    qDebug() << "onSelectedOwner" << index.isValid() << ownerName << ownerId;
+    qDebug() << "Controller::onSelectedOwner" << index.isValid() << ownerName << ownerId;
 
     // Apply filtering on Account's model
-    AccountModel *accountModel = _model->getAccountModel();
-    accountModel->setFilterOnOwner(ownerId);
+    _model->setOwnerFilter(ownerId);
+    _model->getAccountFilter()->invalidate();
 }
 
 void Controller::onSelectedAccount(const QModelIndex &index)
 {
-
+    AccountModel *model = _model->getAccountModel();
+    auto accountName = model->data(index, Qt::DisplayRole).value<QString>();
+    qDebug() << "Controller::onSelectedAccount" << index.isValid() << accountName;
 }

@@ -27,7 +27,7 @@ public:
 private:
     QList<Owner*> _owners;
 
-    int getLastId() const;
+    [[nodiscard]] int getLastId() const;
 
 };
 

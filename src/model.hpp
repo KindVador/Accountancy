@@ -5,6 +5,7 @@
 #include "ownermodel.hpp"
 #include "currencymodel.hpp"
 #include "accountmodel.hpp"
+#include "accountfilter.hpp"
 
 class Model {
 
@@ -19,13 +20,16 @@ public:
     [[nodiscard]] CurrencyModel *getCurrencyModel();
     [[nodiscard]] AccountModel *getAccountModel() const;
     [[nodiscard]] AccountModel *getAccountModel();
+    [[nodiscard]] AccountFilter *getAccountFilter() const;
 
+    void setOwnerFilter(int OwnerId);
     static float balanceForOwner(const Owner *owner);
 
 private:
     OwnerModel *_ownerModel = nullptr;
     CurrencyModel *_currencyModel = nullptr;
     AccountModel *_accountModel = nullptr;
+    AccountFilter *_accountFilteredModel = nullptr;
 };
 
 #endif //ACCOUNTANCY_MODEL_HPP

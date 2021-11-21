@@ -9,7 +9,7 @@ AccountModel::AccountModel()
 
 int AccountModel::rowCount(const QModelIndex &parent) const
 {
-    return _accounts.count();
+    return (int) _accounts.count();
 }
 
 QVariant AccountModel::data(const QModelIndex &index, int role) const
@@ -31,13 +31,7 @@ QVariant AccountModel::data(const QModelIndex &index, int role) const
         default:
             break;
     }
-
-    // apply owner filter
-    int ownerId = _accounts.at(index.row())->getId();
-    if (_ownerIdFilter != -1 && ownerId == _ownerIdFilter)
-        return v;
-    else
-        return {};
+    return v;
 }
 
 int AccountModel::addAccount(Account *account)
@@ -78,11 +72,4 @@ void AccountModel::removeAccount(int id)
 Account *AccountModel::getAccount(const QString &name)
 {
     return nullptr;
-}
-
-void AccountModel::setFilterOnOwner(int ownerId)
-{
-    beginResetModel();
-    _ownerIdFilter = ownerId;
-    endResetModel();
 }
