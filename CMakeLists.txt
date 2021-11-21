@@ -17,7 +17,6 @@ find_package(Qt6 COMPONENTS Widgets Sql REQUIRED)
 
 add_subdirectory(src/ui)
 add_subdirectory(src/core)
-add_subdirectory(src/data_loader)
 
 set(HEADER_FILES
         src/model.hpp
@@ -73,7 +72,7 @@ ENDIF()
 
 # Since Qt 5.15, the CMake targets are also available as Qt::Core, Qt::Gui, and so on.
 # This eases writing CMake code that can work with both Qt 5 and Qt 6.
-target_link_libraries(Accountancy PRIVATE Qt::Widgets Qt::Sql AccountancyCore AccountancyUi AccountancyDataLoader)
+target_link_libraries(Accountancy PRIVATE Qt::Widgets AccountancyCore AccountancyUi)
 
 set_target_properties(Accountancy PROPERTIES
         MACOSX_BUNDLE_GUI_IDENTIFIER kindvador.com

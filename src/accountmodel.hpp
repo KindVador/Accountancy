@@ -21,9 +21,6 @@ public:
     int addAccount(Account *account);
     int addAccount(AccountType type, Currency *currency, const Owner *owner, float initialBalance, float warningBalance,
                    const QString &accountNumber, const QString &comment, bool isIncludedInTotal, bool isHidden);
-    void removeAccount(Account *account);
-    void removeAccount(int id);
-    Account* getAccount(const QString &name);
 
 private:
     QList<Account*> _accounts;

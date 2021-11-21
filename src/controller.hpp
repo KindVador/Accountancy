@@ -21,7 +21,6 @@ public:
     void addOwner(Owner *owner);
     void addOwner(const QString &name, const Currency *currency, float warningBalance, const QString &comment, bool isHidden);
 
-    void addAccount(Account *account);
     void addAccount(AccountType type, Currency *currency, const Owner *owner, float initialBalance, float warningBalance,
                     const QString &accountNumber, const QString &comment, bool isIncludedInTotal, bool isHidden);
 
