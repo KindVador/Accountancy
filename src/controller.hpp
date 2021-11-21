@@ -1,8 +1,8 @@
 #ifndef ACCOUNTANCY_CONTROLLER_HPP
 #define ACCOUNTANCY_CONTROLLER_HPP
 
-#include "src/core/owner.hpp"
-#include "src/core/account.hpp"
+#include "core/owner.hpp"
+#include "core/account.hpp"
 #include "model.hpp"
 #include "ui/mainwindow.hpp"
 
@@ -13,7 +13,10 @@ class Controller : public QObject
     Q_OBJECT
 
 public:
-    explicit Controller();
+    // Singleton
+    static Controller *getInstance();
+    Controller(Controller &other) = delete;
+
     ~Controller() override;
 
     void showMainWindow();
@@ -24,13 +27,20 @@ public:
     void addAccount(AccountType type, Currency *currency, const Owner *owner, float initialBalance, float warningBalance,
                     const QString &accountNumber, const QString &comment, bool isIncludedInTotal, bool isHidden);
 
+public slots:
+    void clearOwnerSelection();
+
 private slots:
     void onSelectedOwner(const QModelIndex &index);
     void onSelectedAccount(const QModelIndex &index);
 
 private:
+    static Controller *_singleton;
     Model *_model = nullptr;
     MainWindow *_mainWindow = nullptr;
+
+    // Singleton
+    Controller();
 };
 
 #endif //ACCOUNTANCY_CONTROLLER_HPP

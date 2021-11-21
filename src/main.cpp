@@ -42,8 +42,8 @@ int main(int argc, char *argv[])
     QApplication::setWindowIcon(app_icon);
 
     // Controller
-    Controller controller = Controller();
-    controller.showMainWindow();
+    Controller *controller = Controller::getInstance();
+    controller->showMainWindow();
 
     // Lancement de l'application
     return app.exec();
