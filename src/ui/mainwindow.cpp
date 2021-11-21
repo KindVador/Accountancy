@@ -1,5 +1,6 @@
 #include "mainwindow.hpp"
 #include "ui_mainwindow.h"
+#include "contextualmenugenerator.hpp"
 
 #include <QMessageBox>
 #include <QString>
@@ -18,11 +19,13 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWi
 
     // Init Ui
     ui->actionDisconnect->setEnabled(false);
+    ui->ownersView->setContextMenuPolicy(Qt::CustomContextMenu);
 
     // Connect Actions to Slots
     connect(ui->actionCredits, &QAction::triggered, this, &MainWindow::showCredits);
     connect(ui->ownersView, &QListView::clicked, this, [this](const QModelIndex &index) { emit selectedOwnerChanged(index); });
     connect(ui->accountsView, &QListView::clicked, this, [this](const QModelIndex &index) { emit selectedAccountChanged(index); });
+    connect(ui->ownersView, &QListView::customContextMenuRequested, this, &MainWindow::contextualOwnerMenuRequested);
 }
 
 MainWindow::~MainWindow()
@@ -85,4 +88,13 @@ void MainWindow::setModel(Model *model)
 
     // connect Account model through AccountFilder model
     ui->accountsView->setModel(_model->getAccountFilter());
+}
+
+void MainWindow::contextualOwnerMenuRequested(const QPoint &pos)
+{
+    std::unique_ptr<QMenu> contextMenu;
+    contextMenu.reset(ContextualMenuGenerator::ownerSectionMenu(this));
+
+    if (contextMenu != nullptr)
+        contextMenu->exec(QCursor::pos());
 }

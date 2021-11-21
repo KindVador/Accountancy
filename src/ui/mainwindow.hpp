@@ -15,10 +15,10 @@ class MainWindow : public QMainWindow
     Q_OBJECT
 
 public:
-    MainWindow(QWidget *parent = nullptr);
-    ~MainWindow();
+    explicit MainWindow(QWidget *parent = nullptr);
+    ~MainWindow() override;
 
-    Model *getModel() const;
+    [[nodiscard]] Model *getModel() const;
     void setModel(Model *model);
 
 public slots:
@@ -31,6 +31,7 @@ signals:
 private slots:
     void showCredits();
     void on_actionImport_triggered();
+    void contextualOwnerMenuRequested(const QPoint &pos);
 
 private:
     Ui::MainWindow *ui = nullptr;
