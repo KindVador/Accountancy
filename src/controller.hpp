@@ -27,6 +27,9 @@ public:
     void addAccount(AccountType type, Currency *currency, const Owner *owner, float initialBalance, float warningBalance,
                     const QString &accountNumber, const QString &comment, bool isIncludedInTotal, bool isHidden);
 
+public slots:
+    void clearOwnerSelection();
+
 private slots:
     void onSelectedOwner(const QModelIndex &index);
     void onSelectedAccount(const QModelIndex &index);

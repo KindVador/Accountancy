@@ -90,6 +90,12 @@ void Controller::onSelectedAccount(const QModelIndex &index)
     qDebug() << "Controller::onSelectedAccount" << index.isValid() << accountName;
 }
 
+void Controller::clearOwnerSelection()
+{
+    _model->setOwnerFilter(-1);
+    _model->getAccountFilter()->invalidate();
+}
+
 Controller *Controller::getInstance()
 {
     if (_singleton == nullptr)
