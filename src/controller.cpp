@@ -2,6 +2,8 @@
 
 constexpr const int ObjectRole = Qt::UserRole + 1;
 
+Controller *Controller::_singleton = nullptr;
+
 Controller::Controller(): _model(new Model), _mainWindow(new MainWindow)
 {
 
@@ -68,7 +70,6 @@ void Controller::addAccount(AccountType type, Currency *currency, const Owner *o
 
 void Controller::onSelectedOwner(const QModelIndex &index)
 {
-
     if (!index.isValid() || _model == nullptr)
         return;
 
@@ -87,4 +88,12 @@ void Controller::onSelectedAccount(const QModelIndex &index)
     AccountModel *model = _model->getAccountModel();
     auto accountName = model->data(index, Qt::DisplayRole).value<QString>();
     qDebug() << "Controller::onSelectedAccount" << index.isValid() << accountName;
+}
+
+Controller *Controller::getInstance()
+{
+    if (_singleton == nullptr)
+        _singleton = new Controller();
+
+    return _singleton;
 }
