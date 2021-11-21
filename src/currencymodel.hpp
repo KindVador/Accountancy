@@ -9,8 +9,6 @@ class CurrencyModel
 {
 public:
     CurrencyModel();
-
-
 };
 
 #endif // CURRENCYMODEL_H
