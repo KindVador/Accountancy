@@ -58,18 +58,3 @@ int AccountModel::addAccount(AccountType type, Currency *currency, const Owner *
 
     return nextId;
 }
-
-void AccountModel::removeAccount(Account *account)
-{
-
-}
-
-void AccountModel::removeAccount(int id)
-{
-
-}
-
-Account *AccountModel::getAccount(const QString &name)
-{
-    return nullptr;
-}

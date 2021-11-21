@@ -56,11 +56,6 @@ void Controller::addOwner(const QString &name, const Currency *currency, float w
     _mainWindow->onOwnerModelUpdate();
 }
 
-void Controller::addAccount(Account *account)
-{
-
-}
-
 void Controller::addAccount(AccountType type, Currency *currency, const Owner *owner, float initialBalance, float warningBalance, const QString &accountNumber, const QString &comment, bool isIncludedInTotal, bool isHidden)
 {
     if (_model == nullptr)
