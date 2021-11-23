@@ -205,56 +205,6 @@
     <string>A propos</string>
    </property>
   </action>
-  <action name="actionConnect">
-   <property name="text">
-    <string>Connect</string>
-   </property>
-  </action>
-  <action name="actionDisconnect">
-   <property name="text">
-    <string>Disconnect</string>
-   </property>
-  </action>
-  <action name="actionOwner">
-   <property name="text">
-    <string>Owners</string>
-   </property>
-  </action>
-  <action name="actionAccounts">
-   <property name="text">
-    <string>Accounts</string>
-   </property>
-  </action>
-  <action name="actionTransactions">
-   <property name="text">
-    <string>Transactions</string>
-   </property>
-  </action>
-  <action name="actionBanks">
-   <property name="text">
-    <string>Banks</string>
-   </property>
-  </action>
-  <action name="actionCategories">
-   <property name="text">
-    <string>Categories</string>
-   </property>
-  </action>
-  <action name="actionSubcategories">
-   <property name="text">
-    <string>Subcategories</string>
-   </property>
-  </action>
-  <action name="actionBalanceNotes">
-   <property name="text">
-    <string>Balance Notes</string>
-   </property>
-  </action>
-  <action name="actionRetailers">
-   <property name="text">
-    <string>Retailers</string>
-   </property>
-  </action>
   <action name="actionMainDock">
    <property name="checkable">
     <bool>true</bool>
