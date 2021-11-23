@@ -30,8 +30,9 @@ signals:
 
 private slots:
     void showCredits();
-    void on_actionImport_triggered();
+    void onActionImport();
     void contextualOwnerMenuRequested(const QPoint &pos);
+    void onActionMainDock(bool checked);
 
 private:
     Ui::MainWindow *ui = nullptr;
