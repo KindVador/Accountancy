@@ -20,115 +20,7 @@
    <bool>true</bool>
   </property>
   <widget class="QWidget" name="centralwidget">
-   <layout class="QHBoxLayout" name="horizontalLayout">
-    <item>
-     <widget class="QFrame" name="frame">
-      <property name="frameShape">
-       <enum>QFrame::StyledPanel</enum>
-      </property>
-      <property name="frameShadow">
-       <enum>QFrame::Raised</enum>
-      </property>
-      <layout class="QVBoxLayout" name="verticalLayout">
-       <item>
-        <widget class="QLabel" name="lblOwners">
-         <property name="text">
-          <string>Owners:</string>
-         </property>
-        </widget>
-       </item>
-       <item>
-        <widget class="QListView" name="ownersView"/>
-       </item>
-       <item>
-        <widget class="Line" name="lineOwners">
-         <property name="orientation">
-          <enum>Qt::Horizontal</enum>
-         </property>
-        </widget>
-       </item>
-       <item>
-        <widget class="QLabel" name="lblAccounts">
-         <property name="text">
-          <string>Accounts:</string>
-         </property>
-        </widget>
-       </item>
-       <item>
-        <widget class="QListView" name="accountsView"/>
-       </item>
-       <item>
-        <widget class="Line" name="lineAccounts">
-         <property name="orientation">
-          <enum>Qt::Horizontal</enum>
-         </property>
-        </widget>
-       </item>
-       <item>
-        <widget class="QLabel" name="lblReports">
-         <property name="text">
-          <string>Reports:</string>
-         </property>
-        </widget>
-       </item>
-       <item>
-        <widget class="QPushButton" name="btnPieChart">
-         <property name="text">
-          <string>Pie chart</string>
-         </property>
-        </widget>
-       </item>
-       <item>
-        <widget class="QPushButton" name="btnBarChart">
-         <property name="text">
-          <string>Bar chart</string>
-         </property>
-        </widget>
-       </item>
-       <item>
-        <widget class="Line" name="lineSettings">
-         <property name="orientation">
-          <enum>Qt::Horizontal</enum>
-         </property>
-        </widget>
-       </item>
-       <item>
-        <widget class="QLabel" name="lblSettings">
-         <property name="text">
-          <string>Settings:</string>
-         </property>
-        </widget>
-       </item>
-       <item>
-        <widget class="QPushButton" name="btnCategories">
-         <property name="text">
-          <string>Categories</string>
-         </property>
-        </widget>
-       </item>
-       <item>
-        <widget class="QPushButton" name="btnRules">
-         <property name="text">
-          <string>Rules</string>
-         </property>
-        </widget>
-       </item>
-       <item>
-        <spacer name="verticalSpacer">
-         <property name="orientation">
-          <enum>Qt::Vertical</enum>
-         </property>
-         <property name="sizeHint" stdset="0">
-          <size>
-           <width>20</width>
-           <height>265</height>
-          </size>
-         </property>
-        </spacer>
-       </item>
-      </layout>
-     </widget>
-    </item>
+   <layout class="QVBoxLayout" name="verticalLayout" stretch="0">
     <item>
      <widget class="QMdiArea" name="mdiArea">
       <property name="documentMode">
@@ -154,11 +46,6 @@
     <addaction name="actionImport"/>
     <addaction name="actionClose"/>
    </widget>
-   <widget class="QMenu" name="menuAccounts">
-    <property name="title">
-     <string>Comptes</string>
-    </property>
-   </widget>
    <widget class="QMenu" name="menuAide">
     <property name="title">
      <string>Aide</string>
@@ -166,31 +53,14 @@
     <addaction name="actionCredits"/>
     <addaction name="actionAbout"/>
    </widget>
-   <widget class="QMenu" name="menuDatabase">
+   <widget class="QMenu" name="menuView">
     <property name="title">
-     <string>Database</string>
+     <string>View</string>
     </property>
-    <widget class="QMenu" name="menuTables">
-     <property name="title">
-      <string>Tables</string>
-     </property>
-     <addaction name="actionOwner"/>
-     <addaction name="actionBanks"/>
-     <addaction name="actionAccounts"/>
-     <addaction name="actionTransactions"/>
-     <addaction name="separator"/>
-     <addaction name="actionCategories"/>
-     <addaction name="actionSubcategories"/>
-     <addaction name="actionBalanceNotes"/>
-     <addaction name="actionRetailers"/>
-    </widget>
-    <addaction name="actionConnect"/>
-    <addaction name="actionDisconnect"/>
-    <addaction name="menuTables"/>
+    <addaction name="actionMainDock"/>
    </widget>
    <addaction name="menuFichier"/>
-   <addaction name="menuDatabase"/>
-   <addaction name="menuAccounts"/>
+   <addaction name="menuView"/>
    <addaction name="menuAide"/>
   </widget>
   <widget class="QStatusBar" name="statusbar"/>
@@ -205,6 +75,114 @@
     <bool>false</bool>
    </attribute>
    <addaction name="actionImport"/>
+  </widget>
+  <widget class="QDockWidget" name="mainDockWidget">
+   <property name="features">
+    <set>QDockWidget::DockWidgetFloatable|QDockWidget::DockWidgetMovable</set>
+   </property>
+   <attribute name="dockWidgetArea">
+    <number>1</number>
+   </attribute>
+   <widget class="QWidget" name="dockWidgetContents">
+    <layout class="QVBoxLayout" name="verticalLayout_2">
+     <item>
+      <widget class="QLabel" name="lblOwners">
+       <property name="text">
+        <string>Owners:</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QListView" name="ownersView"/>
+     </item>
+     <item>
+      <widget class="Line" name="lineOwners">
+       <property name="orientation">
+        <enum>Qt::Horizontal</enum>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QLabel" name="lblAccounts">
+       <property name="text">
+        <string>Accounts:</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QListView" name="accountsView"/>
+     </item>
+     <item>
+      <widget class="Line" name="lineAccounts">
+       <property name="orientation">
+        <enum>Qt::Horizontal</enum>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QLabel" name="lblReports">
+       <property name="text">
+        <string>Reports:</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QPushButton" name="btnPieChart">
+       <property name="text">
+        <string>Pie chart</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QPushButton" name="btnBarChart">
+       <property name="text">
+        <string>Bar chart</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="Line" name="lineSettings">
+       <property name="orientation">
+        <enum>Qt::Horizontal</enum>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QLabel" name="lblSettings">
+       <property name="text">
+        <string>Settings:</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QPushButton" name="btnCategories">
+       <property name="text">
+        <string>Categories</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QPushButton" name="btnRules">
+       <property name="text">
+        <string>Rules</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <spacer name="verticalSpacer">
+       <property name="orientation">
+        <enum>Qt::Vertical</enum>
+       </property>
+       <property name="sizeHint" stdset="0">
+        <size>
+         <width>20</width>
+         <height>196</height>
+        </size>
+       </property>
+      </spacer>
+     </item>
+    </layout>
+   </widget>
   </widget>
   <action name="actionImport">
    <property name="icon">
@@ -230,54 +208,15 @@
     <string>A propos</string>
    </property>
   </action>
-  <action name="actionConnect">
-   <property name="text">
-    <string>Connect</string>
+  <action name="actionMainDock">
+   <property name="checkable">
+    <bool>true</bool>
    </property>
-  </action>
-  <action name="actionDisconnect">
-   <property name="text">
-    <string>Disconnect</string>
+   <property name="checked">
+    <bool>true</bool>
    </property>
-  </action>
-  <action name="actionOwner">
    <property name="text">
-    <string>Owners</string>
-   </property>
-  </action>
-  <action name="actionAccounts">
-   <property name="text">
-    <string>Accounts</string>
-   </property>
-  </action>
-  <action name="actionTransactions">
-   <property name="text">
-    <string>Transactions</string>
-   </property>
-  </action>
-  <action name="actionBanks">
-   <property name="text">
-    <string>Banks</string>
-   </property>
-  </action>
-  <action name="actionCategories">
-   <property name="text">
-    <string>Categories</string>
-   </property>
-  </action>
-  <action name="actionSubcategories">
-   <property name="text">
-    <string>Subcategories</string>
-   </property>
-  </action>
-  <action name="actionBalanceNotes">
-   <property name="text">
-    <string>Balance Notes</string>
-   </property>
-  </action>
-  <action name="actionRetailers">
-   <property name="text">
-    <string>Retailers</string>
+    <string>main dock</string>
    </property>
   </action>
  </widget>

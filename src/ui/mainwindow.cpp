@@ -18,7 +18,6 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWi
     ui->setupUi(this);
 
     // Init Ui
-    ui->actionDisconnect->setEnabled(false);
     ui->ownersView->setContextMenuPolicy(Qt::CustomContextMenu);
 
     // Connect Actions to Slots
@@ -26,6 +25,7 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWi
     connect(ui->ownersView, &QListView::clicked, this, [this](const QModelIndex &index) { emit selectedOwnerChanged(index); });
     connect(ui->accountsView, &QListView::clicked, this, [this](const QModelIndex &index) { emit selectedAccountChanged(index); });
     connect(ui->ownersView, &QListView::customContextMenuRequested, this, &MainWindow::contextualOwnerMenuRequested);
+    connect(ui->actionMainDock, &QAction::triggered, this, &MainWindow::onActionMainDock);
 }
 
 MainWindow::~MainWindow()
@@ -40,10 +40,10 @@ void MainWindow::showCredits()
     QMessageBox::information(this, "Credits", text);
 }
 
-void MainWindow::on_actionImport_triggered()
+void MainWindow::onActionImport()
 {
     // TODO create a window to import data into DataBase
-    qDebug() << "MainWindow::on_actionImport_triggered()" << Qt::endl;
+    qDebug() << "MainWindow::onActionImport()" << Qt::endl;
     QFileDialog fileDlg(this);
     fileDlg.setFileMode(QFileDialog::ExistingFiles);
     fileDlg.setViewMode(QFileDialog::Detail);
@@ -97,4 +97,12 @@ void MainWindow::contextualOwnerMenuRequested(const QPoint &pos)
 
     if (contextMenu != nullptr)
         contextMenu->exec(QCursor::pos());
+}
+
+void MainWindow::onActionMainDock(bool checked)
+{
+    if (!checked)
+        ui->mainDockWidget->close();
+    else
+        ui->mainDockWidget->show();
 }
