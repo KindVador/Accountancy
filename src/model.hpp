@@ -7,10 +7,15 @@
 #include "accountmodel.hpp"
 #include "accountfilter.hpp"
 
-class Model {
+class Model : public QObject
+{
+    Q_OBJECT
 
 public:
-    explicit Model();
+    // Singleton
+    static Model *getInstance();
+    Model(Model &other) = delete;
+
     ~Model();
 
     // Getters
@@ -26,10 +31,14 @@ public:
     static float balanceForOwner(const Owner *owner);
 
 private:
+    static Model *_singleton;
     OwnerModel *_ownerModel = nullptr;
     CurrencyModel *_currencyModel = nullptr;
     AccountModel *_accountModel = nullptr;
     AccountFilter *_accountFilteredModel = nullptr;
+
+    // Singleton
+    Model();
 };
 
 #endif //ACCOUNTANCY_MODEL_HPP

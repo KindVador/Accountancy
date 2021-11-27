@@ -4,7 +4,7 @@ constexpr const int ObjectRole = Qt::UserRole + 1;
 
 Controller *Controller::_singleton = nullptr;
 
-Controller::Controller(): _model(new Model), _mainWindow(new MainWindow)
+Controller::Controller(): _model(Model::getInstance()), _mainWindow(new MainWindow)
 {
 
     // model init for debug

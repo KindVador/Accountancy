@@ -1,5 +1,15 @@
 #include "model.hpp"
 
+Model *Model::_singleton = nullptr;
+
+Model *Model::getInstance()
+{
+    if (_singleton == nullptr)
+        _singleton = new Model();
+
+    return _singleton;
+}
+
 Model::Model(): _ownerModel(new OwnerModel), _currencyModel(new CurrencyModel), _accountModel(new AccountModel),
                 _accountFilteredModel(new AccountFilter)
 {
