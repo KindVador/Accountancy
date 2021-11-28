@@ -25,6 +25,7 @@ set(HEADER_FILES
         src/ownermodel.hpp
         src/accountmodel.hpp
         src/accountfilter.hpp
+        src/bankmodel.hpp
         )
 
 set(SOURCE_FILES
@@ -35,10 +36,11 @@ set(SOURCE_FILES
         src/ownermodel.cpp
         src/accountmodel.cpp
         src/accountfilter.cpp
+        src/bankmodel.cpp
         )
 
 set(UI_FILES
-        src/ImportDialogInDb.ui
+
         )
 
 set(RESOURCE_FILES

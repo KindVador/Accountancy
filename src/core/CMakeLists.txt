@@ -1,5 +1,6 @@
 
 add_library(AccountancyCore
+            bank.hpp bank.cpp
             account.hpp account.cpp
             currency.hpp currency.cpp
             loanaccount.hpp loanaccount.cpp

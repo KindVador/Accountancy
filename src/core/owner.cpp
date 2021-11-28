@@ -2,6 +2,7 @@
 
 Owner::Owner()
 {
+    // TODO
 }
 
 Owner::Owner(const QString &name, const Currency *currency, float warningBalance, const QString &comment, bool isHidden)

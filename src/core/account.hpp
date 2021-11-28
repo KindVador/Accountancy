@@ -7,9 +7,21 @@
 #include "currency.hpp"
 #include "owner.hpp"
 
-enum AccountType: int {Checking, CreditCard, Savings, Cash, Assets, Loan, Investment};
+class Transaction;
 
-class Account {
+enum class AccountType: int
+{
+    Checking = 0,
+    CreditCard,
+    Savings,
+    Cash,
+    Assets,
+    Loan,
+    Investment
+};
+
+class Account
+{
 public:
     Account();
     Account(AccountType type, Currency *currency, const Owner *owner, float initialBalance, float warningBalance,
@@ -21,6 +33,8 @@ public:
     [[nodiscard]] QString getDisplayedName() const;
     [[nodiscard]] QList<int> getOwnersId() const;
     [[nodiscard]] const QList<const Owner *> &getOwners() const;
+    void addTransaction(Transaction *transaction);
+    void removeTransaction(Transaction *transaction);
 
 private:
     int _id = -1;
@@ -33,6 +47,7 @@ private:
     bool _isIncludedInTotal = true;
     bool _isHidden = false;
     AccountType _type = AccountType::Checking;
+    QList<Transaction *> _transactions;
 };
 
 Q_DECLARE_METATYPE(Account*)

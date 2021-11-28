@@ -6,7 +6,6 @@ Controller *Controller::_singleton = nullptr;
 
 Controller::Controller(): _model(Model::getInstance()), _mainWindow(new MainWindow)
 {
-
     // model init for debug
     auto *euro = new Currency();
     euro->setName("Euro");
@@ -102,4 +101,12 @@ Controller *Controller::getInstance()
         _singleton = new Controller();
 
     return _singleton;
+}
+
+void Controller::addTransactionToAccount(Transaction *transaction, Account *account)
+{
+    if (transaction == nullptr || account == nullptr)
+        return;
+
+    account->addTransaction(transaction);
 }

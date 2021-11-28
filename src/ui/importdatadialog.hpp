@@ -1,6 +1,8 @@
 #ifndef IMPORTDATADIALOG_HPP
 #define IMPORTDATADIALOG_HPP
 
+#include "../core/transaction.hpp"
+
 #include <QDialog>
 #include <QFile>
 
@@ -23,6 +25,7 @@ private slots:
 
 private:
     Ui::ImportDataDialog *ui;
+    QList<Transaction *> _transactions;
 };
 
 #endif // IMPORTDATADIALOG_HPP

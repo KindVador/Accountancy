@@ -7,20 +7,32 @@
 #include <QString>
 #include <QDate>
 
-enum TransactionStatus: int {Planned, Created, Imported, Cleared, Locked, Cancelled};
+enum class TransactionStatus: int
+{
+    Planned = 0,
+    Created,
+    Imported,
+    Cleared,
+    Locked,
+    Cancelled
+};
 
-class Transaction {
+class Transaction
+{
 public:
     Transaction();
     ~Transaction() = default;
 
 private:
-    int id = -1;
-    Account accountFrom, accountTo;
-    QString name, comment;
+    int _id = -1;
+    Account *_accountFrom = nullptr;
+    Account *_accountTo = nullptr;
+    QString _name;
+    QString _comment;
     TransactionStatus ts;
-    QDate transactionDate, valueDate;
-    double amount;
+    QDate _transactionDate;
+    QDate _valueDate;
+    double amount = 0.0;
 };
 
 Q_DECLARE_METATYPE(Transaction*)

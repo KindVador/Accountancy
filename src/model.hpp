@@ -6,6 +6,7 @@
 #include "currencymodel.hpp"
 #include "accountmodel.hpp"
 #include "accountfilter.hpp"
+#include "bankmodel.hpp"
 
 class Model : public QObject
 {
@@ -16,7 +17,7 @@ public:
     static Model *getInstance();
     Model(Model &other) = delete;
 
-    ~Model();
+    ~Model() override;
 
     // Getters
     [[nodiscard]] OwnerModel *getOwnerModel() const;
@@ -37,6 +38,7 @@ private:
     CurrencyModel *_currencyModel = nullptr;
     AccountModel *_accountModel = nullptr;
     AccountFilter *_accountFilteredModel = nullptr;
+    BankModel *_bankModel = nullptr;
 
     // Singleton
     Model();

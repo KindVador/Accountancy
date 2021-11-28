@@ -11,7 +11,7 @@ Model *Model::getInstance()
 }
 
 Model::Model(): _ownerModel(new OwnerModel), _currencyModel(new CurrencyModel), _accountModel(new AccountModel),
-                _accountFilteredModel(new AccountFilter)
+                _accountFilteredModel(new AccountFilter), _bankModel(new BankModel)
 {
     // set source model for AccountFilter
     _accountFilteredModel->setSourceModel(_accountModel);
@@ -23,6 +23,7 @@ Model::~Model()
     delete _currencyModel;
     delete _accountModel;
     delete _accountFilteredModel;
+    delete _bankModel;
 }
 
 OwnerModel *Model::getOwnerModel() const

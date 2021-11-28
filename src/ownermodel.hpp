@@ -28,7 +28,6 @@ private:
     QList<Owner*> _owners;
 
     [[nodiscard]] int getLastId() const;
-
 };
 
 #endif // OWNERMODEL_H

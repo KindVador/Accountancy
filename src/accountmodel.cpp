@@ -4,7 +4,7 @@ constexpr const int ObjectRole = Qt::UserRole + 1;
 
 AccountModel::AccountModel()
 {
-
+    // TODO
 }
 
 int AccountModel::rowCount(const QModelIndex &parent) const

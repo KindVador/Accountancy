@@ -10,6 +10,8 @@ ImportDataDialog::ImportDataDialog(QWidget *parent) :
 {
     ui->setupUi(this);
 
+    setWindowTitle("Import transactions to a account");
+
     // Populate owner ComboBox
     ui->ownerComboBox->setModel(Model::getInstance()->getOwnerModel());
     // Populate account ComboBox
@@ -52,19 +54,21 @@ void ImportDataDialog::readFile(QFile &file)
     if (!file.open(QFile::ReadOnly | QFile::Text))
         return;
 
-    // Create a thread to retrieve data from a file
-    QTextStream in(&file);
-    //Reads the data up to the end of file
-    while (!in.atEnd()) {
-        QString line = in.readLine();
-        qDebug() << line;
-        // Adding to the model in line with the elements
-//        QList<QStandardItem *> standardItemsList;
-//        // consider that the line separated by semicolons into columns
-//        for (QString item : line.split(";")) {
-//            standardItemsList.append(new QStandardItem(item));
-//        }
-//        csvModel->insertRow(csvModel->rowCount(), standardItemsList);
+    int nbLinesToSkipped = 5;
+    int nbLinesRead = 0;
+    QTextStream inStream(&file);
+    // Reads the data up to the end of file
+    while (!inStream.atEnd()) {
+        QString line = inStream.readLine();
+
+        // skipped first line
+        if (nbLinesRead < nbLinesToSkipped)
+            continue;
+
+        QStringList fields = line.split(";");
+        // TODO
+
+        ++nbLinesRead;
     }
     file.close();
 }

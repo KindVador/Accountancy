@@ -26,12 +26,12 @@ int OwnerModel::addOwner(const QString &name, const Currency *currency, float wa
 
 void OwnerModel::removeOwner(Owner *owner)
 {
-
+    // TODO
 }
 
 void OwnerModel::removeOwner(int id)
 {
-
+    // TODO
 }
 
 Owner *OwnerModel::getOwner(const QString &name)

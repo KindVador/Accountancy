@@ -7,9 +7,7 @@
 
 class AccountModel : public QAbstractListModel
 {
-
     Q_OBJECT
-
 public:
     AccountModel();
     ~AccountModel() override = default;
@@ -23,7 +21,7 @@ public:
                    const QString &accountNumber, const QString &comment, bool isIncludedInTotal, bool isHidden);
 
 private:
-    QList<Account*> _accounts;
+    QList<Account *> _accounts;
 };
 
 #endif //ACCOUNTANCY_ACCOUNTMODEL_HPP
