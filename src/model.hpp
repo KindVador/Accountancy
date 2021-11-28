@@ -28,6 +28,7 @@ public:
     [[nodiscard]] AccountFilter *getAccountFilter() const;
 
     void setOwnerFilter(int OwnerId);
+    void setOwnerFilter(const QString &ownerName);
     static float balanceForOwner(const Owner *owner);
 
 private:

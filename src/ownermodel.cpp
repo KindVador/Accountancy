@@ -36,7 +36,12 @@ void OwnerModel::removeOwner(int id)
 
 Owner *OwnerModel::getOwner(const QString &name)
 {
-    return nullptr;
+    auto ownerIt = std::find_if(_owners.begin(), _owners.end(), [&name](Owner *owner) { return owner->getName() == name; });
+    // case NOT FOUND
+    if (ownerIt == _owners.end())
+        return nullptr;
+
+    return *ownerIt;
 }
 
 int OwnerModel::rowCount(const QModelIndex &parent) const

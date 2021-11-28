@@ -1,15 +1,14 @@
 #include "mainwindow.hpp"
 #include "ui_mainwindow.h"
 #include "contextualmenugenerator.hpp"
+#include "importdatadialog.hpp"
 
 #include <QMessageBox>
 #include <QString>
 #include <QDebug>
 #include <QMdiSubWindow>
-#include <QLabel>
 #include <QAction>
 #include <vector>
-#include <QFileDialog>
 
 using namespace std;
 
@@ -26,6 +25,7 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWi
     connect(ui->accountsView, &QListView::clicked, this, [this](const QModelIndex &index) { emit selectedAccountChanged(index); });
     connect(ui->ownersView, &QListView::customContextMenuRequested, this, &MainWindow::contextualOwnerMenuRequested);
     connect(ui->actionMainDock, &QAction::triggered, this, &MainWindow::onActionMainDock);
+    connect(ui->actionImport, &QAction::triggered, this, &MainWindow::onActionImport);
 }
 
 MainWindow::~MainWindow()
@@ -42,31 +42,8 @@ void MainWindow::showCredits()
 
 void MainWindow::onActionImport()
 {
-    // TODO create a window to import data into DataBase
-    qDebug() << "MainWindow::onActionImport()" << Qt::endl;
-    QFileDialog fileDlg(this);
-    fileDlg.setFileMode(QFileDialog::ExistingFiles);
-    fileDlg.setViewMode(QFileDialog::Detail);
-
-    QStringList fileNames;
-    if (fileDlg.exec()) {
-        fileNames = fileDlg.selectedFiles();
-    }
-
-    // printing all selected file
-    QStringList::const_iterator constIterator;
-    for (constIterator = fileNames.constBegin(); constIterator != fileNames.constEnd(); ++constIterator) {
-        qDebug() << *constIterator << Qt::endl;
-        QFile dataFile(*constIterator);
-        if (!dataFile.open(QIODevice::ReadOnly | QIODevice::Text))
-                return;
-
-            QTextStream in(&dataFile);
-            while (!in.atEnd()) {
-                QString line = in.readLine();
-                qDebug() << line;
-            }
-    }
+    ImportDataDialog dialog = ImportDataDialog();
+    dialog.exec();
 }
 
 void MainWindow::onOwnerModelUpdate()

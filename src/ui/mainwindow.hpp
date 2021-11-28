@@ -22,7 +22,7 @@ public:
     void setModel(Model *model);
 
 public slots:
-    void  onOwnerModelUpdate();
+    void onOwnerModelUpdate();
 
 signals:
     void selectedOwnerChanged(const QModelIndex &ownerIndex);
@@ -30,7 +30,7 @@ signals:
 
 private slots:
     void showCredits();
-    void onActionImport();
+    static void onActionImport();
     void contextualOwnerMenuRequested(const QPoint &pos);
     void onActionMainDock(bool checked);
 

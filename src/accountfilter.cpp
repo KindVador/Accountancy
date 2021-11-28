@@ -27,5 +27,7 @@ bool AccountFilter::filterAcceptsRow(int sourceRow, const QModelIndex &sourcePar
 void AccountFilter::setActiveOwnerId(int ownerId)
 {
     qWarning() << "AccountFilter::setActiveOwnerId" << ownerId;
+    beginResetModel();
     _activeOwnerId = ownerId;
+    endResetModel();
 }

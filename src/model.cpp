@@ -72,3 +72,13 @@ void Model::setOwnerFilter(int ownerId)
     qWarning() << "Model::setOwnerFilter" << ownerId;
     _accountFilteredModel->setActiveOwnerId(ownerId);
 }
+
+void Model::setOwnerFilter(const QString &ownerName)
+{
+    if (_accountFilteredModel == nullptr)
+        return;
+
+    qWarning() << "Model::setOwnerFilter" << ownerName;
+    Owner *owner = _ownerModel->getOwner(ownerName);
+    _accountFilteredModel->setActiveOwnerId(owner->getId());
+}
