@@ -1,10 +1,10 @@
 #ifndef ACCOUNTANCY_FINANCIALINSTITUTION_HPP
 #define ACCOUNTANCY_FINANCIALINSTITUTION_HPP
 
-#include "transaction.hpp"
-
 #include <QFile>
 #include <QString>
+
+class Transaction;
 
 class FinancialInstitution
 {

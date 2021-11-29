@@ -17,7 +17,7 @@ public:
     [[nodiscard]] QVariant data(const QModelIndex &index, int role) const override;
 
     int addFinancialInstitution(FinancialInstitution *institution);
-    int addFinancialInstitution(QString name);
+    FinancialInstitution *addFinancialInstitution(QString name);
 
 private:
     QList<FinancialInstitution *> _institutions;

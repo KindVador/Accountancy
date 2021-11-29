@@ -25,15 +25,16 @@ public:
 
     // FINANCIAL INSTITUTIONS
     void addFinancialInstitution(FinancialInstitution *institution);
-    void addFinancialInstitution(QString name);
+    FinancialInstitution *addFinancialInstitution(QString name);
 
     // OWNERS
     void addOwner(Owner *owner);
-    void addOwner(const QString &name, const Currency *currency, float warningBalance, const QString &comment, bool isHidden);
+    Owner *addOwner(const QString &name, const Currency *currency, float warningBalance, const QString &comment, bool isHidden);
 
     // ACCOUNTS
-    void addAccount(AccountType type, Currency *currency, const Owner *owner, float initialBalance, float warningBalance,
-                    const QString &accountNumber, const QString &comment, bool isIncludedInTotal, bool isHidden);
+    Account *addAccount(const FinancialInstitution *institution, AccountType type, Currency *currency,
+                        const Owner *owner, float initialBalance, float warningBalance,
+                        const QString &accountNumber, const QString &comment, bool isIncludedInTotal, bool isHidden);
 
     // TRANSACTIONS
     void addTransactionToAccount(Transaction *transaction, Account *account);

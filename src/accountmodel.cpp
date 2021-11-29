@@ -50,10 +50,12 @@ int AccountModel::addAccount(Account *account)
     return nextId;
 }
 
-int AccountModel::addAccount(AccountType type, Currency *currency, const Owner *owner, float initialBalance,
-                             float warningBalance, const QString &accountNumber, const QString &comment,
-                             bool isIncludedInTotal, bool isHidden) {
-
-    auto *newAccount = new Account(type, currency, owner, initialBalance, warningBalance, accountNumber, comment, isIncludedInTotal, isHidden);
-    return addAccount(newAccount);
+Account *AccountModel::addAccount(const FinancialInstitution *institution, AccountType type, Currency *currency,
+                             const Owner *owner, float initialBalance, float warningBalance,
+                             const QString &accountNumber, const QString &comment, bool isIncludedInTotal,
+                             bool isHidden)
+{
+    auto *newAccount = new Account(institution, type, currency, owner, initialBalance, warningBalance, accountNumber, comment, isIncludedInTotal, isHidden);
+    addAccount(newAccount);
+    return newAccount;
 }

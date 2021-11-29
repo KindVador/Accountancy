@@ -6,6 +6,7 @@
 
 #include "currency.hpp"
 #include "owner.hpp"
+#include "financialinstitution.hpp"
 
 class Transaction;
 
@@ -24,8 +25,9 @@ class Account
 {
 public:
     Account();
-    Account(AccountType type, Currency *currency, const Owner *owner, float initialBalance, float warningBalance,
-            const QString &accountNumber, const QString &comment, bool isIncludedInTotal, bool isHidden);
+    Account(const FinancialInstitution *_institution, AccountType type, Currency *currency, const Owner *owner,
+            float initialBalance, float warningBalance, QString accountNumber, QString comment,
+            bool isIncludedInTotal, bool isHidden);
     ~Account() = default;
 
     [[nodiscard]] int getId() const;
@@ -38,7 +40,8 @@ public:
 
 private:
     int _id = -1;
-    Currency* _currency;
+    const FinancialInstitution *_institution = nullptr;
+    const Currency* _currency = nullptr;
     QList<const Owner*> _owners;
     float _initialBalance = 0;
     float _warningBalance = 0;
