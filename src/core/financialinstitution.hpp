@@ -1,17 +1,17 @@
-#ifndef ACCOUNTANCY_BANK_HPP
-#define ACCOUNTANCY_BANK_HPP
+#ifndef ACCOUNTANCY_FINANCIALINSTITUTION_HPP
+#define ACCOUNTANCY_FINANCIALINSTITUTION_HPP
 
 #include "transaction.hpp"
 
 #include <QFile>
 #include <QString>
 
-class Bank
+class FinancialInstitution
 {
 public:
-    Bank() = default;
-    explicit Bank(QString name);
-    ~Bank() = default;
+    FinancialInstitution() = default;
+    explicit FinancialInstitution(QString name);
+    ~FinancialInstitution() = default;
 
     QList<Transaction *> dataFileToTransactions(const QFile &inFile);
 
@@ -27,4 +27,4 @@ private:
 };
 
 
-#endif //ACCOUNTANCY_BANK_HPP
+#endif //ACCOUNTANCY_FINANCIALINSTITUTION_HPP

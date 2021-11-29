@@ -1,7 +1,7 @@
 #ifndef ACCOUNTANCY_CONTROLLER_HPP
 #define ACCOUNTANCY_CONTROLLER_HPP
 
-#include "core/bank.hpp"
+#include "core/financialinstitution.hpp"
 #include "core/owner.hpp"
 #include "core/account.hpp"
 #include "core/transaction.hpp"
@@ -23,9 +23,9 @@ public:
 
     void showMainWindow();
 
-    // BANKS
-    void addBank(Bank *bank);
-    void addBank(QString name);
+    // FINANCIAL INSTITUTIONS
+    void addFinancialInstitution(FinancialInstitution *institution);
+    void addFinancialInstitution(QString name);
 
     // OWNERS
     void addOwner(Owner *owner);

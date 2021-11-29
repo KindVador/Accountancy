@@ -11,7 +11,7 @@ Model *Model::getInstance()
 }
 
 Model::Model(): _ownerModel(new OwnerModel), _currencyModel(new CurrencyModel), _accountModel(new AccountModel),
-                _accountFilteredModel(new AccountFilter), _bankModel(new BankModel)
+                _accountFilteredModel(new AccountFilter), _institutionsModel(new FinancialInstitutionModel)
 {
     // set source model for AccountFilter
     _accountFilteredModel->setSourceModel(_accountModel);
@@ -23,7 +23,7 @@ Model::~Model()
     delete _currencyModel;
     delete _accountModel;
     delete _accountFilteredModel;
-    delete _bankModel;
+    delete _institutionsModel;
 }
 
 OwnerModel *Model::getOwnerModel() const
@@ -84,12 +84,12 @@ void Model::setOwnerFilter(const QString &ownerName)
     _accountFilteredModel->setActiveOwnerId(owner->getId());
 }
 
-BankModel *Model::getBankModel() const
+FinancialInstitutionModel *Model::getFinancialInstitutionModel() const
 {
-    return _bankModel;
+    return _institutionsModel;
 }
 
-BankModel *Model::getBankModel()
+FinancialInstitutionModel *Model::getFinancialInstitutionModel()
 {
-    return _bankModel;
+    return _institutionsModel;
 }

@@ -6,7 +6,7 @@
 #include "currencymodel.hpp"
 #include "accountmodel.hpp"
 #include "accountfilter.hpp"
-#include "bankmodel.hpp"
+#include "financialinstitutionmodel.hpp"
 
 class Model : public QObject
 {
@@ -27,8 +27,8 @@ public:
     [[nodiscard]] AccountModel *getAccountModel() const;
     [[nodiscard]] AccountModel *getAccountModel();
     [[nodiscard]] AccountFilter *getAccountFilter() const;
-    [[nodiscard]] BankModel *getBankModel() const;
-    [[nodiscard]] BankModel *getBankModel();
+    [[nodiscard]] FinancialInstitutionModel *getFinancialInstitutionModel() const;
+    [[nodiscard]] FinancialInstitutionModel *getFinancialInstitutionModel();
 
     void setOwnerFilter(int OwnerId);
     void setOwnerFilter(const QString &ownerName);
@@ -40,7 +40,7 @@ private:
     CurrencyModel *_currencyModel = nullptr;
     AccountModel *_accountModel = nullptr;
     AccountFilter *_accountFilteredModel = nullptr;
-    BankModel *_bankModel = nullptr;
+    FinancialInstitutionModel *_institutionsModel = nullptr;
 
     // Singleton
     Model();
