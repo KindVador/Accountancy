@@ -10,6 +10,7 @@ Controller::Controller(): _model(Model::getInstance()), _mainWindow(new MainWind
     auto *euro = new Currency();
     euro->setName("Euro");
     euro->setSymbol("€");
+    addBank("Caisse d'Epargne");
     auto *florian = new Owner("Florian", euro, 0, "", false);
     auto *toto = new Owner("Toto", euro, 0, "", false);
     addOwner(florian);
@@ -109,4 +110,17 @@ void Controller::addTransactionToAccount(Transaction *transaction, Account *acco
         return;
 
     account->addTransaction(transaction);
+}
+
+void Controller::addBank(Bank *bank)
+{
+    if (_model == nullptr)
+        return;
+
+    _model->getBankModel()->addBank(bank);
+}
+
+void Controller::addBank(QString name)
+{
+    _model->getBankModel()->addBank(name);
 }

@@ -12,6 +12,8 @@ ImportDataDialog::ImportDataDialog(QWidget *parent) :
 
     setWindowTitle("Import transactions to a account");
 
+    // Populate bank ComboBox
+    ui->bankComboBox->setModel(Model::getInstance()->getBankModel());
     // Populate owner ComboBox
     ui->ownerComboBox->setModel(Model::getInstance()->getOwnerModel());
     // Populate account ComboBox

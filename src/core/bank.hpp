@@ -10,6 +10,7 @@ class Bank
 {
 public:
     Bank() = default;
+    explicit Bank(QString name);
     ~Bank() = default;
 
     QList<Transaction *> dataFileToTransactions(const QFile &inFile);

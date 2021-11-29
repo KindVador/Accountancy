@@ -1,5 +1,11 @@
 #include "bank.hpp"
 
+#include <utility>
+
+Bank::Bank(QString name): _name(std::move(name))
+{
+}
+
 QList<Transaction *> Bank::dataFileToTransactions(const QFile &inFile)
 {
     // TODO

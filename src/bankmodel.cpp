@@ -28,3 +28,25 @@ QVariant BankModel::data(const QModelIndex &index, int role) const
     }
     return v;
 }
+
+int BankModel::addBank(Bank *bank)
+{
+    if (bank == nullptr)
+        return -1;
+
+    int nextId = -1;
+    if (_banks.isEmpty())
+        nextId = 0;
+    else
+        nextId = _banks.last()->getId() + 1;
+
+    bank->setId(nextId);
+    _banks.append(bank);
+    return nextId;
+}
+
+int BankModel::addBank(QString name)
+{
+    auto *newBank = new Bank(name);
+    return addBank(newBank);
+}

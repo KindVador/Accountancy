@@ -27,6 +27,8 @@ public:
     [[nodiscard]] AccountModel *getAccountModel() const;
     [[nodiscard]] AccountModel *getAccountModel();
     [[nodiscard]] AccountFilter *getAccountFilter() const;
+    [[nodiscard]] BankModel *getBankModel() const;
+    [[nodiscard]] BankModel *getBankModel();
 
     void setOwnerFilter(int OwnerId);
     void setOwnerFilter(const QString &ownerName);

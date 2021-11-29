@@ -83,3 +83,13 @@ void Model::setOwnerFilter(const QString &ownerName)
     Owner *owner = _ownerModel->getOwner(ownerName);
     _accountFilteredModel->setActiveOwnerId(owner->getId());
 }
+
+BankModel *Model::getBankModel() const
+{
+    return _bankModel;
+}
+
+BankModel *Model::getBankModel()
+{
+    return _bankModel;
+}
