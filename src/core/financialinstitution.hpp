@@ -4,16 +4,19 @@
 #include <QFile>
 #include <QString>
 
+#include "datafileinterface.hpp"
+
 class Transaction;
 
-class FinancialInstitution
+class FinancialInstitution: public DataFileInterface
 {
 public:
     FinancialInstitution() = default;
     explicit FinancialInstitution(QString name);
-    ~FinancialInstitution() = default;
+    ~FinancialInstitution() override = default ;
 
-    QList<Transaction *> dataFileToTransactions(const QFile &inFile);
+    // DataFileInterface
+    QList<Transaction*> readTransactionsFromFile(QFile &dataFile) override;
 
     [[nodiscard]] int getId() const;
     void setId(int id);

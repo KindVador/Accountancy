@@ -51,24 +51,5 @@ void ImportDataDialog::removeSelectedFiles()
 
 void ImportDataDialog::readFile(QFile &file)
 {
-    if (!file.open(QFile::ReadOnly | QFile::Text))
-        return;
 
-    int nbLinesToSkipped = 5;
-    int nbLinesRead = 0;
-    QTextStream inStream(&file);
-    // Reads the data up to the end of file
-    while (!inStream.atEnd()) {
-        QString line = inStream.readLine();
-
-        // skipped first line
-        if (nbLinesRead < nbLinesToSkipped)
-            continue;
-
-        QStringList fields = line.split(";");
-        // TODO
-
-        ++nbLinesRead;
-    }
-    file.close();
 }
