@@ -17,6 +17,7 @@ find_package(Qt6 COMPONENTS Widgets Sql REQUIRED)
 
 add_subdirectory(src/ui)
 add_subdirectory(src/core)
+add_subdirectory(tests)
 
 set(HEADER_FILES
         src/model.hpp
