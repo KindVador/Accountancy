@@ -1,8 +1,8 @@
 #include "financialinstitution.hpp"
 
 #include <utility>
-#include <stdio.h>
 #include <QTextStream>
+#include <QDebug>
 
 FinancialInstitution::FinancialInstitution(QString name): _name(std::move(name))
 {
@@ -33,23 +33,33 @@ QList<Transaction *> FinancialInstitution::readTransactionsFromFile(QFile &dataF
     if (!dataFile.open(QIODevice::ReadOnly | QIODevice::Text))
         return {};
 
-    int nbLinesToSkipped = 5;
+    QList<Transaction *> transactions;
+    int nbLinesToSkipped = 6;
     int nbLinesRead = 0;
     QTextStream inStream(&dataFile);
     // Reads the data up to the end of file
     while (!inStream.atEnd()) {
         QString line = inStream.readLine();
+        ++nbLinesRead;
+        QStringList fields = line.split(';');
 
         // skipped first line
-        if (nbLinesRead < nbLinesToSkipped)
+        if (nbLinesRead < nbLinesToSkipped || fields.count() < 6)
             continue;
 
-        QStringList fields = line.split(";");
-        // TODO
+        auto *transaction = new Transaction();
+        transaction->setName(fields[2]);
+        transaction->setComment(fields[5]);
+        transaction->setTransactionDate(QDate::fromString(fields[0], "DD/MM/YY"));
+        transaction->setValueDate(QDate::fromString(fields[0], "DD/MM/YY"));
+        if (!fields[3].isEmpty())
+            transaction->setAmount(fields[3].toDouble());
+        else
+            transaction->setAmount(fields[4].toDouble());
 
-        ++nbLinesRead;
+        transactions.append(transaction);
     }
     dataFile.close();
 
-    return QList<Transaction *>();
+    return transactions;
 }

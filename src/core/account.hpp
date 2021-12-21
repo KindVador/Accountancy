@@ -6,9 +6,9 @@
 
 #include "currency.hpp"
 #include "owner.hpp"
-#include "financialinstitution.hpp"
 
 class Transaction;
+class FinancialInstitution;
 
 enum class AccountType: int
 {

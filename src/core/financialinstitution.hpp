@@ -5,13 +5,11 @@
 #include <QString>
 
 #include "datafileinterface.hpp"
-
-class Transaction;
+#include "transaction.hpp"
 
 class FinancialInstitution: public DataFileInterface
 {
 public:
-    FinancialInstitution() = default;
     explicit FinancialInstitution(QString name);
     ~FinancialInstitution() override = default ;
 
@@ -28,6 +26,5 @@ private:
     int _id = -1;
     QString _name;
 };
-
 
 #endif //ACCOUNTANCY_FINANCIALINSTITUTION_HPP

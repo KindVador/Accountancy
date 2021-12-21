@@ -11,7 +11,7 @@ static QString ACC_MINOR_VERSION = QString("0");
 static QString ACC_PATCH_VERSION = QString("0");
 static QString VERSION_STRING = QString("%1.%2.%3").arg(ACC_MAJOR_VERSION, ACC_MINOR_VERSION, ACC_PATCH_VERSION);
 
-inline int GetVersionNumber(QString str)
+inline int GetVersionNumber(QString &str)
 {
   QStringList online_version = str.split('.');
   if( online_version.size() != 3 ) {
@@ -35,7 +35,6 @@ int main(int argc, char *argv[])
     QSettings settings;
     if( !settings.isWritable())
         qDebug() << "ERROR: the file [" << settings.fileName() << "] is not writable.";
-
 
     // set ICON
     QIcon app_icon(":/imgs/accountancy.svg");

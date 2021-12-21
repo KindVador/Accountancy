@@ -23,6 +23,23 @@ public:
     Transaction();
     ~Transaction() = default;
 
+    // Getter & Setter
+    [[nodiscard]] const QString &getName() const;
+    void setName(const QString &name);
+    [[nodiscard]] const QString &getComment() const;
+    void setComment(const QString &comment);
+    [[nodiscard]] TransactionStatus getTs() const;
+    void setTs(TransactionStatus ts);
+    [[nodiscard]] const QDate &getTransactionDate() const;
+    void setTransactionDate(const QDate &transactionDate);
+    [[nodiscard]] const QDate &getValueDate() const;
+    void setValueDate(const QDate &valueDate);
+    [[nodiscard]] double getAmount() const;
+    void setAmount(double amount);
+
+    // public API
+    void printToConsole() const;
+
 private:
     int _id = -1;
     Account *_accountFrom = nullptr;
