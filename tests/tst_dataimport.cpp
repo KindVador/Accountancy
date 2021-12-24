@@ -17,10 +17,24 @@ private slots:
         auto dataFile = QFile("../../data/caisse_epargne/telechargement.csv");
         if (dataFile.exists()) {
             QList<Transaction *> transactions = fi.readTransactionsFromFile(dataFile);
-            qWarning() << "PRINT ALL TRANSACTIONS:";
-            for (Transaction *transaction : qAsConst(transactions)) {
-                transaction->printToConsole();
-            }
+            // check that all transactions have been read
+            QVERIFY(transactions.count() == 51);
+
+            // check attributes of first transaction
+            const Transaction *firstTransaction = transactions.first();
+            QCOMPARE(firstTransaction->getName(), "CB E.LECLERC WEB   FACT 080520");
+            QCOMPARE(firstTransaction->getAmount(), -37.13);
+            QCOMPARE(firstTransaction->getComment(), "CB E.LECLERC WEB   FACT 080520 ");
+            QCOMPARE(firstTransaction->getTransactionDate(), QDate(2020, 05, 11));
+            QCOMPARE(firstTransaction->getValueDate(), QDate(2020, 05, 11));
+
+            // check attributes of last transaction
+            const Transaction *lastTransaction = transactions.last();
+            QCOMPARE(lastTransaction->getName(), "*REMISE OPT INTERNATIONALE F1");
+            QCOMPARE(lastTransaction->getAmount(), 0.4);
+            QCOMPARE(lastTransaction->getComment(), "*REMISE OPT INTERNATIONALE F1 ");
+            QCOMPARE(lastTransaction->getTransactionDate(), QDate(2020, 03, 13));
+            QCOMPARE(lastTransaction->getValueDate(), QDate(2020, 03, 13));
         } else {
             qWarning("File:telechargement.csv doesn't exist");
         }

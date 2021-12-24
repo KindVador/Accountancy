@@ -33,6 +33,7 @@ QList<Transaction *> FinancialInstitution::readTransactionsFromFile(QFile &dataF
     if (!dataFile.open(QIODevice::ReadOnly | QIODevice::Text))
         return {};
 
+    QLocale locale = QLocale::system();
     QList<Transaction *> transactions;
     int nbLinesToSkipped = 6;
     int nbLinesRead = 0;
@@ -50,12 +51,16 @@ QList<Transaction *> FinancialInstitution::readTransactionsFromFile(QFile &dataF
         auto *transaction = new Transaction();
         transaction->setName(fields[2]);
         transaction->setComment(fields[5]);
-        transaction->setTransactionDate(QDate::fromString(fields[0], "DD/MM/YY"));
-        transaction->setValueDate(QDate::fromString(fields[0], "DD/MM/YY"));
+        QDate date1 = locale.toDate(fields[0], "dd/MM/yy");
+        // fix year date as 20 is interpreted as 1920 instead of 2020
+        if (date1.year() + 100 < QDate::currentDate().year())
+            date1 = date1.addYears(100);
+        transaction->setTransactionDate(date1);
+        transaction->setValueDate(date1);
         if (!fields[3].isEmpty())
-            transaction->setAmount(fields[3].toDouble());
+            transaction->setAmount(locale.toDouble(fields[3]));
         else
-            transaction->setAmount(fields[4].toDouble());
+            transaction->setAmount(locale.toDouble(fields[4]));
 
         transactions.append(transaction);
     }
