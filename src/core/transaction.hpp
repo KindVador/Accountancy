@@ -20,7 +20,7 @@ enum class TransactionStatus: int
 class Transaction
 {
 public:
-    Transaction();
+    Transaction() = default;
     ~Transaction() = default;
 
     // Getter & Setter

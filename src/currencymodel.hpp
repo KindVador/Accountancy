@@ -8,7 +8,7 @@
 class CurrencyModel
 {
 public:
-    CurrencyModel();
+    CurrencyModel() = default;
 };
 
 #endif // CURRENCYMODEL_H

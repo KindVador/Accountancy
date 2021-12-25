@@ -1,10 +1,5 @@
 #include "account.hpp"
 
-Account::Account()
-{
-    // TODO
-}
-
 Account::Account(const FinancialInstitution *institution, AccountType type, Currency *currency, const Owner *owner,
                  float initialBalance, float warningBalance, QString accountNumber, QString comment,
                  bool isIncludedInTotal, bool isHidden) :

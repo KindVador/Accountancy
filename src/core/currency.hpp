@@ -6,7 +6,7 @@
 class Currency
 {
 public:
-    Currency();
+    Currency() = default;
     Currency(QString &name, QString &symbol);
     ~Currency() = default;
 

@@ -2,10 +2,6 @@
 
 constexpr const int ObjectRole = Qt::UserRole + 1;
 
-OwnerModel::OwnerModel() = default;
-
-OwnerModel::~OwnerModel() = default;
-
 int OwnerModel::addOwner(Owner *owner)
 {
     if (owner == nullptr)

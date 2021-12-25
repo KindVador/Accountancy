@@ -24,7 +24,7 @@ enum class AccountType: int
 class Account
 {
 public:
-    Account();
+    Account() = default;
     Account(const FinancialInstitution *_institution, AccountType type, Currency *currency, const Owner *owner,
             float initialBalance, float warningBalance, QString accountNumber, QString comment,
             bool isIncludedInTotal, bool isHidden);

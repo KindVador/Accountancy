@@ -11,8 +11,8 @@ class OwnerModel : public QAbstractListModel
 {
     Q_OBJECT
 public:
-    OwnerModel();
-    ~OwnerModel() override;
+    OwnerModel() = default;
+    ~OwnerModel() override = default;
 
     // QAbstractListModel interface
     [[nodiscard]] int rowCount(const QModelIndex &parent) const override;

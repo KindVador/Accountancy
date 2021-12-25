@@ -1,10 +1,5 @@
 #include "owner.hpp"
 
-Owner::Owner()
-{
-    // TODO
-}
-
 Owner::Owner(const QString &name, const Currency *currency, float warningBalance, const QString &comment, bool isHidden)
         : _name(name), _currency(currency), _warningBalance(warningBalance), _comment(comment), _isHidden(isHidden)
 {

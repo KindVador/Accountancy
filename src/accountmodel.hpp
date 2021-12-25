@@ -9,7 +9,7 @@ class AccountModel : public QAbstractListModel
 {
     Q_OBJECT
 public:
-    AccountModel();
+    AccountModel() = default;
     ~AccountModel() override = default;
 
     // QAbstractListModel interface

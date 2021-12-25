@@ -1,11 +1,6 @@
 #include "transaction.hpp"
 #include <QDebug>
 
-Transaction::Transaction()
-{
-    // TODO
-}
-
 void Transaction::printToConsole() const
 {
     qDebug() << "Transaction:" << _id << " " << _name << " " << _comment;

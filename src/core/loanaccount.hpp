@@ -10,7 +10,7 @@
 class LoanAccount
 {
 public:
-    LoanAccount();
+    LoanAccount() = default;
     LoanAccount(Currency *currency, const Owner *owner, float initialBalance, const QString &accountNumber,
                 const QString &comment, bool isHidden);
     ~LoanAccount() = default;
