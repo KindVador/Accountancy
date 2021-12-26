@@ -14,7 +14,7 @@ public:
     ~FinancialInstitution() override = default ;
 
     // DataFileInterface
-    QList<Transaction*> readTransactionsFromFile(QFile &dataFile) override;
+    QList<Transaction*> readTransactionsFromFile(QFile &dataFile) const override;
 
     [[nodiscard]] int getId() const;
     void setId(int id);

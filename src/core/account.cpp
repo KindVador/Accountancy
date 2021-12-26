@@ -60,3 +60,18 @@ void Account::removeTransaction(Transaction *transaction)
 
     _transactions.removeOne(transaction);
 }
+
+const FinancialInstitution *Account::getInstitution() const
+{
+    return _institution;
+}
+
+void Account::setInstitution(const FinancialInstitution *institution)
+{
+    _institution = institution;
+}
+
+int Account::count() const
+{
+    return _transactions.count();
+}

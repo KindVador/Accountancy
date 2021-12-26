@@ -1,6 +1,11 @@
 #include "transaction.hpp"
 #include <QDebug>
 
+Transaction::Transaction(): _ts(TransactionStatus::Imported)
+{
+
+}
+
 void Transaction::printToConsole() const
 {
     qDebug() << "Transaction:" << _id << " " << _name << " " << _comment;
@@ -28,12 +33,12 @@ void Transaction::setComment(const QString &comment)
 
 TransactionStatus Transaction::getTs() const
 {
-    return ts;
+    return _ts;
 }
 
 void Transaction::setTs(TransactionStatus ts)
 {
-    Transaction::ts = ts;
+    _ts = ts;
 }
 
 const QDate &Transaction::getTransactionDate() const
@@ -58,10 +63,10 @@ void Transaction::setValueDate(const QDate &valueDate)
 
 double Transaction::getAmount() const
 {
-    return amount;
+    return _amount;
 }
 
 void Transaction::setAmount(double amount)
 {
-    Transaction::amount = amount;
+    _amount = amount;
 }

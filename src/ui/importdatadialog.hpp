@@ -21,11 +21,11 @@ public:
 private slots:
     void addFiles();
     void removeSelectedFiles();
-    void readFile(QFile &file);
+    void accept() override;
+    void reject() override;
 
 private:
     Ui::ImportDataDialog *ui;
-    QList<Transaction *> _transactions;
 };
 
 #endif // IMPORTDATADIALOG_HPP

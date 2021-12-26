@@ -11,7 +11,7 @@ class DataFileInterface
 {
 public:
     virtual ~DataFileInterface() = default;
-    [[nodiscard]] virtual QList<Transaction *> readTransactionsFromFile(QFile &dataFile) = 0;
+    [[nodiscard]] virtual QList<Transaction *> readTransactionsFromFile(QFile &dataFile) const = 0;
 
 private:
     int _nbLinesToSkip = 0;

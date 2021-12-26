@@ -28,7 +28,7 @@ void FinancialInstitution::setName(const QString &name)
     _name = name;
 }
 
-QList<Transaction *> FinancialInstitution::readTransactionsFromFile(QFile &dataFile)
+QList<Transaction *> FinancialInstitution::readTransactionsFromFile(QFile &dataFile) const
 {
     if (!dataFile.open(QIODevice::ReadOnly | QIODevice::Text))
         return {};

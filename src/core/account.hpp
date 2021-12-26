@@ -37,6 +37,9 @@ public:
     [[nodiscard]] const QList<const Owner *> &getOwners() const;
     void addTransaction(Transaction *transaction);
     void removeTransaction(Transaction *transaction);
+    [[nodiscard]] const FinancialInstitution *getInstitution() const;
+    void setInstitution(const FinancialInstitution *institution);
+    [[nodiscard]] int count() const;
 
 private:
     int _id = -1;

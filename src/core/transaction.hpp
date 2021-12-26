@@ -20,7 +20,7 @@ enum class TransactionStatus: int
 class Transaction
 {
 public:
-    Transaction() = default;
+    Transaction();
     ~Transaction() = default;
 
     // Getter & Setter
@@ -46,10 +46,10 @@ private:
     Account *_accountTo = nullptr;
     QString _name;
     QString _comment;
-    TransactionStatus ts;
+    TransactionStatus _ts;
     QDate _transactionDate;
     QDate _valueDate;
-    double amount = 0.0;
+    double _amount = 0.0;
 };
 
 Q_DECLARE_METATYPE(Transaction*)
