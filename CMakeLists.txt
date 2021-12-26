@@ -27,6 +27,7 @@ set(HEADER_FILES
         src/accountmodel.hpp
         src/accountfilter.hpp
         src/financialinstitutionmodel.hpp
+        src/transactionmodel.hpp
         )
 
 set(SOURCE_FILES
@@ -38,6 +39,7 @@ set(SOURCE_FILES
         src/accountmodel.cpp
         src/accountfilter.cpp
         src/financialinstitutionmodel.cpp
+        src/transactionmodel.cpp
         )
 
 set(UI_FILES
