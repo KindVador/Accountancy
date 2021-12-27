@@ -2,6 +2,8 @@
 #include "ui_mainwindow.h"
 #include "contextualmenugenerator.hpp"
 #include "importdatadialog.hpp"
+#include "transactionswidget.hpp"
+#include "../transactionmodel.hpp"
 
 #include <QMessageBox>
 #include <QString>
@@ -10,7 +12,7 @@
 #include <QAction>
 #include <vector>
 
-using namespace std;
+constexpr const int ObjectRole = Qt::UserRole + 1;
 
 MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWindow)
 {
@@ -23,6 +25,7 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWi
     connect(ui->actionCredits, &QAction::triggered, this, &MainWindow::showCredits);
     connect(ui->ownersView, &QListView::clicked, this, [this](const QModelIndex &index) { emit selectedOwnerChanged(index); });
     connect(ui->accountsView, &QListView::clicked, this, [this](const QModelIndex &index) { emit selectedAccountChanged(index); });
+    connect(ui->accountsView, &QListView::doubleClicked, this, &MainWindow::onAccountDoubleClicked);
     connect(ui->ownersView, &QListView::customContextMenuRequested, this, &MainWindow::contextualOwnerMenuRequested);
     connect(ui->actionMainDock, &QAction::triggered, this, &MainWindow::onActionMainDock);
     connect(ui->actionImport, &QAction::triggered, this, &MainWindow::onActionImport);
@@ -63,7 +66,7 @@ void MainWindow::setModel(Model *model)
     // connect Owner model
     ui->ownersView->setModel(_model->getOwnerModel());
 
-    // connect Account model through AccountFilder model
+    // connect Account model through AccountFilter model
     ui->accountsView->setModel(_model->getAccountFilter());
 }
 
@@ -82,4 +85,21 @@ void MainWindow::onActionMainDock(bool checked)
         ui->mainDockWidget->close();
     else
         ui->mainDockWidget->show();
+}
+
+void MainWindow::onAccountDoubleClicked(const QModelIndex &index)
+{
+    // get selected account
+    auto *selectedAccount = _model->getAccountModel()->data(index, ObjectRole).value<Account *>();
+    if (selectedAccount == nullptr)
+        return;
+
+    // delete previous central widget
+    delete centralWidget();
+
+    // replace central widget by a TransactionsWidget
+    auto centralWidget = new TransactionsWidget();
+    centralWidget->setTitle(selectedAccount->getDisplayedName());
+    centralWidget->setModel(new TransactionModel(selectedAccount));
+    setCentralWidget(centralWidget);
 }

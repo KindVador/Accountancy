@@ -33,7 +33,7 @@ int main(int argc, char *argv[])
     QSettings::setDefaultFormat(QSettings::IniFormat);
 
     QSettings settings;
-    if( !settings.isWritable())
+    if(!settings.isWritable())
         qDebug() << "ERROR: the file [" << settings.fileName() << "] is not writable.";
 
     // set ICON

@@ -17,6 +17,15 @@ enum class TransactionStatus: int
     Cancelled
 };
 
+static QHash<TransactionStatus, QString> TRANSACTION_STATUS_2_STRING {
+    {TransactionStatus::Planned, "Planned"},
+    {TransactionStatus::Created, "Created"},
+    {TransactionStatus::Imported, "Imported"},
+    {TransactionStatus::Cleared, "Cleared"},
+    {TransactionStatus::Locked, "Locked"},
+    {TransactionStatus::Cancelled, "Cancelled"}
+    };
+
 class Transaction
 {
 public:
@@ -28,8 +37,8 @@ public:
     void setName(const QString &name);
     [[nodiscard]] const QString &getComment() const;
     void setComment(const QString &comment);
-    [[nodiscard]] TransactionStatus getTs() const;
-    void setTs(TransactionStatus ts);
+    [[nodiscard]] TransactionStatus getStatus() const;
+    void setStatus(TransactionStatus ts);
     [[nodiscard]] const QDate &getTransactionDate() const;
     void setTransactionDate(const QDate &transactionDate);
     [[nodiscard]] const QDate &getValueDate() const;

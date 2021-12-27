@@ -4,6 +4,7 @@ add_library(AccountancyUi
             owneritemwidget.hpp owneritemwidget.cpp owneritemwidget.ui
             contextualmenugenerator.hpp contextualmenugenerator.cpp
             importdatadialog.hpp importdatadialog.cpp importdatadialog.ui
+            transactionswidget.hpp transactionswidget.cpp transactionswidget.ui
         )
 
 target_link_libraries(AccountancyUi PRIVATE Qt::Widgets)

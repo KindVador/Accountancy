@@ -75,3 +75,18 @@ int Account::count() const
 {
     return _transactions.count();
 }
+
+Transaction *Account::transactionAt(int pos) const
+{
+    return _transactions.at(pos);
+}
+
+const Currency *Account::getCurrency() const
+{
+    return _currency;
+}
+
+void Account::setCurrency(const Currency *currency)
+{
+    _currency = currency;
+}

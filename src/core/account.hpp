@@ -40,6 +40,9 @@ public:
     [[nodiscard]] const FinancialInstitution *getInstitution() const;
     void setInstitution(const FinancialInstitution *institution);
     [[nodiscard]] int count() const;
+    [[nodiscard]] Transaction *transactionAt(int pos) const;
+    [[nodiscard]] const Currency *getCurrency() const;
+    void setCurrency(const Currency *currency);
 
 private:
     int _id = -1;
