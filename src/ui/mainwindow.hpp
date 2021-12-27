@@ -30,7 +30,7 @@ signals:
 
 private slots:
     void showCredits();
-    static void onActionImport();
+    void onActionImport();
     void contextualOwnerMenuRequested(const QPoint &pos);
     void onActionMainDock(bool checked);
     void onAccountDoubleClicked(const QModelIndex &index);
