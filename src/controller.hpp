@@ -1,8 +1,10 @@
 #ifndef ACCOUNTANCY_CONTROLLER_HPP
 #define ACCOUNTANCY_CONTROLLER_HPP
 
+#include "core/financialinstitution.hpp"
 #include "core/owner.hpp"
 #include "core/account.hpp"
+#include "core/transaction.hpp"
 #include "model.hpp"
 #include "ui/mainwindow.hpp"
 
@@ -21,11 +23,21 @@ public:
 
     void showMainWindow();
 
-    void addOwner(Owner *owner);
-    void addOwner(const QString &name, const Currency *currency, float warningBalance, const QString &comment, bool isHidden);
+    // FINANCIAL INSTITUTIONS
+    void addFinancialInstitution(FinancialInstitution *institution);
+    FinancialInstitution *addFinancialInstitution(QString name);
 
-    void addAccount(AccountType type, Currency *currency, const Owner *owner, float initialBalance, float warningBalance,
-                    const QString &accountNumber, const QString &comment, bool isIncludedInTotal, bool isHidden);
+    // OWNERS
+    void addOwner(Owner *owner);
+    Owner *addOwner(const QString &name, const Currency *currency, float warningBalance, const QString &comment, bool isHidden);
+
+    // ACCOUNTS
+    Account *addAccount(const FinancialInstitution *institution, AccountType type, Currency *currency,
+                        const Owner *owner, float initialBalance, float warningBalance,
+                        const QString &accountNumber, const QString &comment, bool isIncludedInTotal, bool isHidden);
+
+    // TRANSACTIONS
+    void addTransactionToAccount(Transaction *transaction, Account *account);
 
 public slots:
     void clearOwnerSelection();

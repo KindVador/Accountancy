@@ -1,9 +1,5 @@
 #include "currency.hpp"
 
-Currency::Currency()
-{
-}
-
 Currency::Currency(QString &name, QString &symbol)
 {
     this->name = name;

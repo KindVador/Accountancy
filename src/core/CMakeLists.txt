@@ -1,5 +1,7 @@
 
 add_library(AccountancyCore
+            datafileinterface.hpp
+            financialinstitution.hpp financialinstitution.cpp
             account.hpp account.cpp
             currency.hpp currency.cpp
             loanaccount.hpp loanaccount.cpp

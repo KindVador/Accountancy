@@ -7,13 +7,27 @@
 #include "currency.hpp"
 #include "owner.hpp"
 
-enum AccountType: int {Checking, CreditCard, Savings, Cash, Assets, Loan, Investment};
+class Transaction;
+class FinancialInstitution;
 
-class Account {
+enum class AccountType: int
+{
+    Checking = 0,
+    CreditCard,
+    Savings,
+    Cash,
+    Assets,
+    Loan,
+    Investment
+};
+
+class Account
+{
 public:
-    Account();
-    Account(AccountType type, Currency *currency, const Owner *owner, float initialBalance, float warningBalance,
-            const QString &accountNumber, const QString &comment, bool isIncludedInTotal, bool isHidden);
+    Account() = default;
+    Account(const FinancialInstitution *_institution, AccountType type, Currency *currency, const Owner *owner,
+            float initialBalance, float warningBalance, QString accountNumber, QString comment,
+            bool isIncludedInTotal, bool isHidden);
     ~Account() = default;
 
     [[nodiscard]] int getId() const;
@@ -21,10 +35,16 @@ public:
     [[nodiscard]] QString getDisplayedName() const;
     [[nodiscard]] QList<int> getOwnersId() const;
     [[nodiscard]] const QList<const Owner *> &getOwners() const;
+    void addTransaction(Transaction *transaction);
+    void removeTransaction(Transaction *transaction);
+    [[nodiscard]] const FinancialInstitution *getInstitution() const;
+    void setInstitution(const FinancialInstitution *institution);
+    [[nodiscard]] int count() const;
 
 private:
     int _id = -1;
-    Currency* _currency;
+    const FinancialInstitution *_institution = nullptr;
+    const Currency* _currency = nullptr;
     QList<const Owner*> _owners;
     float _initialBalance = 0;
     float _warningBalance = 0;
@@ -33,6 +53,7 @@ private:
     bool _isIncludedInTotal = true;
     bool _isHidden = false;
     AccountType _type = AccountType::Checking;
+    QList<Transaction *> _transactions;
 };
 
 Q_DECLARE_METATYPE(Account*)

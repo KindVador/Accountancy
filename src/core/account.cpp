@@ -1,26 +1,28 @@
 #include "account.hpp"
 
-Account::Account() {
-}
-
-Account::Account(AccountType type, Currency *currency, const Owner *owner, float initialBalance, float warningBalance,
-                 const QString &accountNumber, const QString &comment, bool isIncludedInTotal, bool isHidden) :
-                 _currency(currency), _initialBalance(initialBalance), _warningBalance(warningBalance),
-                 _accountNumber(accountNumber), _comment(comment), _isIncludedInTotal(isIncludedInTotal),
-                 _isHidden(isHidden), _type(type) {
+Account::Account(const FinancialInstitution *institution, AccountType type, Currency *currency, const Owner *owner,
+                 float initialBalance, float warningBalance, QString accountNumber, QString comment,
+                 bool isIncludedInTotal, bool isHidden) :
+                 _institution(institution), _currency(currency), _initialBalance(initialBalance),
+                 _warningBalance(warningBalance), _accountNumber(std::move(accountNumber)), _comment(std::move(comment)),
+                 _isIncludedInTotal(isIncludedInTotal), _isHidden(isHidden), _type(type)
+{
     if (owner != nullptr)
         _owners.append(owner);
 }
 
-QString Account::getDisplayedName() const {
+QString Account::getDisplayedName() const
+{
     return QString("%1").arg(_accountNumber);
 }
 
-int Account::getId() const {
+int Account::getId() const
+{
     return _id;
 }
 
-void Account::setId(int id) {
+void Account::setId(int id)
+{
     _id = id;
 }
 
@@ -41,4 +43,35 @@ QList<int> Account::getOwnersId() const
     }
 
     return ids;
+}
+
+void Account::addTransaction(Transaction *transaction)
+{
+    if (transaction == nullptr)
+        return;
+
+    _transactions.append(transaction);
+}
+
+void Account::removeTransaction(Transaction *transaction)
+{
+    if (transaction == nullptr)
+        return;
+
+    _transactions.removeOne(transaction);
+}
+
+const FinancialInstitution *Account::getInstitution() const
+{
+    return _institution;
+}
+
+void Account::setInstitution(const FinancialInstitution *institution)
+{
+    _institution = institution;
+}
+
+int Account::count() const
+{
+    return _transactions.count();
 }

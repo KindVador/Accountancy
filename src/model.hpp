@@ -6,12 +6,18 @@
 #include "currencymodel.hpp"
 #include "accountmodel.hpp"
 #include "accountfilter.hpp"
+#include "financialinstitutionmodel.hpp"
 
-class Model {
+class Model : public QObject
+{
+    Q_OBJECT
 
 public:
-    explicit Model();
-    ~Model();
+    // Singleton
+    static Model *getInstance();
+    Model(Model &other) = delete;
+
+    ~Model() override;
 
     // Getters
     [[nodiscard]] OwnerModel *getOwnerModel() const;
@@ -21,15 +27,23 @@ public:
     [[nodiscard]] AccountModel *getAccountModel() const;
     [[nodiscard]] AccountModel *getAccountModel();
     [[nodiscard]] AccountFilter *getAccountFilter() const;
+    [[nodiscard]] FinancialInstitutionModel *getFinancialInstitutionModel() const;
+    [[nodiscard]] FinancialInstitutionModel *getFinancialInstitutionModel();
 
     void setOwnerFilter(int OwnerId);
+    void setOwnerFilter(const QString &ownerName);
     static float balanceForOwner(const Owner *owner);
 
 private:
+    static Model *_singleton;
     OwnerModel *_ownerModel = nullptr;
     CurrencyModel *_currencyModel = nullptr;
     AccountModel *_accountModel = nullptr;
     AccountFilter *_accountFilteredModel = nullptr;
+    FinancialInstitutionModel *_institutionsModel = nullptr;
+
+    // Singleton
+    Model();
 };
 
 #endif //ACCOUNTANCY_MODEL_HPP

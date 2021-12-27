@@ -17,6 +17,7 @@ find_package(Qt6 COMPONENTS Widgets Sql REQUIRED)
 
 add_subdirectory(src/ui)
 add_subdirectory(src/core)
+add_subdirectory(tests)
 
 set(HEADER_FILES
         src/model.hpp
@@ -25,6 +26,8 @@ set(HEADER_FILES
         src/ownermodel.hpp
         src/accountmodel.hpp
         src/accountfilter.hpp
+        src/financialinstitutionmodel.hpp
+        src/transactionmodel.hpp
         )
 
 set(SOURCE_FILES
@@ -35,10 +38,12 @@ set(SOURCE_FILES
         src/ownermodel.cpp
         src/accountmodel.cpp
         src/accountfilter.cpp
+        src/financialinstitutionmodel.cpp
+        src/transactionmodel.cpp
         )
 
 set(UI_FILES
-        src/ImportDialogInDb.ui
+
         )
 
 set(RESOURCE_FILES

@@ -2,10 +2,6 @@
 
 constexpr const int ObjectRole = Qt::UserRole + 1;
 
-OwnerModel::OwnerModel() = default;
-
-OwnerModel::~OwnerModel() = default;
-
 int OwnerModel::addOwner(Owner *owner)
 {
     if (owner == nullptr)
@@ -16,27 +12,32 @@ int OwnerModel::addOwner(Owner *owner)
     return owner->getId();
 }
 
-int OwnerModel::addOwner(const QString &name, const Currency *currency, float warningBalance, const QString &comment, bool isHidden)
+Owner *OwnerModel::addOwner(const QString &name, const Currency *currency, float warningBalance, const QString &comment, bool isHidden)
 {
     auto *newOwner = new Owner(name, currency, warningBalance, comment, isHidden);
     newOwner->setId(getLastId());
     addOwner(newOwner);
-    return newOwner->getId();
+    return newOwner;
 }
 
 void OwnerModel::removeOwner(Owner *owner)
 {
-
+    // TODO
 }
 
 void OwnerModel::removeOwner(int id)
 {
-
+    // TODO
 }
 
 Owner *OwnerModel::getOwner(const QString &name)
 {
-    return nullptr;
+    auto ownerIt = std::find_if(_owners.begin(), _owners.end(), [&name](Owner *owner) { return owner->getName() == name; });
+    // case NOT FOUND
+    if (ownerIt == _owners.end())
+        return nullptr;
+
+    return *ownerIt;
 }
 
 int OwnerModel::rowCount(const QModelIndex &parent) const

@@ -2,11 +2,6 @@
 
 constexpr const int ObjectRole = Qt::UserRole + 1;
 
-AccountModel::AccountModel()
-{
-
-}
-
 int AccountModel::rowCount(const QModelIndex &parent) const
 {
     return (int) _accounts.count();
@@ -39,22 +34,23 @@ int AccountModel::addAccount(Account *account)
     if (account == nullptr)
         return -1;
 
-    _accounts.append(account);
-    return account->getId();
-}
-
-int AccountModel::addAccount(AccountType type, Currency *currency, const Owner *owner, float initialBalance,
-                             float warningBalance, const QString &accountNumber, const QString &comment,
-                             bool isIncludedInTotal, bool isHidden) {
     int nextId = -1;
     if (_accounts.isEmpty())
         nextId = 0;
     else
-        nextId = _accounts.last()->getId();
+        nextId = _accounts.last()->getId() + 1;
 
-    auto *newAccount = new Account(type, currency, owner, initialBalance, warningBalance, accountNumber, comment, isIncludedInTotal, isHidden);
-    newAccount->setId(nextId);
-    addAccount(newAccount);
-
+    account->setId(nextId);
+    _accounts.append(account);
     return nextId;
+}
+
+Account *AccountModel::addAccount(const FinancialInstitution *institution, AccountType type, Currency *currency,
+                             const Owner *owner, float initialBalance, float warningBalance,
+                             const QString &accountNumber, const QString &comment, bool isIncludedInTotal,
+                             bool isHidden)
+{
+    auto *newAccount = new Account(institution, type, currency, owner, initialBalance, warningBalance, accountNumber, comment, isIncludedInTotal, isHidden);
+    addAccount(newAccount);
+    return newAccount;
 }

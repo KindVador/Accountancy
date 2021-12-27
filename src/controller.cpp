@@ -4,20 +4,20 @@ constexpr const int ObjectRole = Qt::UserRole + 1;
 
 Controller *Controller::_singleton = nullptr;
 
-Controller::Controller(): _model(new Model), _mainWindow(new MainWindow)
+Controller::Controller(): _model(Model::getInstance()), _mainWindow(new MainWindow)
 {
-
     // model init for debug
     auto *euro = new Currency();
     euro->setName("Euro");
     euro->setSymbol("€");
+    const FinancialInstitution *ce = addFinancialInstitution("Caisse d'Epargne");
     auto *florian = new Owner("Florian", euro, 0, "", false);
     auto *toto = new Owner("Toto", euro, 0, "", false);
     addOwner(florian);
     addOwner(toto);
-    addAccount(AccountType::Checking, euro, florian, 100, 200, "ACCOUNT_FLORIAN_1", "my comment", true, false);
-    addAccount(AccountType::Checking, euro, florian, 1000, 500, "ACCOUNT_FLORIAN_2", "my comment", true, false);
-    addAccount(AccountType::Checking, euro, toto, 750, 50, "ACCOUNT_TOTO", "my comment", true, false);
+    addAccount(ce, AccountType::Checking, euro, florian, 100, 200, "ACCOUNT_FLORIAN_1", "my comment", true, false);
+    addAccount(ce, AccountType::Checking, euro, florian, 1000, 500, "ACCOUNT_FLORIAN_2", "my comment", true, false);
+    addAccount(ce, AccountType::Checking, euro, toto, 750, 50, "ACCOUNT_TOTO", "my comment", true, false);
 
     // connect with MainWindow
     if (_mainWindow != nullptr) {
@@ -45,27 +45,32 @@ void Controller::showMainWindow()
     _mainWindow->show();
 }
 
-void Controller::addOwner(const QString &name, const Currency *currency, float warningBalance, const QString &comment, bool isHidden)
+Owner *Controller::addOwner(const QString &name, const Currency *currency, float warningBalance, const QString &comment, bool isHidden)
 {
     if (_model == nullptr)
-        return;
+        return nullptr;
 
     // model update
-    int ownerId = _model->getOwnerModel()->addOwner(name, currency, warningBalance, comment, isHidden);
-    qDebug() << "addOwner" << name << ownerId;
+    Owner *newOwner = _model->getOwnerModel()->addOwner(name, currency, warningBalance, comment, isHidden);
 
     // view update
     _mainWindow->onOwnerModelUpdate();
+
+    return newOwner;
 }
 
-void Controller::addAccount(AccountType type, Currency *currency, const Owner *owner, float initialBalance, float warningBalance, const QString &accountNumber, const QString &comment, bool isIncludedInTotal, bool isHidden)
+Account *Controller::addAccount(const FinancialInstitution *institution, AccountType type, Currency *currency,
+                                const Owner *owner, float initialBalance, float warningBalance,
+                                const QString &accountNumber, const QString &comment, bool isIncludedInTotal,
+                                bool isHidden)
 {
     if (_model == nullptr)
-        return;
+        return nullptr;
 
     // model update
-    int accountId = _model->getAccountModel()->addAccount(type, currency, owner, initialBalance, warningBalance,
-    accountNumber, comment, isIncludedInTotal, isHidden);
+    return _model->getAccountModel()->addAccount(institution, type, currency, owner, initialBalance, warningBalance,
+                                                 accountNumber, comment, isIncludedInTotal, isHidden);
+
 }
 
 void Controller::onSelectedOwner(const QModelIndex &index)
@@ -102,4 +107,25 @@ Controller *Controller::getInstance()
         _singleton = new Controller();
 
     return _singleton;
+}
+
+void Controller::addTransactionToAccount(Transaction *transaction, Account *account)
+{
+    if (transaction == nullptr || account == nullptr)
+        return;
+
+    account->addTransaction(transaction);
+}
+
+void Controller::addFinancialInstitution(FinancialInstitution *institution)
+{
+    if (_model == nullptr)
+        return;
+
+    _model->getFinancialInstitutionModel()->addFinancialInstitution(institution);
+}
+
+FinancialInstitution *Controller::addFinancialInstitution(QString name)
+{
+    return _model->getFinancialInstitutionModel()->addFinancialInstitution(name);
 }
