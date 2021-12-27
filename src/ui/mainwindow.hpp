@@ -33,6 +33,7 @@ private slots:
     static void onActionImport();
     void contextualOwnerMenuRequested(const QPoint &pos);
     void onActionMainDock(bool checked);
+    void onAccountDoubleClicked(const QModelIndex &index);
 
 private:
     Ui::MainWindow *ui = nullptr;

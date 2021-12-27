@@ -31,12 +31,12 @@ void Transaction::setComment(const QString &comment)
     _comment = comment;
 }
 
-TransactionStatus Transaction::getTs() const
+TransactionStatus Transaction::getStatus() const
 {
     return _ts;
 }
 
-void Transaction::setTs(TransactionStatus ts)
+void Transaction::setStatus(TransactionStatus ts)
 {
     _ts = ts;
 }
