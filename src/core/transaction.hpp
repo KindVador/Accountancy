@@ -6,6 +6,7 @@
 #include <iostream>
 #include <QString>
 #include <QDate>
+#include <QJsonObject>
 
 enum class TransactionStatus: int
 {
@@ -53,6 +54,10 @@ public:
     void setDate(const QDate &date);
     [[nodiscard]] double getAmount() const;
     void setAmount(double amount);
+
+    // Serialization
+    void read(const QJsonObject &json);
+    void write(QJsonObject &json) const;
 
     // public API
     void printToConsole() const;

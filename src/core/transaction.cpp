@@ -56,12 +56,32 @@ void Transaction::setAmount(double amount)
     _amount = amount;
 }
 
-double Transaction::getAmount() const
+void Transaction::read(const QJsonObject &json)
 {
-    return _amount;
+    if (json.contains("id") && json["id"].isDouble())
+        _id = json["id"].toInt();
+
+    if (json.contains("name") && json["name"].isString())
+        _name = json["name"].toString();
+
+    if (json.contains("comment") && json["comment"].isString())
+        _comment = json["comment"].toString();
+
+    if (json.contains("status") && json["status"].isString())
+        _status = STRING_2_TRANSACTION_STATUS[json["status"].toString()];
+
 }
 
-void Transaction::setAmount(double amount)
+void Transaction::write(QJsonObject &json) const
 {
-    _amount = amount;
+    json["id"] = _id;
+    json["name"] = _name;
+    json["comment"] = _comment;
+    json["status"] = TRANSACTION_STATUS_2_STRING[_status];
+}
+
+Transaction::Transaction(QString &name, QString &comment, TransactionStatus status, QDate &date, double amount):
+             _name(name), _comment(comment), _status(status), _date(date), _amount(amount)
+{
+
 }
