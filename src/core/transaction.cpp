@@ -1,5 +1,6 @@
 #include "transaction.hpp"
 #include <QDebug>
+#include <utility>
 
 void Transaction::printToConsole() const
 {
@@ -78,10 +79,18 @@ void Transaction::write(QJsonObject &json) const
     json["name"] = _name;
     json["comment"] = _comment;
     json["status"] = TRANSACTION_STATUS_2_STRING[_status];
+    json["date"] = _date.toString("dd/MM/yyyy");
+    json["amount"] = _amount;
 }
 
 Transaction::Transaction(QString &name, QString &comment, TransactionStatus status, QDate &date, double amount):
              _name(name), _comment(comment), _status(status), _date(date), _amount(amount)
+{
+
+}
+
+Transaction::Transaction(QString name, QString comment, TransactionStatus status, QDate date, double amount):
+        _name(std::move(name)), _comment(std::move(comment)), _status(status), _date(date), _amount(amount)
 {
 
 }

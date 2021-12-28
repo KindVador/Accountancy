@@ -41,6 +41,7 @@ class Transaction
 public:
     Transaction() = default;
     explicit Transaction(QString &name, QString &comment, TransactionStatus status, QDate &date, double amount);
+    explicit Transaction(QString name, QString comment, TransactionStatus status, QDate date, double amount);
     ~Transaction() = default;
 
     // Getter & Setter
