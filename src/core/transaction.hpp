@@ -26,10 +26,20 @@ static QHash<TransactionStatus, QString> TRANSACTION_STATUS_2_STRING {
     {TransactionStatus::Cancelled, "Cancelled"}
     };
 
+static QHash<QString, TransactionStatus> STRING_2_TRANSACTION_STATUS {
+        {"Planned", TransactionStatus::Planned},
+        {"Created", TransactionStatus::Created},
+        {"Imported", TransactionStatus::Imported},
+        {"Cleared", TransactionStatus::Cleared},
+        {"Locked", TransactionStatus::Locked},
+        {"Cancelled", TransactionStatus::Cancelled}
+};
+
 class Transaction
 {
 public:
-    Transaction();
+    Transaction() = default;
+    explicit Transaction(QString &name, QString &comment, TransactionStatus status, QDate &date, double amount);
     ~Transaction() = default;
 
     // Getter & Setter
@@ -39,10 +49,8 @@ public:
     void setComment(const QString &comment);
     [[nodiscard]] TransactionStatus getStatus() const;
     void setStatus(TransactionStatus ts);
-    [[nodiscard]] const QDate &getTransactionDate() const;
-    void setTransactionDate(const QDate &transactionDate);
-    [[nodiscard]] const QDate &getValueDate() const;
-    void setValueDate(const QDate &valueDate);
+    [[nodiscard]] const QDate &getDate() const;
+    void setDate(const QDate &date);
     [[nodiscard]] double getAmount() const;
     void setAmount(double amount);
 
@@ -51,14 +59,13 @@ public:
 
 private:
     int _id = -1;
-    Account *_accountFrom = nullptr;
-    Account *_accountTo = nullptr;
     QString _name;
     QString _comment;
-    TransactionStatus _ts;
-    QDate _transactionDate;
-    QDate _valueDate;
+    TransactionStatus _status = TransactionStatus::Imported;
+    QDate _date;
     double _amount = 0.0;
+    Account *_accountFrom = nullptr;
+    Account *_accountTo = nullptr;
 };
 
 Q_DECLARE_METATYPE(Transaction*)

@@ -55,8 +55,7 @@ QList<Transaction *> FinancialInstitution::readTransactionsFromFile(QFile &dataF
         // fix year date as 20 is interpreted as 1920 instead of 2020
         if (date1.year() + 100 < QDate::currentDate().year())
             date1 = date1.addYears(100);
-        transaction->setTransactionDate(date1);
-        transaction->setValueDate(date1);
+        transaction->setDate(date1);
         if (!fields[3].isEmpty())
             transaction->setAmount(locale.toDouble(fields[3]));
         else

@@ -30,7 +30,7 @@ QVariant TransactionModel::data(const QModelIndex &index, int role) const
 
         switch (index.column()) {
             case 0:
-                return t->getTransactionDate().toString("dd/MM/yyyy");
+                return t->getDate().toString("dd/MM/yyyy");
             case 1:
                 return t->getName();
             case 2:
