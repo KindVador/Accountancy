@@ -71,6 +71,12 @@ void Transaction::read(const QJsonObject &json)
     if (json.contains("status") && json["status"].isString())
         _status = STRING_2_TRANSACTION_STATUS[json["status"].toString()];
 
+    if (json.contains("date") && json["date"].isString())
+        _date = QDate::fromString(json["date"].toString(), "dd/MM/yyyy");
+
+    if (json.contains("amount") && json["amount"].isDouble())
+        _amount = json["amount"].toDouble();
+
 }
 
 void Transaction::write(QJsonObject &json) const
@@ -93,4 +99,9 @@ Transaction::Transaction(QString name, QString comment, TransactionStatus status
         _name(std::move(name)), _comment(std::move(comment)), _status(status), _date(date), _amount(amount)
 {
 
+}
+
+int Transaction::getId() const
+{
+    return _id;
 }

@@ -45,6 +45,7 @@ public:
     ~Transaction() = default;
 
     // Getter & Setter
+    [[nodiscard]] int getId() const;
     [[nodiscard]] const QString &getName() const;
     void setName(const QString &name);
     [[nodiscard]] const QString &getComment() const;
