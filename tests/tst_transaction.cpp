@@ -2,7 +2,8 @@
 
 #include "../src/core/transaction.hpp"
 
-class TransactionTest : public QObject {
+class TransactionTest : public QObject
+{
 Q_OBJECT
 
 private slots:
@@ -17,6 +18,16 @@ private slots:
         QCOMPARE(t.getAmount(), 0.0);
         QCOMPARE(t.getStatus(), TransactionStatus::Imported);
         QCOMPARE(t.getDate(), QDate());
+    }
+
+    void initConstructorTestCase() {
+        Transaction t(QString("Name1"), QString("Comment1"), TransactionStatus::Created, QDate(2021, 12, 25), -14.99);
+        QVERIFY(t.getId());
+        QVERIFY(t.getName() == "Name1");
+        QVERIFY(t.getComment() == "Comment1");
+        QVERIFY(t.getStatus() == TransactionStatus::Created);
+        QCOMPARE(t.getDate(), QDate(2021, 12, 25));
+        QCOMPARE(t.getAmount(), -14.99);
     }
 
     void writeJsonTestCase() {
