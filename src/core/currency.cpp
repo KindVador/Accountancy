@@ -27,7 +27,7 @@ QString Currency::getSymbol() const
 
 void Currency::setSymbol(QString value)
 {
-    _symbol = value;
+    _symbol = std::move(value);
 }
 
 int Currency::getId() const
