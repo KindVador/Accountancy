@@ -10,28 +10,30 @@ class Owner
 {
 public:
     Owner() = default;
-    Owner(const QString &name, const Currency *currency, float warningBalance, const QString &comment, bool isHidden);
+    Owner(QString &name, double warningBalance, QString &comment, bool isHidden);
+    Owner(QString name, double warningBalance, QString comment, bool isHidden);
     ~Owner() = default;
 
-    QString getName() const;
+    // Getter & Setter
+    [[nodiscard]] QString getName() const;
     void setName(const QString &value);
-
-    float getWarningBalance() const;
+    [[nodiscard]] float getWarningBalance() const;
     void setWarningBalance(float value);
-
-    QString getComment() const;
+    [[nodiscard]] QString getComment() const;
     void setComment(const QString &value);
-
-    bool getIsHidden() const;
+    [[nodiscard]] bool getIsHidden() const;
     void setIsHidden(bool value);
-
-    int getId() const;
+    [[nodiscard]] int getId() const;
     void setId(int id);
+
+    // Serialization
+    void read(const QJsonObject &json);
+    void write(QJsonObject &json) const;
 
 private:
     int _id = -1;
     QString _name;
-    float _warningBalance = 0;
+    double _warningBalance = 0.0;
     QString _comment;
     bool _isHidden = false;
 };

@@ -11,8 +11,8 @@ Controller::Controller(): _model(Model::getInstance()), _mainWindow(new MainWind
     euro->setName("Euro");
     euro->setSymbol("€");
     const FinancialInstitution *ce = addFinancialInstitution("Caisse d'Epargne");
-    auto *florian = new Owner("Florian", euro, 0, "", false);
-    auto *toto = new Owner("Toto", euro, 0, "", false);
+    auto *florian = new Owner("Florian", 0, "", false);
+    auto *toto = new Owner("Toto", 0, "", false);
     addOwner(florian);
     addOwner(toto);
     addAccount(ce, AccountType::Checking, euro, florian, 100, 200, "ACCOUNT_FLORIAN_1", "my comment", true, false);
@@ -51,7 +51,7 @@ Owner *Controller::addOwner(const QString &name, const Currency *currency, float
         return nullptr;
 
     // model update
-    Owner *newOwner = _model->getOwnerModel()->addOwner(name, currency, warningBalance, comment, isHidden);
+    Owner *newOwner = _model->getOwnerModel()->addOwner(name, warningBalance, comment, isHidden);
 
     // view update
     _mainWindow->onOwnerModelUpdate();

@@ -12,9 +12,9 @@ int OwnerModel::addOwner(Owner *owner)
     return owner->getId();
 }
 
-Owner *OwnerModel::addOwner(const QString &name, const Currency *currency, float warningBalance, const QString &comment, bool isHidden)
+Owner *OwnerModel::addOwner(const QString &name, float warningBalance, const QString &comment, bool isHidden)
 {
-    auto *newOwner = new Owner(name, currency, warningBalance, comment, isHidden);
+    auto *newOwner = new Owner(name, warningBalance, comment, isHidden);
     newOwner->setId(getLastId());
     addOwner(newOwner);
     return newOwner;
