@@ -1,7 +1,7 @@
 #include "owner.hpp"
 
 Owner::Owner(const QString &name, const Currency *currency, float warningBalance, const QString &comment, bool isHidden)
-        : _name(name), _currency(currency), _warningBalance(warningBalance), _comment(comment), _isHidden(isHidden)
+        : _name(name), _warningBalance(warningBalance), _comment(comment), _isHidden(isHidden)
 {
 }
 
@@ -13,16 +13,6 @@ QString Owner::getName() const
 void Owner::setName(const QString &value)
 {
     _name = value;
-}
-
-const Currency* Owner::getCurrency() const
-{
-    return _currency;
-}
-
-void Owner::setCurrency(const Currency *value)
-{
-    _currency = value;
 }
 
 float Owner::getWarningBalance() const

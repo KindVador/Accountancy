@@ -16,9 +16,6 @@ public:
     QString getName() const;
     void setName(const QString &value);
 
-    const Currency* getCurrency() const;
-    void setCurrency(const Currency *value);
-
     float getWarningBalance() const;
     void setWarningBalance(float value);
 
@@ -34,7 +31,6 @@ public:
 private:
     int _id = -1;
     QString _name;
-    const Currency* _currency = nullptr;
     float _warningBalance = 0;
     QString _comment;
     bool _isHidden = false;
