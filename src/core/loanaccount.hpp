@@ -16,7 +16,7 @@ public:
     ~LoanAccount() = default;
 
 private:
-    int id = -1;
+    int _id = -1;
     Currency* _currency;
     QList<const Owner*> _owners;
     float _initialBalance = 0;
