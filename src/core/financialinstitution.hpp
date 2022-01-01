@@ -10,17 +10,22 @@
 class FinancialInstitution: public DataFileInterface
 {
 public:
+    FinancialInstitution() = default;
     explicit FinancialInstitution(QString name);
     ~FinancialInstitution() override = default ;
+
+    // Getter & Setter
+    [[nodiscard]] int getId() const;
+    void setId(int id);
+    [[nodiscard]] const QString &getName() const;
+    void setName(const QString &name);
 
     // DataFileInterface
     QList<Transaction*> readTransactionsFromFile(QFile &dataFile) const override;
 
-    [[nodiscard]] int getId() const;
-    void setId(int id);
-
-    [[nodiscard]] const QString &getName() const;
-    void setName(const QString &name);
+    // Serialization
+    void read(const QJsonObject &json);
+    void write(QJsonObject &json) const;
 
 private:
     int _id = -1;

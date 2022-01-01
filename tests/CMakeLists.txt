@@ -27,6 +27,9 @@ add_test(NAME TestsCurrency COMMAND TestsCurrency)
 add_executable(TestsOwner tst_owner.cpp)
 add_test(NAME TestsOwner COMMAND TestsOwner)
 
+add_executable(TestsFinancialInstitution tst_financialinstitution.cpp)
+add_test(NAME TestsFinancialInstitution COMMAND TestsFinancialInstitution)
+
 find_library (
         CORE_LIB
         NAMES libAccountancyCore.a
@@ -38,3 +41,4 @@ target_link_libraries(TestsDataImport PRIVATE Qt6::Core Qt6::Test ${CORE_LIB})
 target_link_libraries(TestsTransaction PRIVATE Qt6::Core Qt6::Test ${CORE_LIB})
 target_link_libraries(TestsCurrency PRIVATE Qt6::Core Qt6::Test ${CORE_LIB})
 target_link_libraries(TestsOwner PRIVATE Qt6::Core Qt6::Test ${CORE_LIB})
+target_link_libraries(TestsFinancialInstitution PRIVATE Qt6::Core Qt6::Test ${CORE_LIB})

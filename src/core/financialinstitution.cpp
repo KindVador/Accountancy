@@ -67,3 +67,18 @@ QList<Transaction *> FinancialInstitution::readTransactionsFromFile(QFile &dataF
 
     return transactions;
 }
+
+void FinancialInstitution::read(const QJsonObject &json)
+{
+    if (json.contains("id") && json["id"].isDouble())
+        _id = json["id"].toInt();
+
+    if (json.contains("name") && json["name"].isString())
+        _name = json["name"].toString();
+}
+
+void FinancialInstitution::write(QJsonObject &json) const
+{
+    json["id"] = _id;
+    json["name"] = _name;
+}
