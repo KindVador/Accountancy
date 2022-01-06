@@ -1,4 +1,7 @@
 #include "account.hpp"
+#include "financialinstitution.hpp"
+
+#include <QJsonArray>
 
 Account::Account(const FinancialInstitution *institution, AccountType type, Currency *currency, const Owner *owner,
                  float initialBalance, float warningBalance, QString accountNumber, QString comment,
@@ -89,4 +92,120 @@ const Currency *Account::getCurrency() const
 void Account::setCurrency(const Currency *currency)
 {
     _currency = currency;
+}
+
+void Account::read(const QJsonObject &json)
+{
+
+}
+
+void Account::write(QJsonObject &json) const
+{
+    json["id"] = _id;
+
+    if (_institution != nullptr) {
+        QJsonObject institutionObject;
+        _institution->write(institutionObject);
+        json["institution"] = institutionObject;
+    }
+
+    if (_currency != nullptr) {
+        QJsonObject currencyObject;
+        _currency->write(currencyObject);
+        json["currency"] = currencyObject;
+    }
+
+    QJsonArray ownersArray;
+    for (const Owner *owner : _owners) {
+        QJsonObject ownerObject;
+        owner->write(ownerObject);
+        ownersArray.append(ownerObject);
+    }
+    json["owners"] = ownersArray;
+
+    json["initialBalance"] = _initialBalance;
+    json["warningBalance"] = _warningBalance;
+    json["accountNumber"] = _accountNumber;
+    json["comment"] = _comment;
+    json["isIncludedInTotal"] = _isIncludedInTotal;
+    json["isHidden"] = _isHidden;
+    json["type"] = ACCOUNT_TYPE_2_STRING[_type];
+
+    QJsonArray transactionsArray;
+    for (const Transaction *transaction : _transactions) {
+        QJsonObject transactionObject;
+        transaction->write(transactionObject);
+        transactionsArray.append(transactionObject);
+    }
+    json["transactions"] = transactionsArray;
+}
+
+double Account::getInitialBalance() const
+{
+    return _initialBalance;
+}
+
+void Account::setInitialBalance(double initialBalance)
+{
+    _initialBalance = initialBalance;
+}
+
+double Account::getWarningBalance() const
+{
+    return _warningBalance;
+}
+
+void Account::setWarningBalance(double warningBalance)
+{
+    _warningBalance = warningBalance;
+}
+
+const QString &Account::getComment() const
+{
+    return _comment;
+}
+
+void Account::setComment(const QString &comment)
+{
+    _comment = comment;
+}
+
+const QString &Account::getAccountNumber() const
+{
+    return _accountNumber;
+}
+
+void Account::setAccountNumber(const QString &accountNumber)
+{
+    _accountNumber = accountNumber;
+}
+
+bool Account::isIncludedInTotal() const
+{
+    return _isIncludedInTotal;
+}
+
+void Account::setIsIncludedInTotal(bool isIncludedInTotal)
+{
+    _isIncludedInTotal = isIncludedInTotal;
+}
+
+bool Account::isHidden() const
+{
+    return _isHidden;
+}
+
+void Account::setIsHidden(bool isHidden)
+{
+    _isHidden = isHidden;
+}
+
+AccountType Account::getType() const
+{
+    return _type;
+}
+
+void Account::setType(AccountType type)
+{
+    _type = type;
 }
