@@ -96,31 +96,65 @@ void Account::setCurrency(const Currency *currency)
 
 void Account::read(const QJsonObject &json)
 {
+    if (json.contains("id") && json["id"].isDouble())
+        _id = json["id"].toInt();
 
+    if (json.contains("institution")) {
+        auto fi = new FinancialInstitution;
+        fi->setId(json["institution"].toInt());
+        setInstitution(fi);
+    }
+
+    if (json.contains("currency")) {
+        auto  c = new Currency;
+        c->setId(json["currency"].toInt());
+        setCurrency(c);
+    }
+
+    if (json.contains("owners") && json["owners"].isArray()) {
+        QJsonArray ownersArray = json["owners"].toArray();
+        for (QJsonValue owner : ownersArray) {
+            auto ownerPtr = new Owner;
+            ownerPtr->setId(owner.toInt());
+            _owners.append(ownerPtr);
+        }
+    }
+
+    if (json.contains("initialBalance") && json["initialBalance"].isDouble())
+        _initialBalance = json["initialBalance"].toDouble();
+
+    if (json.contains("warningBalance") && json["warningBalance"].isDouble())
+        _warningBalance = json["warningBalance"].toDouble();
+
+    if (json.contains("accountNumber") && json["accountNumber"].isString())
+        _accountNumber = json["accountNumber"].toString();
+
+    if (json.contains("comment") && json["comment"].isString())
+        _comment = json["comment"].toString();
+
+    if (json.contains("isIncludedInTotal") && json["isIncludedInTotal"].isBool())
+        _isIncludedInTotal = json["isIncludedInTotal"].toBool();
+
+    if (json.contains("isHidden") && json["isHidden"].isBool())
+        _isHidden = json["isHidden"].toBool();
+
+    if (json.contains("type") && json["type"].isString())
+        _type = STRING_2_ACCOUNT_TYPE[json["type"].toString()];
 }
 
 void Account::write(QJsonObject &json) const
 {
     json["id"] = _id;
 
-    if (_institution != nullptr) {
-        QJsonObject institutionObject;
-        _institution->write(institutionObject);
-        json["institution"] = institutionObject;
-    }
+    if (_institution != nullptr)
+        json["institution"] = _institution->getId();
 
-    if (_currency != nullptr) {
-        QJsonObject currencyObject;
-        _currency->write(currencyObject);
-        json["currency"] = currencyObject;
-    }
+    if (_currency != nullptr)
+        json["currency"] = _currency->getId();
 
     QJsonArray ownersArray;
-    for (const Owner *owner : _owners) {
-        QJsonObject ownerObject;
-        owner->write(ownerObject);
-        ownersArray.append(ownerObject);
-    }
+    for (const Owner *owner : _owners)
+        ownersArray.append(owner->getId());
     json["owners"] = ownersArray;
 
     json["initialBalance"] = _initialBalance;

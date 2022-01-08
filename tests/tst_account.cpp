@@ -30,11 +30,11 @@ private slots:
         QJsonObject jsonData;
         a.write(jsonData);
         QVERIFY(jsonData.contains("id") && !jsonData["id"].isNull());
-        QVERIFY(jsonData.contains("institution"));
-        QVERIFY(jsonData.contains("currency"));
-        QVERIFY(jsonData.contains("owners"));
+        QVERIFY(jsonData.contains("institution") && !jsonData["institution"].isNull());
+        QVERIFY(jsonData.contains("currency") && !jsonData["currency"].isNull());
+        QVERIFY(jsonData.contains("owners") && !jsonData["owners"].isNull());
         QVERIFY(jsonData.contains("initialBalance"));
-        QCOMPARE(jsonData["initialBalance"].toDouble(), 147.85);
+        QVERIFY(abs(jsonData["initialBalance"].toDouble()- 147.85) < 0.0001);
         QVERIFY(jsonData.contains("warningBalance"));
         QCOMPARE(jsonData["warningBalance"].toDouble(), 100.00);
         QVERIFY(jsonData.contains("accountNumber"));
@@ -59,6 +59,7 @@ private slots:
         auto *currency = new Currency("Euro", "€");
         auto *owner = new Owner("Owner1", 150.0, "Comment1", false);
         Account a0{fi, AccountType::Cash, currency, owner, 147.85, 100.0, "123456789AX", "CommentAccount1", true, false};
+        a0.setId(99);
         QJsonObject jsonData;
         a0.write(jsonData);
 
@@ -67,11 +68,11 @@ private slots:
         a1.read(jsonData);
 
         // check that values are correctly read
-        QVERIFY(a1.getId() != -1);
+        QCOMPARE(a1.getId(), 99);
         QVERIFY(a1.getInstitution() != nullptr);
         QVERIFY(a1.getCurrency() != nullptr);
         QVERIFY(a1.getOwners().count() > 0);
-        QCOMPARE(a1.getInitialBalance(), 147.85);
+        QVERIFY(abs(a1.getInitialBalance() - 147.85) < 0.0001);
         QCOMPARE(a1.getWarningBalance(), 100.00);
         QCOMPARE(a1.getAccountNumber(), "123456789AX");
         QCOMPARE(a1.getComment(), "CommentAccount1");

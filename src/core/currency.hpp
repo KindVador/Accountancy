@@ -18,6 +18,7 @@ public:
     [[nodiscard]] QString getSymbol() const;
     void setSymbol(QString value);
     [[nodiscard]] int getId() const;
+    void setId(int id);
 
     // Serialization
     void read(const QJsonObject &json);

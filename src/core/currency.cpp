@@ -54,4 +54,9 @@ void Currency::write(QJsonObject &json) const
     json["symbol"] = _symbol;
 }
 
+void Currency::setId(int id)
+{
+    _id = id;
+}
+
 
