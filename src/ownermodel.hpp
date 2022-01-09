@@ -10,6 +10,7 @@
 class OwnerModel : public QAbstractListModel
 {
     Q_OBJECT
+
 public:
     OwnerModel() = default;
     ~OwnerModel() override = default;

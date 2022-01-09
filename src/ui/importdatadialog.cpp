@@ -37,7 +37,7 @@ void ImportDataDialog::addFiles()
     fileDlg.setViewMode(QFileDialog::Detail);
 
     // case if user close the dialog without selecting any file
-    if (fileDlg.exec() == DialogCode::Rejected)
+    if (fileDlg.exec() == QFileDialog::Reject)
         return;
 
     // add selected file to the QListWidget
