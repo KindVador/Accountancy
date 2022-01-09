@@ -8,7 +8,6 @@ class Currency
 {
 public:
     Currency() = default;
-    explicit Currency(QString &name, QString &symbol);
     explicit Currency(QString name, QString symbol);
     ~Currency() = default;
 

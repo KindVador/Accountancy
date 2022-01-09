@@ -2,10 +2,6 @@
 
 #include <utility>
 
-Currency::Currency(QString &name, QString &symbol): _name(name), _symbol(symbol)
-{
-}
-
 Currency::Currency(QString name, QString symbol): _name(std::move(name)), _symbol(std::move(symbol))
 {
 }
