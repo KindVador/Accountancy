@@ -4,12 +4,15 @@
 #include "importdatadialog.hpp"
 #include "transactionswidget.hpp"
 #include "../transactionmodel.hpp"
+#include "../controller.hpp"
 
 #include <QMessageBox>
 #include <QString>
 #include <QDebug>
 #include <QMdiSubWindow>
 #include <QAction>
+#include <QFileDialog>
+
 #include <vector>
 
 constexpr const int ObjectRole = Qt::UserRole + 1;
@@ -29,6 +32,7 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWi
     connect(ui->ownersView, &QListView::customContextMenuRequested, this, &MainWindow::contextualOwnerMenuRequested);
     connect(ui->actionMainDock, &QAction::triggered, this, &MainWindow::onActionMainDock);
     connect(ui->actionImport, &QAction::triggered, this, &MainWindow::onActionImport);
+    connect(ui->actionSave, &QAction::triggered, this, &MainWindow::onSaveAction);
 }
 
 MainWindow::~MainWindow()
@@ -102,4 +106,17 @@ void MainWindow::onAccountDoubleClicked(const QModelIndex &index)
     centralWidget->setTitle(selectedAccount->getDisplayedName());
     centralWidget->setModel(new TransactionModel(selectedAccount));
     setCentralWidget(centralWidget);
+}
+
+void MainWindow::onSaveAction()
+{
+    // show dialog window to select file
+    QString fileName = QFileDialog::getSaveFileName(this,
+                                                    "Save File",
+                                                    QDir::homePath(),
+                                                    "Accountancy files (*.acty)");
+
+    // update current file variable
+    Controller *controller = Controller::getInstance();
+    controller->saveToFile(fileName);
 }

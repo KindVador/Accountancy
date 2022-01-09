@@ -30,6 +30,9 @@ public:
     [[nodiscard]] FinancialInstitutionModel *getFinancialInstitutionModel() const;
     [[nodiscard]] FinancialInstitutionModel *getFinancialInstitutionModel();
 
+    // Serialization
+    void write(QJsonObject &json) const;
+
     void setOwnerFilter(int OwnerId);
     void setOwnerFilter(const QString &ownerName);
     static float balanceForOwner(const Owner *owner);

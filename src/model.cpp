@@ -93,3 +93,23 @@ FinancialInstitutionModel *Model::getFinancialInstitutionModel()
 {
     return _institutionsModel;
 }
+
+void Model::write(QJsonObject &json) const
+{
+    // Currency
+
+
+
+
+//    QJsonObject playerObject;
+//    mPlayer.write(playerObject);
+//    json["player"] = playerObject;
+//
+//    QJsonArray levelArray;
+//    for (const Level &level : mLevels) {
+//        QJsonObject levelObject;
+//        level.write(levelObject);
+//        levelArray.append(levelObject);
+//    }
+//    json["levels"] = levelArray;
+}

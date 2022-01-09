@@ -23,6 +23,7 @@ public:
 
 public slots:
     void onOwnerModelUpdate();
+    void onSaveAction();
 
 signals:
     void selectedOwnerChanged(const QModelIndex &ownerIndex);

@@ -1,5 +1,7 @@
 #include "controller.hpp"
 
+#include <QJsonDocument>
+
 constexpr const int ObjectRole = Qt::UserRole + 1;
 
 Controller *Controller::_singleton = nullptr;
@@ -128,4 +130,36 @@ void Controller::addFinancialInstitution(FinancialInstitution *institution)
 FinancialInstitution *Controller::addFinancialInstitution(QString name)
 {
     return _model->getFinancialInstitutionModel()->addFinancialInstitution(name);
+}
+
+const QString &Controller::getCurrentFilePath() const
+{
+    return _currentFilePath;
+}
+
+void Controller::setCurrentFilePath(const QString &currentFilePath)
+{
+    _currentFilePath = currentFilePath;
+}
+
+bool Controller::saveToFile(const QString &filePath)
+{
+    setCurrentFilePath(filePath);
+
+    QFile saveFile(filePath);
+
+    if (!saveFile.open(QIODevice::WriteOnly)) {
+        qWarning("Couldn't open save file.");
+        return false;
+    }
+
+    QJsonObject modelJsonObject;
+    _model->write(modelJsonObject);
+    // JSON format
+    saveFile.write(QJsonDocument(modelJsonObject).toJson());
+
+    // BINARY format
+    //saveFile.write(QCborValue::fromJsonValue(accountancyObject).toCbor());
+
+    return true;
 }

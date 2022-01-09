@@ -39,6 +39,13 @@ public:
     // TRANSACTIONS
     void addTransactionToAccount(Transaction *transaction, Account *account);
 
+    // SAVE MODEL TO FILE
+    bool saveToFile(const QString &filePath);
+
+    // CURRENT FILE
+    [[nodiscard]] const QString &getCurrentFilePath() const;
+    void setCurrentFilePath(const QString &currentFilePath);
+
 public slots:
     void clearOwnerSelection();
 
@@ -50,6 +57,7 @@ private:
     static Controller *_singleton;
     Model *_model = nullptr;
     MainWindow *_mainWindow = nullptr;
+    QString _currentFilePath;
 
     // Singleton
     Controller();
