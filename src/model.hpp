@@ -32,6 +32,7 @@ public:
 
     // Serialization
     void write(QJsonObject &json) const;
+    void read(QJsonObject &json);
 
     void setOwnerFilter(int OwnerId);
     void setOwnerFilter(const QString &ownerName);
@@ -42,8 +43,8 @@ private:
     OwnerModel *_ownerModel = nullptr;
     CurrencyModel *_currencyModel = nullptr;
     AccountModel *_accountModel = nullptr;
-    AccountFilter *_accountFilteredModel = nullptr;
     FinancialInstitutionModel *_institutionsModel = nullptr;
+    AccountFilter *_accountFilteredModel = nullptr;
 
     // Singleton
     Model();

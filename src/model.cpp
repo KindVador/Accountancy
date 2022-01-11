@@ -1,4 +1,7 @@
+#include <QJsonArray>
 #include "model.hpp"
+
+constexpr const int ObjectRole = Qt::UserRole + 1;
 
 Model *Model::_singleton = nullptr;
 
@@ -96,20 +99,48 @@ FinancialInstitutionModel *Model::getFinancialInstitutionModel()
 
 void Model::write(QJsonObject &json) const
 {
-    // Currency
+    // Currencies
+    QJsonArray currencies;
+    for (int i = 0; i < _currencyModel->rowCount(QModelIndex()); ++i) {
+        auto *currency = _currencyModel->data(_currencyModel->index(i, 0), ObjectRole).value<Currency *>();
+        QJsonObject currencyJson;
+        currency->write(currencyJson);
+        currencies.append(currencyJson);
+    }
+    json["currencies"] = currencies;
 
+    // Owners
+    QJsonArray owners;
+    for (int i = 0; i < _ownerModel->rowCount(QModelIndex()); ++i) {
+        auto *owner = _ownerModel->data(_ownerModel->index(i, 0), ObjectRole).value<Owner *>();
+        QJsonObject ownerJson;
+        owner->write(ownerJson);
+        owners.append(ownerJson);
+    }
+    json["owners"] = owners;
 
+    // Institutions
+    QJsonArray institutions;
+    for (int i = 0; i < _institutionsModel->rowCount(QModelIndex()); ++i) {
+        auto *institution = _institutionsModel->data(_institutionsModel->index(i, 0), ObjectRole).value<FinancialInstitution *>();
+        QJsonObject institutionJson;
+        institution->write(institutionJson);
+        institutions.append(institutionJson);
+    }
+    json["institutions"] = institutions;
 
+    // Accounts
+    QJsonArray accounts;
+    for (int i = 0; i < _accountModel->rowCount(QModelIndex()); ++i) {
+        auto *account = _accountModel->data(_accountModel->index(i, 0), ObjectRole).value<Account *>();
+        QJsonObject accountJson;
+        account->write(accountJson);
+        accounts.append(accountJson);
+    }
+    json["accounts"] = accounts;
+}
 
-//    QJsonObject playerObject;
-//    mPlayer.write(playerObject);
-//    json["player"] = playerObject;
-//
-//    QJsonArray levelArray;
-//    for (const Level &level : mLevels) {
-//        QJsonObject levelObject;
-//        level.write(levelObject);
-//        levelArray.append(levelObject);
-//    }
-//    json["levels"] = levelArray;
+void Model::read(QJsonObject &json)
+{
+
 }

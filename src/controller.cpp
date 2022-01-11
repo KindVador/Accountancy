@@ -140,12 +140,13 @@ const QString &Controller::getCurrentFilePath() const
 void Controller::setCurrentFilePath(const QString &currentFilePath)
 {
     _currentFilePath = currentFilePath;
+    // add file in the window title
+    _mainWindow->setWindowTitle(QString("Accountancy - %1").arg(_currentFilePath));
 }
 
 bool Controller::saveToFile(const QString &filePath)
 {
     setCurrentFilePath(filePath);
-
     QFile saveFile(filePath);
 
     if (!saveFile.open(QIODevice::WriteOnly)) {
@@ -160,6 +161,22 @@ bool Controller::saveToFile(const QString &filePath)
 
     // BINARY format
     //saveFile.write(QCborValue::fromJsonValue(accountancyObject).toCbor());
+
+    return true;
+}
+
+bool Controller::loadFile(const QString &filePath)
+{
+    setCurrentFilePath(filePath);
+    QFile openedFile(filePath);
+
+    if (!openedFile.open(QIODevice::WriteOnly)) {
+        qWarning("Couldn't open file.");
+        return false;
+    }
+
+    QJsonObject modelJsonObject;
+    _model->read(modelJsonObject);
 
     return true;
 }

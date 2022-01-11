@@ -23,6 +23,8 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWi
 
     // Init Ui
     ui->ownersView->setContextMenuPolicy(Qt::CustomContextMenu);
+    ui->actionSave->setEnabled(false);
+    ui->actionSaveAs->setEnabled(false);
 
     // Connect Actions to Slots
     connect(ui->actionCredits, &QAction::triggered, this, &MainWindow::showCredits);
@@ -32,7 +34,9 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWi
     connect(ui->ownersView, &QListView::customContextMenuRequested, this, &MainWindow::contextualOwnerMenuRequested);
     connect(ui->actionMainDock, &QAction::triggered, this, &MainWindow::onActionMainDock);
     connect(ui->actionImport, &QAction::triggered, this, &MainWindow::onActionImport);
+    connect(ui->actionOpen, &QAction::triggered, this, &MainWindow::onOpenAction);
     connect(ui->actionSave, &QAction::triggered, this, &MainWindow::onSaveAction);
+    connect(ui->actionSaveAs, &QAction::triggered, this, &MainWindow::onSaveAsAction);
 }
 
 MainWindow::~MainWindow()
@@ -108,11 +112,33 @@ void MainWindow::onAccountDoubleClicked(const QModelIndex &index)
     setCentralWidget(centralWidget);
 }
 
+void MainWindow::onOpenAction()
+{
+    // show dialog window to select file
+    QString fileName = QFileDialog::getOpenFileName(this,
+                                                    "Open File",
+                                                    QDir::homePath(),
+                                                    "Accountancy files (*.acty)");
+
+    // update current file variable
+    Controller *controller = Controller::getInstance();
+    if (controller->loadFile(fileName)) {
+        ui->actionSave->setEnabled(true);
+        ui->actionSaveAs->setEnabled(true);
+    }
+}
+
 void MainWindow::onSaveAction()
+{
+    Controller *controller = Controller::getInstance();
+    controller->saveToFile(controller->getCurrentFilePath());
+}
+
+void MainWindow::onSaveAsAction()
 {
     // show dialog window to select file
     QString fileName = QFileDialog::getSaveFileName(this,
-                                                    "Save File",
+                                                    "Save File As",
                                                     QDir::homePath(),
                                                     "Accountancy files (*.acty)");
 

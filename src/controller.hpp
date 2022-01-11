@@ -39,8 +39,9 @@ public:
     // TRANSACTIONS
     void addTransactionToAccount(Transaction *transaction, Account *account);
 
-    // SAVE MODEL TO FILE
+    // LOAD or SAVE MODEL TO FILE
     bool saveToFile(const QString &filePath);
+    bool loadFile(const QString &filePath);
 
     // CURRENT FILE
     [[nodiscard]] const QString &getCurrentFilePath() const;
