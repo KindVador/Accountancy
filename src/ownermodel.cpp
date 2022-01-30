@@ -6,9 +6,10 @@ int OwnerModel::addOwner(Owner *owner)
 {
     if (owner == nullptr)
         return -1;
-
+    beginResetModel();
     owner->setId(getLastId());
     _owners.append(owner);
+    endResetModel();
     return owner->getId();
 }
 

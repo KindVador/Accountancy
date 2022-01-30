@@ -32,14 +32,18 @@ public:
 
     // Serialization
     void write(QJsonObject &json) const;
-    void read(QJsonObject &json);
+    void read(const QJsonObject &json);
 
     void setOwnerFilter(int OwnerId);
     void setOwnerFilter(const QString &ownerName);
     static float balanceForOwner(const Owner *owner);
 
+    void reset();
+    [[nodiscard]] bool isDirty() const;
+
 private:
     static Model *_singleton;
+    static const QString _modelVersion;
     OwnerModel *_ownerModel = nullptr;
     CurrencyModel *_currencyModel = nullptr;
     AccountModel *_accountModel = nullptr;

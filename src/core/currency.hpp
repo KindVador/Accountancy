@@ -11,6 +11,8 @@ public:
     explicit Currency(QString name, QString symbol);
     ~Currency() = default;
 
+    static Currency *fromJson(const QJsonObject &json);
+
     // Getter & Setter
     [[nodiscard]] QString getName() const;
     void setName(const QString &value);

@@ -29,7 +29,7 @@ public:
 
     // OWNERS
     void addOwner(Owner *owner);
-    Owner *addOwner(const QString &name, const Currency *currency, float warningBalance, const QString &comment, bool isHidden);
+    Owner *addOwner(const QString &name, float warningBalance, const QString &comment, bool isHidden);
 
     // ACCOUNTS
     Account *addAccount(const FinancialInstitution *institution, AccountType type, Currency *currency,
@@ -39,7 +39,8 @@ public:
     // TRANSACTIONS
     void addTransactionToAccount(Transaction *transaction, Account *account);
 
-    // LOAD or SAVE MODEL TO FILE
+    // CREATE, LOAD or SAVE MODEL TO FILE
+    bool createNewFile(const QString &filePath);
     bool saveToFile(const QString &filePath);
     bool loadFile(const QString &filePath);
 

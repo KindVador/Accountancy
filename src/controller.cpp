@@ -1,6 +1,7 @@
 #include "controller.hpp"
 
 #include <QJsonDocument>
+#include <QMessageBox>
 
 constexpr const int ObjectRole = Qt::UserRole + 1;
 
@@ -47,16 +48,13 @@ void Controller::showMainWindow()
     _mainWindow->show();
 }
 
-Owner *Controller::addOwner(const QString &name, const Currency *currency, float warningBalance, const QString &comment, bool isHidden)
+Owner *Controller::addOwner(const QString &name, float warningBalance, const QString &comment, bool isHidden)
 {
     if (_model == nullptr)
         return nullptr;
 
     // model update
     Owner *newOwner = _model->getOwnerModel()->addOwner(name, warningBalance, comment, isHidden);
-
-    // view update
-    _mainWindow->onOwnerModelUpdate();
 
     return newOwner;
 }
@@ -175,8 +173,40 @@ bool Controller::loadFile(const QString &filePath)
         return false;
     }
 
+    QByteArray saveData = openedFile.readAll();
+    QJsonDocument json = QJsonDocument::fromJson(saveData);
+    _model->reset();
+    _model->read(json.object());
+
+    return true;
+}
+
+bool Controller::createNewFile(const QString &filePath)
+{
+    // check if a model has unsaved modifications
+    if (_model != nullptr && _model->isDirty()) {
+        // ask user if he wants to save modifications
+        int res = QMessageBox::question(nullptr,
+                                        "Save modifications",
+                                        "Current opened file has unsaved changes.\n\nDo you want to save them ?");
+        if (res == QMessageBox::Yes)
+            saveToFile(getCurrentFilePath());
+    }
+
+    // reset model
+    _model->reset();
+
+    setCurrentFilePath(filePath);
+    QFile saveFile(filePath);
+
+    if (!saveFile.open(QIODevice::WriteOnly)) {
+        qWarning("Couldn't create file.");
+        return false;
+    }
+
     QJsonObject modelJsonObject;
-    _model->read(modelJsonObject);
+    _model->write(modelJsonObject);
+    saveFile.write(QJsonDocument(modelJsonObject).toJson());
 
     return true;
 }

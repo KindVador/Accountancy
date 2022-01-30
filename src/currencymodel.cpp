@@ -4,7 +4,7 @@ constexpr const int ObjectRole = Qt::UserRole + 1;
 
 int CurrencyModel::rowCount(const QModelIndex &parent) const
 {
-    return _currencies.count();
+    return _currencies.size();
 }
 
 QVariant CurrencyModel::data(const QModelIndex &index, int role) const

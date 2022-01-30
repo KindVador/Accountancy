@@ -55,4 +55,14 @@ void Currency::setId(int id)
     _id = id;
 }
 
+Currency *Currency::fromJson(const QJsonObject &json)
+{
+    if (json.isEmpty())
+        return nullptr;
+
+    auto currency = new Currency;
+    currency->read(json);
+    return currency;
+}
+
 

@@ -21,22 +21,21 @@ public:
     [[nodiscard]] Model *getModel() const;
     void setModel(Model *model);
 
-public slots:
-    void onOwnerModelUpdate();
-    void onOpenAction();
-    void onSaveAction();
-    void onSaveAsAction();
-
 signals:
     void selectedOwnerChanged(const QModelIndex &ownerIndex);
     void selectedAccountChanged(const QModelIndex &accountIndex);
 
 private slots:
+    void onCreateAction();
+    void onOpenAction();
+    void onSaveAction();
+    void onSaveAsAction();
     void showCredits();
     void onActionImport();
     void contextualOwnerMenuRequested(const QPoint &pos);
     void onActionMainDock(bool checked);
     void onAccountDoubleClicked(const QModelIndex &index);
+    void onAddOwnerAction();
 
 private:
     Ui::MainWindow *ui = nullptr;

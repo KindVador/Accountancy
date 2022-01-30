@@ -1,6 +1,8 @@
 #include <QJsonArray>
 #include "model.hpp"
 
+const QString Model::_modelVersion = "0.1";
+
 constexpr const int ObjectRole = Qt::UserRole + 1;
 
 Model *Model::_singleton = nullptr;
@@ -99,48 +101,96 @@ FinancialInstitutionModel *Model::getFinancialInstitutionModel()
 
 void Model::write(QJsonObject &json) const
 {
+    // Model versionR
+    json["model_version"] = _modelVersion;
+
     // Currencies
-    QJsonArray currencies;
-    for (int i = 0; i < _currencyModel->rowCount(QModelIndex()); ++i) {
-        auto *currency = _currencyModel->data(_currencyModel->index(i, 0), ObjectRole).value<Currency *>();
-        QJsonObject currencyJson;
-        currency->write(currencyJson);
-        currencies.append(currencyJson);
+    if (_currencyModel != nullptr) {
+        QJsonArray currencies;
+        for (int i = 0; i < _currencyModel->rowCount(QModelIndex()); ++i) {
+            auto *currency = _currencyModel->data(_currencyModel->index(i, 0), ObjectRole).value<Currency *>();
+            QJsonObject currencyJson;
+            currency->write(currencyJson);
+            currencies.append(currencyJson);
+        }
+        json["currencies"] = currencies;
     }
-    json["currencies"] = currencies;
 
     // Owners
-    QJsonArray owners;
-    for (int i = 0; i < _ownerModel->rowCount(QModelIndex()); ++i) {
-        auto *owner = _ownerModel->data(_ownerModel->index(i, 0), ObjectRole).value<Owner *>();
-        QJsonObject ownerJson;
-        owner->write(ownerJson);
-        owners.append(ownerJson);
+    if (_ownerModel != nullptr) {
+        QJsonArray owners;
+        for (int i = 0; i < _ownerModel->rowCount(QModelIndex()); ++i) {
+            auto *owner = _ownerModel->data(_ownerModel->index(i, 0), ObjectRole).value<Owner *>();
+            QJsonObject ownerJson;
+            owner->write(ownerJson);
+            owners.append(ownerJson);
+        }
+        json["owners"] = owners;
     }
-    json["owners"] = owners;
 
     // Institutions
-    QJsonArray institutions;
-    for (int i = 0; i < _institutionsModel->rowCount(QModelIndex()); ++i) {
-        auto *institution = _institutionsModel->data(_institutionsModel->index(i, 0), ObjectRole).value<FinancialInstitution *>();
-        QJsonObject institutionJson;
-        institution->write(institutionJson);
-        institutions.append(institutionJson);
+    if (_institutionsModel != nullptr) {
+        QJsonArray institutions;
+        for (int i = 0; i < _institutionsModel->rowCount(QModelIndex()); ++i) {
+            auto *institution = _institutionsModel->data(_institutionsModel->index(i, 0), ObjectRole).value<FinancialInstitution *>();
+            QJsonObject institutionJson;
+            institution->write(institutionJson);
+            institutions.append(institutionJson);
+        }
+        json["institutions"] = institutions;
     }
-    json["institutions"] = institutions;
 
     // Accounts
-    QJsonArray accounts;
-    for (int i = 0; i < _accountModel->rowCount(QModelIndex()); ++i) {
-        auto *account = _accountModel->data(_accountModel->index(i, 0), ObjectRole).value<Account *>();
-        QJsonObject accountJson;
-        account->write(accountJson);
-        accounts.append(accountJson);
+    if (_accountModel != nullptr) {
+        QJsonArray accounts;
+        for (int i = 0; i < _accountModel->rowCount(QModelIndex()); ++i) {
+            auto *account = _accountModel->data(_accountModel->index(i, 0), ObjectRole).value<Account *>();
+            QJsonObject accountJson;
+            account->write(accountJson);
+            accounts.append(accountJson);
+        }
+        json["accounts"] = accounts;
     }
-    json["accounts"] = accounts;
 }
 
-void Model::read(QJsonObject &json)
+void Model::read(const QJsonObject &json)
 {
+    // Currencies
+    if (json.contains("currencies") && json["currencies"].isArray()) {
+        delete _currencyModel;
+        _currencyModel = new CurrencyModel;
+        QJsonArray currenciesJsonArray = json["currencies"].toArray();
+        for (const QJsonValueRef &currency : qAsConst(currenciesJsonArray))
+            _currencyModel->addCurrency(Currency::fromJson(currency.toObject()));
+    }
+}
 
+/*!
+ * Check if model has unsaved modifications.
+ * @return true if model has unsaved modification, otherwise false.
+ */
+bool Model::isDirty() const
+{
+    // TODO: check if model has unsaved modifications
+    return false;
+}
+
+void Model::reset()
+{
+    // delete previous models
+    delete _ownerModel;
+    delete _currencyModel;
+    delete _accountModel;
+    delete _accountFilteredModel;
+    delete _institutionsModel;
+
+    // create empty model
+    _ownerModel = new OwnerModel;
+    _currencyModel = new CurrencyModel;
+    _accountModel = new AccountModel;
+    _accountFilteredModel = new AccountFilter;
+    _institutionsModel = new FinancialInstitutionModel;
+
+    // set source model for AccountFilter
+    _accountFilteredModel->setSourceModel(_accountModel);
 }

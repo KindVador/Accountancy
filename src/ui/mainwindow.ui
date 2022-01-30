@@ -36,13 +36,14 @@
      <x>0</x>
      <y>0</y>
      <width>1485</width>
-     <height>37</height>
+     <height>24</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuFichier">
     <property name="title">
      <string>Fichier</string>
     </property>
+    <addaction name="actionCreate"/>
     <addaction name="actionOpen"/>
     <addaction name="actionImport"/>
     <addaction name="actionSave"/>
@@ -77,6 +78,8 @@
    <attribute name="toolBarBreak">
     <bool>false</bool>
    </attribute>
+   <addaction name="actionCreate"/>
+   <addaction name="actionSave"/>
    <addaction name="actionImport"/>
   </widget>
   <widget class="QDockWidget" name="mainDockWidget">
@@ -89,11 +92,29 @@
    <widget class="QWidget" name="dockWidgetContents">
     <layout class="QVBoxLayout" name="verticalLayout_2">
      <item>
-      <widget class="QLabel" name="lblOwners">
-       <property name="text">
-        <string>Owners:</string>
-       </property>
-      </widget>
+      <layout class="QHBoxLayout" name="horizontalLayout">
+       <item>
+        <widget class="QLabel" name="lblOwners">
+         <property name="text">
+          <string>Owners:</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QToolButton" name="addOwnerButton">
+         <property name="text">
+          <string>+</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QToolButton" name="removeOwnerButton">
+         <property name="text">
+          <string>-</string>
+         </property>
+        </widget>
+       </item>
+      </layout>
      </item>
      <item>
       <widget class="QListView" name="ownersView"/>
@@ -106,11 +127,29 @@
       </widget>
      </item>
      <item>
-      <widget class="QLabel" name="lblAccounts">
-       <property name="text">
-        <string>Accounts:</string>
-       </property>
-      </widget>
+      <layout class="QHBoxLayout" name="horizontalLayout_2">
+       <item>
+        <widget class="QLabel" name="lblAccounts">
+         <property name="text">
+          <string>Accounts:</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QToolButton" name="addAccountButton">
+         <property name="text">
+          <string>+</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QToolButton" name="removeAccountButton">
+         <property name="text">
+          <string>-</string>
+         </property>
+        </widget>
+       </item>
+      </layout>
      </item>
      <item>
       <widget class="QListView" name="accountsView"/>
@@ -236,6 +275,11 @@
   <action name="actionSaveAs">
    <property name="text">
     <string>Save As</string>
+   </property>
+  </action>
+  <action name="actionCreate">
+   <property name="text">
+    <string>Create</string>
    </property>
   </action>
  </widget>

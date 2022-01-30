@@ -5,6 +5,7 @@
 #include "transactionswidget.hpp"
 #include "../transactionmodel.hpp"
 #include "../controller.hpp"
+#include "addownerdialog.hpp"
 
 #include <QMessageBox>
 #include <QString>
@@ -37,6 +38,8 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWi
     connect(ui->actionOpen, &QAction::triggered, this, &MainWindow::onOpenAction);
     connect(ui->actionSave, &QAction::triggered, this, &MainWindow::onSaveAction);
     connect(ui->actionSaveAs, &QAction::triggered, this, &MainWindow::onSaveAsAction);
+    connect(ui->actionCreate, &QAction::triggered, this, &MainWindow::onCreateAction);
+    connect(ui->addOwnerButton, &QPushButton::clicked, this, &MainWindow::onAddOwnerAction);
 }
 
 MainWindow::~MainWindow()
@@ -55,10 +58,6 @@ void MainWindow::onActionImport()
 {
     ImportDataDialog dialog = ImportDataDialog();
     dialog.exec();
-}
-
-void MainWindow::onOwnerModelUpdate()
-{
 }
 
 Model *MainWindow::getModel() const
@@ -145,4 +144,26 @@ void MainWindow::onSaveAsAction()
     // update current file variable
     Controller *controller = Controller::getInstance();
     controller->saveToFile(fileName);
+}
+
+void MainWindow::onCreateAction()
+{
+    // show dialog window to select file
+    QString fileName = QFileDialog::getSaveFileName(this,
+                                                    "Create new file",
+                                                    QDir::homePath(),
+                                                    "Accountancy files (*.acty)");
+
+    // update current file variable
+    Controller *controller = Controller::getInstance();
+    if (controller->createNewFile(fileName)) {
+        ui->actionSave->setEnabled(true);
+        ui->actionSaveAs->setEnabled(true);
+    }
+}
+
+void MainWindow::onAddOwnerAction()
+{
+    auto dialog = AddOwnerDialog(this);
+    dialog.exec();
 }
