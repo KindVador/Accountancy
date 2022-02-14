@@ -121,10 +121,8 @@ void MainWindow::onOpenAction()
 
     // update current file variable
     Controller *controller = Controller::getInstance();
-    if (controller->loadFile(fileName)) {
-        ui->actionSave->setEnabled(true);
-        ui->actionSaveAs->setEnabled(true);
-    }
+    if (controller->loadFile(fileName))
+        updateEditionInterface(true);
 }
 
 void MainWindow::onSaveAction()
@@ -156,14 +154,23 @@ void MainWindow::onCreateAction()
 
     // update current file variable
     Controller *controller = Controller::getInstance();
-    if (controller->createNewFile(fileName)) {
-        ui->actionSave->setEnabled(true);
-        ui->actionSaveAs->setEnabled(true);
-    }
+    if (controller->createNewFile(fileName))
+        updateEditionInterface(true);
 }
 
 void MainWindow::onAddOwnerAction()
 {
     auto dialog = AddOwnerDialog(this);
     dialog.exec();
+}
+
+void MainWindow::updateEditionInterface(bool enable)
+{
+    ui->actionImport->setEnabled(enable);
+    ui->actionSave->setEnabled(enable);
+    ui->actionSaveAs->setEnabled(enable);
+    ui->addOwnerButton->setEnabled(enable);
+    ui->removeOwnerButton->setEnabled(enable);
+    ui->addAccountButton->setEnabled(enable);
+    ui->removeAccountButton->setEnabled(enable);
 }

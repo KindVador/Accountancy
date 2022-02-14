@@ -21,6 +21,9 @@ public:
     [[nodiscard]] Model *getModel() const;
     void setModel(Model *model);
 
+public slots:
+    void updateEditionInterface(bool enable);
+
 signals:
     void selectedOwnerChanged(const QModelIndex &ownerIndex);
     void selectedAccountChanged(const QModelIndex &accountIndex);

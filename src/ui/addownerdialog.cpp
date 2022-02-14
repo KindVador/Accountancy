@@ -7,7 +7,6 @@ AddOwnerDialog::AddOwnerDialog(QWidget *parent) :
         QDialog(parent), ui(new Ui::AddOwnerDialog)
 {
     ui->setupUi(this);
-
 }
 
 AddOwnerDialog::~AddOwnerDialog()

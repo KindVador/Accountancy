@@ -36,7 +36,7 @@
      <x>0</x>
      <y>0</y>
      <width>1485</width>
-     <height>24</height>
+     <height>37</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuFichier">
@@ -102,6 +102,9 @@
        </item>
        <item>
         <widget class="QToolButton" name="addOwnerButton">
+         <property name="enabled">
+          <bool>false</bool>
+         </property>
          <property name="text">
           <string>+</string>
          </property>
@@ -109,6 +112,9 @@
        </item>
        <item>
         <widget class="QToolButton" name="removeOwnerButton">
+         <property name="enabled">
+          <bool>false</bool>
+         </property>
          <property name="text">
           <string>-</string>
          </property>
@@ -137,6 +143,9 @@
        </item>
        <item>
         <widget class="QToolButton" name="addAccountButton">
+         <property name="enabled">
+          <bool>false</bool>
+         </property>
          <property name="text">
           <string>+</string>
          </property>
@@ -144,6 +153,9 @@
        </item>
        <item>
         <widget class="QToolButton" name="removeAccountButton">
+         <property name="enabled">
+          <bool>false</bool>
+         </property>
          <property name="text">
           <string>-</string>
          </property>
@@ -170,6 +182,9 @@
      </item>
      <item>
       <widget class="QPushButton" name="btnPieChart">
+       <property name="enabled">
+        <bool>false</bool>
+       </property>
        <property name="text">
         <string>Pie chart</string>
        </property>
@@ -177,6 +192,9 @@
      </item>
      <item>
       <widget class="QPushButton" name="btnBarChart">
+       <property name="enabled">
+        <bool>false</bool>
+       </property>
        <property name="text">
         <string>Bar chart</string>
        </property>
@@ -198,6 +216,9 @@
      </item>
      <item>
       <widget class="QPushButton" name="btnCategories">
+       <property name="enabled">
+        <bool>false</bool>
+       </property>
        <property name="text">
         <string>Categories</string>
        </property>
@@ -205,6 +226,9 @@
      </item>
      <item>
       <widget class="QPushButton" name="btnRules">
+       <property name="enabled">
+        <bool>false</bool>
+       </property>
        <property name="text">
         <string>Rules</string>
        </property>
@@ -227,6 +251,9 @@
    </widget>
   </widget>
   <action name="actionImport">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
    <property name="icon">
     <iconset resource="../../Resources.qrc">
      <normaloff>:/icns/black/resources/icons/black/png/import_icon&amp;32.png</normaloff>
@@ -263,6 +290,9 @@
    </property>
   </action>
   <action name="actionSave">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
    <property name="text">
     <string>Save</string>
    </property>
@@ -273,6 +303,9 @@
    </property>
   </action>
   <action name="actionSaveAs">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
    <property name="text">
     <string>Save As</string>
    </property>

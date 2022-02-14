@@ -9,19 +9,6 @@ Controller *Controller::_singleton = nullptr;
 
 Controller::Controller(): _model(Model::getInstance()), _mainWindow(new MainWindow)
 {
-    // model init for debug
-    auto *euro = new Currency();
-    euro->setName("Euro");
-    euro->setSymbol("€");
-    const FinancialInstitution *ce = addFinancialInstitution("Caisse d'Epargne");
-    auto *florian = new Owner("Florian", 0, "", false);
-    auto *toto = new Owner("Toto", 0, "", false);
-    addOwner(florian);
-    addOwner(toto);
-    addAccount(ce, AccountType::Checking, euro, florian, 100, 200, "ACCOUNT_FLORIAN_1", "my comment", true, false);
-    addAccount(ce, AccountType::Checking, euro, florian, 1000, 500, "ACCOUNT_FLORIAN_2", "my comment", true, false);
-    addAccount(ce, AccountType::Checking, euro, toto, 750, 50, "ACCOUNT_TOTO", "my comment", true, false);
-
     // connect with MainWindow
     if (_mainWindow != nullptr) {
         _mainWindow->setModel(_model);
