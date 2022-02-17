@@ -19,6 +19,8 @@ public:
     int addFinancialInstitution(FinancialInstitution *institution);
     FinancialInstitution *addFinancialInstitution(QString name);
 
+    void reset();
+
 private:
     QList<FinancialInstitution *> _institutions;
 };

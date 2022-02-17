@@ -86,3 +86,13 @@ void Owner::write(QJsonObject &json) const
     json["warning_balance"] = _warningBalance;
     json["is_hidden"] = _isHidden;
 }
+
+Owner *Owner::fromJson(const QJsonObject &json)
+{
+    if (json.isEmpty())
+        return nullptr;
+
+    auto owner = new Owner;
+    owner->read(json);
+    return owner;
+}

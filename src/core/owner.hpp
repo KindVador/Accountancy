@@ -14,6 +14,8 @@ public:
     Owner(QString name, double warningBalance, QString comment, bool isHidden);
     ~Owner() = default;
 
+    static Owner *fromJson(const QJsonObject &json);
+
     // Getter & Setter
     [[nodiscard]] QString getName() const;
     void setName(const QString &value);

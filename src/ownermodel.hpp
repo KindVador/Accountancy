@@ -25,6 +25,8 @@ public:
     void removeOwner(int id);
     Owner* getOwner(const QString &name);
 
+    void reset();
+
 private:
     QList<Owner*> _owners;
 

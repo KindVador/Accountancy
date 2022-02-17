@@ -75,3 +75,10 @@ int CurrencyModel::getLastId() const
     else
         return _currencies.last()->getId() + 1;
 }
+
+void CurrencyModel::reset()
+{
+    beginResetModel();
+    _currencies.clear();
+    endResetModel();
+}

@@ -243,3 +243,13 @@ void Account::setType(AccountType type)
 {
     _type = type;
 }
+
+Account *Account::fromJson(const QJsonObject &json)
+{
+    if (json.isEmpty())
+        return nullptr;
+
+    auto account = new Account;
+    account->read(json);
+    return account;
+}

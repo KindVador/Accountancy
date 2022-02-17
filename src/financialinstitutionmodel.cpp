@@ -51,3 +51,10 @@ FinancialInstitution *FinancialInstitutionModel::addFinancialInstitution(QString
     addFinancialInstitution(newFinancialInstitution);
     return newFinancialInstitution;
 }
+
+void FinancialInstitutionModel::reset()
+{
+    beginResetModel();
+    _institutions.clear();
+    endResetModel();
+}

@@ -101,7 +101,7 @@ FinancialInstitutionModel *Model::getFinancialInstitutionModel()
 
 void Model::write(QJsonObject &json) const
 {
-    // Model versionR
+    // Model version
     json["model_version"] = _modelVersion;
 
     // Currencies
@@ -155,14 +155,37 @@ void Model::write(QJsonObject &json) const
 
 void Model::read(const QJsonObject &json)
 {
+    // check Model version
+    if (!json.contains("model_version") || json["model_version"].toString() != _modelVersion) {
+        qWarning() << "Wrong model version";
+        return;
+    }
+
+    // Owners
+    if (json.contains("owners") && json["owners"].isArray()) {
+        QJsonArray ownersJsonArray = json["owners"].toArray();
+        for (const QJsonValueRef &owner : qAsConst(ownersJsonArray))
+            _ownerModel->addOwner(Owner::fromJson(owner.toObject()));
+    }
+
     // Currencies
     if (json.contains("currencies") && json["currencies"].isArray()) {
-        delete _currencyModel;
-        _currencyModel = new CurrencyModel;
         QJsonArray currenciesJsonArray = json["currencies"].toArray();
         for (const QJsonValueRef &currency : qAsConst(currenciesJsonArray))
             _currencyModel->addCurrency(Currency::fromJson(currency.toObject()));
     }
+
+    // Accounts
+    if (json.contains("accounts") && json["accounts"].isArray()) {
+        QJsonArray accountsJsonArray = json["accounts"].toArray();
+        for (const QJsonValueRef &account : qAsConst(accountsJsonArray))
+            _accountModel->addAccount(Account::fromJson(account.toObject()));
+    }
+
+    // Financial Institutions
+
+    // Transactions
+
 }
 
 /*!
@@ -177,20 +200,18 @@ bool Model::isDirty() const
 
 void Model::reset()
 {
-    // delete previous models
-    delete _ownerModel;
-    delete _currencyModel;
-    delete _accountModel;
-    delete _accountFilteredModel;
-    delete _institutionsModel;
+    if (_ownerModel != nullptr)
+        _ownerModel->reset();
 
-    // create empty model
-    _ownerModel = new OwnerModel;
-    _currencyModel = new CurrencyModel;
-    _accountModel = new AccountModel;
-    _accountFilteredModel = new AccountFilter;
-    _institutionsModel = new FinancialInstitutionModel;
+    if (_currencyModel != nullptr)
+        _currencyModel->reset();
 
-    // set source model for AccountFilter
-    _accountFilteredModel->setSourceModel(_accountModel);
+    if (_accountModel != nullptr)
+        _accountModel->reset();
+
+    if (_institutionsModel != nullptr)
+        _institutionsModel->reset();
+
+    if (_accountFilteredModel != nullptr)
+        _accountFilteredModel->invalidate();
 }

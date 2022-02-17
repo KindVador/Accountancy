@@ -41,8 +41,8 @@ public:
 
     // CREATE, LOAD or SAVE MODEL TO FILE
     bool createNewFile(const QString &filePath);
-    bool saveToFile(const QString &filePath);
     bool loadFile(const QString &filePath);
+    bool saveToFile(const QString &filePath);
 
     // CURRENT FILE
     [[nodiscard]] const QString &getCurrentFilePath() const;

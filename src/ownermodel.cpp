@@ -75,3 +75,10 @@ int OwnerModel::getLastId() const {
     else
         return _owners.last()->getId() + 1;
 }
+
+void OwnerModel::reset()
+{
+    beginResetModel();
+    _owners.clear();
+    endResetModel();
+}

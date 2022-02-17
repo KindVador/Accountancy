@@ -62,3 +62,10 @@ QVariant TransactionModel::headerData(int section, Qt::Orientation orientation, 
         return headerLabels.at(section);
     return {};
 }
+
+void TransactionModel::reset()
+{
+    beginResetModel();
+    _account = nullptr;
+    endResetModel();
+}

@@ -19,6 +19,8 @@ public:
     [[nodiscard]] int columnCount(const QModelIndex &parent) const override;
     [[nodiscard]] QVariant data(const QModelIndex &index, int role) const override;
 
+    void reset();
+
 private:
     Account *_account = nullptr;
     static QList<QString> headerLabels;

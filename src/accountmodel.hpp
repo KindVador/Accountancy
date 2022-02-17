@@ -21,6 +21,8 @@ public:
                    float initialBalance, float warningBalance, const QString &accountNumber, const QString &comment,
                    bool isIncludedInTotal, bool isHidden);
 
+    void reset();
+
 private:
     QList<Account *> _accounts;
 };

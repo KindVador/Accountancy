@@ -51,7 +51,7 @@ private:
     AccountFilter *_accountFilteredModel = nullptr;
 
     // Singleton
-    Model();
+    explicit Model();
 };
 
 #endif //ACCOUNTANCY_MODEL_HPP

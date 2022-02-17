@@ -41,9 +41,11 @@ Owner *Controller::addOwner(const QString &name, float warningBalance, const QSt
         return nullptr;
 
     // model update
-    Owner *newOwner = _model->getOwnerModel()->addOwner(name, warningBalance, comment, isHidden);
+    auto ownersModel = _model->getOwnerModel();
+    if (ownersModel != nullptr)
+        return ownersModel->addOwner(name, warningBalance, comment, isHidden);
 
-    return newOwner;
+    return nullptr;
 }
 
 Account *Controller::addAccount(const FinancialInstitution *institution, AccountType type, Currency *currency,
@@ -155,7 +157,7 @@ bool Controller::loadFile(const QString &filePath)
     setCurrentFilePath(filePath);
     QFile openedFile(filePath);
 
-    if (!openedFile.open(QIODevice::WriteOnly)) {
+    if (!openedFile.open(QIODevice::ReadOnly)) {
         qWarning("Couldn't open file.");
         return false;
     }

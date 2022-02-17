@@ -54,3 +54,10 @@ Account *AccountModel::addAccount(const FinancialInstitution *institution, Accou
     addAccount(newAccount);
     return newAccount;
 }
+
+void AccountModel::reset()
+{
+    beginResetModel();
+    _accounts.clear();
+    endResetModel();
+}

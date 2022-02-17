@@ -51,6 +51,8 @@ public:
             bool isIncludedInTotal, bool isHidden);
     ~Account() = default;
 
+    static Account *fromJson(const QJsonObject &json);
+
     // Getter & Setter
     [[nodiscard]] int getId() const;
     void setId(int id);

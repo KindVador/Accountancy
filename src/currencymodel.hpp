@@ -24,6 +24,8 @@ public:
     void removeCurrency(int id);
     Currency* getCurrency(const QString &name);
 
+    void reset();
+
 private:
     QList<Currency*> _currencies;
 
