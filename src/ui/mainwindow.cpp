@@ -40,6 +40,7 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWi
     connect(ui->actionSaveAs, &QAction::triggered, this, &MainWindow::onSaveAsAction);
     connect(ui->actionCreate, &QAction::triggered, this, &MainWindow::onCreateAction);
     connect(ui->addOwnerButton, &QPushButton::clicked, this, &MainWindow::onAddOwnerAction);
+    connect(ui->removeOwnerButton, &QPushButton::clicked, this, &MainWindow::onRemoveOwnerAction);
 }
 
 MainWindow::~MainWindow()
@@ -173,4 +174,12 @@ void MainWindow::updateEditionInterface(bool enable)
     ui->removeOwnerButton->setEnabled(enable);
     ui->addAccountButton->setEnabled(enable);
     ui->removeAccountButton->setEnabled(enable);
+}
+
+void MainWindow::onRemoveOwnerAction()
+{
+    OwnerModel *ownerModel = _model->getOwnerModel();
+    QList<QModelIndex> selIndexes = ui->ownersView->selectionModel()->selectedIndexes();
+    for (const QModelIndex &selIndex : qAsConst(selIndexes))
+        ownerModel->removeOwner(selIndex);
 }

@@ -39,6 +39,7 @@ private slots:
     void onActionMainDock(bool checked);
     void onAccountDoubleClicked(const QModelIndex &index);
     void onAddOwnerAction();
+    void onRemoveOwnerAction();
 
 private:
     Ui::MainWindow *ui = nullptr;

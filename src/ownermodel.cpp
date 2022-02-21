@@ -21,16 +21,6 @@ Owner *OwnerModel::addOwner(const QString &name, float warningBalance, const QSt
     return newOwner;
 }
 
-void OwnerModel::removeOwner(Owner *owner)
-{
-    // TODO
-}
-
-void OwnerModel::removeOwner(int id)
-{
-    // TODO
-}
-
 Owner *OwnerModel::getOwner(const QString &name)
 {
     auto ownerIt = std::find_if(_owners.begin(), _owners.end(), [&name](Owner *owner) { return owner->getName() == name; });
@@ -80,5 +70,13 @@ void OwnerModel::reset()
 {
     beginResetModel();
     _owners.clear();
+    endResetModel();
+}
+
+void OwnerModel::removeOwner(const QModelIndex &index)
+{
+    beginResetModel();
+    delete _owners.at(index.row());
+    _owners.removeAt(index.row());
     endResetModel();
 }
