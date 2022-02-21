@@ -79,6 +79,7 @@
     <bool>false</bool>
    </attribute>
    <addaction name="actionCreate"/>
+   <addaction name="actionOpen"/>
    <addaction name="actionSave"/>
    <addaction name="actionImport"/>
   </widget>
@@ -256,8 +257,7 @@
    </property>
    <property name="icon">
     <iconset resource="../../Resources.qrc">
-     <normaloff>:/icns/black/resources/icons/black/png/import_icon&amp;32.png</normaloff>
-     <normalon>:/icns/black/resources/icons/black/png/import_icon&amp;24.png</normalon>:/icns/black/resources/icons/black/png/import_icon&amp;32.png</iconset>
+     <normaloff>:/icns/black/resources/icons/doc_import_icon_32.png</normaloff>:/icns/black/resources/icons/doc_import_icon_32.png</iconset>
    </property>
    <property name="text">
     <string>Importer...</string>
@@ -266,6 +266,9 @@
   <action name="actionClose">
    <property name="text">
     <string>Quitter</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+Q</string>
    </property>
   </action>
   <action name="actionCredits">
@@ -293,13 +296,27 @@
    <property name="enabled">
     <bool>false</bool>
    </property>
+   <property name="icon">
+    <iconset resource="../../Resources.qrc">
+     <normaloff>:/icns/black/resources/icons/save_icon_32.png</normaloff>:/icns/black/resources/icons/save_icon_32.png</iconset>
+   </property>
    <property name="text">
     <string>Save</string>
    </property>
+   <property name="shortcut">
+    <string>Ctrl+S</string>
+   </property>
   </action>
   <action name="actionOpen">
+   <property name="icon">
+    <iconset resource="../../Resources.qrc">
+     <normaloff>:/icns/black/resources/icons/folder_icon_32.png</normaloff>:/icns/black/resources/icons/folder_icon_32.png</iconset>
+   </property>
    <property name="text">
     <string>Open</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+O</string>
    </property>
   </action>
   <action name="actionSaveAs">
@@ -311,6 +328,10 @@
    </property>
   </action>
   <action name="actionCreate">
+   <property name="icon">
+    <iconset resource="../../Resources.qrc">
+     <normaloff>:/icns/black/resources/icons/doc_empty_icon_32.png</normaloff>:/icns/black/resources/icons/doc_empty_icon_32.png</iconset>
+   </property>
    <property name="text">
     <string>Create</string>
    </property>
