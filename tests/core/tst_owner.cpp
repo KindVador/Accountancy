@@ -1,6 +1,6 @@
 #include <QTest>
 
-#include "src/core/owner.hpp"
+#include "../../src/core/owner.hpp"
 
 class OwnerTest : public QObject
 {

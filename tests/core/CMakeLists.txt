@@ -2,11 +2,13 @@ cmake_minimum_required(VERSION 3.20)
 
 project(TestsAccountancy LANGUAGES CXX)
 
-include_directories(..)
+include_directories(../src/core)
 
 find_package(Qt6 COMPONENTS Core Test REQUIRED)
 
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
+
+set(CMAKE_AUTOUIC ON)
 set(CMAKE_AUTOMOC ON)
 set(CMAKE_AUTORCC ON)
 
@@ -33,16 +35,9 @@ add_test(NAME TestsFinancialInstitution COMMAND TestsFinancialInstitution)
 add_executable(TestsAccount tst_account.cpp)
 add_test(NAME TestsAccount COMMAND TestsAccount)
 
-find_library (
-        CORE_LIB
-        NAMES libAccountancyCore.a
-        HINTS "${CMAKE_BINARY_DIR}/src/core"
-        NO_DEFAULT_PATH
-)
-message(STATUS "CORE_LIB: [${CORE_LIB}]")
-target_link_libraries(TestsDataImport PRIVATE Qt6::Core Qt6::Test ${CORE_LIB})
-target_link_libraries(TestsTransaction PRIVATE Qt6::Core Qt6::Test ${CORE_LIB})
-target_link_libraries(TestsCurrency PRIVATE Qt6::Core Qt6::Test ${CORE_LIB})
-target_link_libraries(TestsOwner PRIVATE Qt6::Core Qt6::Test ${CORE_LIB})
-target_link_libraries(TestsFinancialInstitution PRIVATE Qt6::Core Qt6::Test ${CORE_LIB})
-target_link_libraries(TestsAccount PRIVATE Qt6::Core Qt6::Test ${CORE_LIB})
+target_link_libraries(TestsDataImport PRIVATE Qt6::Core Qt6::Test AccountancyCore)
+target_link_libraries(TestsTransaction PRIVATE Qt6::Core Qt6::Test AccountancyCore)
+target_link_libraries(TestsCurrency PRIVATE Qt6::Core Qt6::Test AccountancyCore)
+target_link_libraries(TestsOwner PRIVATE Qt6::Core Qt6::Test AccountancyCore)
+target_link_libraries(TestsFinancialInstitution PRIVATE Qt6::Core Qt6::Test AccountancyCore)
+target_link_libraries(TestsAccount PRIVATE Qt6::Core Qt6::Test AccountancyCore)

@@ -1,7 +1,7 @@
 #include <QTest>
 
-#include "src/core/account.hpp"
-#include "src/core/financialinstitution.hpp"
+#include "../../src/core/account.hpp"
+#include "../../src/core/financialinstitution.hpp"
 
 class AccountTest : public QObject
 {

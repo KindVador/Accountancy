@@ -1,6 +1,6 @@
 #include <QTest>
 
-#include "src/core/financialinstitution.hpp"
+#include "../../src/core/financialinstitution.hpp"
 
 class FinancialInstitutionTest : public QObject
 {
