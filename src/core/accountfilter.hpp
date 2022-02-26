@@ -2,7 +2,7 @@
 #define ACCOUNTANCY_ACCOUNTFILTER_HPP
 
 #include <QSortFilterProxyModel>
-#include "core/account.hpp"
+#include "account.hpp"
 
 class AccountFilter : public QSortFilterProxyModel
 {

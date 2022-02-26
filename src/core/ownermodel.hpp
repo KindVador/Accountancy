@@ -4,7 +4,7 @@
 #include <QAbstractListModel>
 #include <QDebug>
 
-#include "core/owner.hpp"
+#include "owner.hpp"
 
 
 class OwnerModel : public QAbstractListModel

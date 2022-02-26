@@ -1,12 +1,13 @@
 #ifndef ACCOUNTANCY_MODEL_HPP
 #define ACCOUNTANCY_MODEL_HPP
 
-#include "core/owner.hpp"
+#include "owner.hpp"
 #include "ownermodel.hpp"
 #include "currencymodel.hpp"
 #include "accountmodel.hpp"
 #include "accountfilter.hpp"
 #include "financialinstitutionmodel.hpp"
+#include "transactionmodel.hpp"
 
 class Model : public QObject
 {
@@ -37,6 +38,8 @@ public:
     void setOwnerFilter(int OwnerId);
     void setOwnerFilter(const QString &ownerName);
     static float balanceForOwner(const Owner *owner);
+
+    TransactionModel *getTransactionModel(Account *selectedAccount);
 
     void reset();
     [[nodiscard]] bool isDirty() const;

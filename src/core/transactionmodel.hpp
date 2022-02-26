@@ -2,12 +2,12 @@
 #define ACCOUNTANCY_TRANSACTIONMODEL_HPP
 
 #include <QAbstractTableModel>
-#include "core/account.hpp"
+#include "account.hpp"
+#include "transaction.hpp"
 
 class TransactionModel : public QAbstractTableModel
 {
 public:
-    TransactionModel() = default;
     explicit TransactionModel(Account *account);
     ~TransactionModel() override = default;
 

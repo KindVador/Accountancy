@@ -1,12 +1,12 @@
 #ifndef ACCOUNTANCY_CONTROLLER_HPP
 #define ACCOUNTANCY_CONTROLLER_HPP
 
-#include "core/financialinstitution.hpp"
-#include "core/owner.hpp"
-#include "core/account.hpp"
-#include "core/transaction.hpp"
+#include "financialinstitution.hpp"
+#include "owner.hpp"
+#include "account.hpp"
+#include "transaction.hpp"
 #include "model.hpp"
-#include "ui/mainwindow.hpp"
+#include "../ui/mainwindow.hpp"
 
 #include <QObject>
 

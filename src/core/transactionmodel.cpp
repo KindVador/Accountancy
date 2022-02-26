@@ -1,5 +1,4 @@
 #include "transactionmodel.hpp"
-#include "core/transaction.hpp"
 
 #include <QColor>
 

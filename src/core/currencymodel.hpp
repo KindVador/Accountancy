@@ -4,7 +4,7 @@
 #include <QAbstractListModel>
 #include <QDebug>
 
-#include "core/currency.hpp"
+#include "currency.hpp"
 
 class CurrencyModel : public QAbstractListModel
 {

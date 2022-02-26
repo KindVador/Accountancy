@@ -1,6 +1,6 @@
 #include <QTest>
 
-#include "../src/core/currency.hpp"
+#include "src/core/currency.hpp"
 
 class CurrencyTest : public QObject
 {

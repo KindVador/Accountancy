@@ -1,7 +1,7 @@
 #ifndef ACCOUNTANCY_FINANCIALINSTITUTIONMODEL_HPP
 #define ACCOUNTANCY_FINANCIALINSTITUTIONMODEL_HPP
 
-#include "core/financialinstitution.hpp"
+#include "financialinstitution.hpp"
 
 #include <QAbstractItemModel>
 

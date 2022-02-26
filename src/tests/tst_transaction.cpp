@@ -1,6 +1,6 @@
 #include <QTest>
 
-#include "../src/core/transaction.hpp"
+#include "src/core/transaction.hpp"
 
 class TransactionTest : public QObject
 {

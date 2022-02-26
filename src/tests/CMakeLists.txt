@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 3.20)
 
 project(TestsAccountancy LANGUAGES CXX)
 
-include_directories(../src)
+include_directories(..)
 
 find_package(Qt6 COMPONENTS Core Test REQUIRED)
 

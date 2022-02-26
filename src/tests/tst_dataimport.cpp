@@ -1,7 +1,7 @@
 #include <QTest>
 
-#include "../src/core/financialinstitution.hpp"
-#include "../src/core/transaction.hpp"
+#include "src/core/financialinstitution.hpp"
+#include "src/core/transaction.hpp"
 
 class DataImportTest : public QObject {
     Q_OBJECT

@@ -1,12 +1,12 @@
 #ifndef TRANSACTION_H
 #define TRANSACTION_H
 
-#include "account.hpp"
-
 #include <iostream>
 #include <QString>
 #include <QDate>
 #include <QJsonObject>
+
+class Account;
 
 enum class TransactionStatus: int
 {

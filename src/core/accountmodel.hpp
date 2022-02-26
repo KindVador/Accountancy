@@ -1,7 +1,7 @@
 #ifndef ACCOUNTANCY_ACCOUNTMODEL_HPP
 #define ACCOUNTANCY_ACCOUNTMODEL_HPP
 
-#include "core/account.hpp"
+#include "account.hpp"
 
 #include <QAbstractItemModel>
 

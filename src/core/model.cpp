@@ -215,3 +215,7 @@ void Model::reset()
     if (_accountFilteredModel != nullptr)
         _accountFilteredModel->invalidate();
 }
+
+TransactionModel *Model::getTransactionModel(Account *selectedAccount) {
+    return new TransactionModel(selectedAccount);
+}

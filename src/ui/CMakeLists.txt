@@ -8,3 +8,4 @@ add_library(AccountancyUi
             addownerdialog.hpp addownerdialog.cpp addownerdialog.ui)
 
 target_link_libraries(AccountancyUi PRIVATE Qt::Widgets)
+target_include_directories(AccountancyUi PUBLIC "${CMAKE_CURRENT_SOURCE_DIR}")

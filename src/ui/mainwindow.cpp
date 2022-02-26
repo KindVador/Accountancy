@@ -3,8 +3,7 @@
 #include "contextualmenugenerator.hpp"
 #include "importdatadialog.hpp"
 #include "transactionswidget.hpp"
-#include "../transactionmodel.hpp"
-#include "../controller.hpp"
+#include "../core/controller.hpp"
 #include "addownerdialog.hpp"
 
 #include <QMessageBox>
@@ -108,7 +107,7 @@ void MainWindow::onAccountDoubleClicked(const QModelIndex &index)
     // replace central widget by a TransactionsWidget
     auto centralWidget = new TransactionsWidget();
     centralWidget->setTitle(selectedAccount->getDisplayedName());
-    centralWidget->setModel(new TransactionModel(selectedAccount));
+    centralWidget->setModel(_model->getTransactionModel(selectedAccount));
     setCentralWidget(centralWidget);
 }
 

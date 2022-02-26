@@ -2,7 +2,7 @@
 #define ACCOUNTANCY_TRANSACTIONSWIDGET_HPP
 
 #include <QWidget>
-#include "../transactionmodel.hpp"
+#include "../core/transactionmodel.hpp"
 
 
 QT_BEGIN_NAMESPACE

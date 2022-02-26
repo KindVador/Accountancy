@@ -1,5 +1,5 @@
 #include "contextualmenugenerator.hpp"
-#include "../controller.hpp"
+#include "../core/controller.hpp"
 
 ContextualMenuGenerator *ContextualMenuGenerator::instance()
 {

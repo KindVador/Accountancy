@@ -4,7 +4,7 @@
 #include <QMainWindow>
 #include <QString>
 
-#include "../model.hpp"
+class Model;
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }

@@ -17,29 +17,14 @@ find_package(Qt6 COMPONENTS Widgets Sql REQUIRED)
 
 add_subdirectory(src/ui)
 add_subdirectory(src/core)
-add_subdirectory(tests)
+#add_subdirectory(src/tests)
 
 set(HEADER_FILES
-        src/model.hpp
-        src/controller.hpp
-        src/currencymodel.hpp
-        src/ownermodel.hpp
-        src/accountmodel.hpp
-        src/accountfilter.hpp
-        src/financialinstitutionmodel.hpp
-        src/transactionmodel.hpp
+
         )
 
 set(SOURCE_FILES
-        src/model.cpp
-        src/controller.cpp
-        src/currencymodel.cpp
         src/main.cpp
-        src/ownermodel.cpp
-        src/accountmodel.cpp
-        src/accountfilter.cpp
-        src/financialinstitutionmodel.cpp
-        src/transactionmodel.cpp
         )
 
 set(UI_FILES
