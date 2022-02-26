@@ -7,14 +7,16 @@
 class Timer
 {
 public:
-    Timer()
+    Timer(const char *name)
+    : m_Name(name), m_Stopped(false)
     {
         m_StartTimePoint = std::chrono::high_resolution_clock::now();
     }
 
     ~Timer()
     {
-        Stop();
+        if (!m_Stopped)
+            Stop();
     }
 
     void Stop()
@@ -27,12 +29,16 @@ public:
         auto duration = end - start;
         double ms = duration * 0.001;
 
-        std::cout << duration << "us (" << ms << "ms \n";
+        std::cout << m_Name << ": " << duration << "us (" << ms << "ms \n";
+
+        m_Stopped = true;
     }
 
 
 private:
+    const char* m_Name;
     std::chrono::time_point<std::chrono::high_resolution_clock> m_StartTimePoint;
+    bool m_Stopped;
 };
 
 #endif //ACCOUNTANCY_TIMER_HPP

@@ -1,4 +1,5 @@
 #include "controller.hpp"
+#include "../utils/instrumentor.hpp"
 
 #include <QJsonDocument>
 #include <QMessageBox>
@@ -59,7 +60,6 @@ Account *Controller::addAccount(const FinancialInstitution *institution, Account
     // model update
     return _model->getAccountModel()->addAccount(institution, type, currency, owner, initialBalance, warningBalance,
                                                  accountNumber, comment, isIncludedInTotal, isHidden);
-
 }
 
 void Controller::onSelectedOwner(const QModelIndex &index)
@@ -154,19 +154,26 @@ bool Controller::saveToFile(const QString &filePath)
 
 bool Controller::loadFile(const QString &filePath)
 {
-    setCurrentFilePath(filePath);
-    QFile openedFile(filePath);
+    Instrumentor::Get().BeginSession("Session1");
+    {
+        // Timer
+        InstrumentationTimer timer("loadFile");
 
-    if (!openedFile.open(QIODevice::ReadOnly)) {
-        qWarning("Couldn't open file.");
-        return false;
+        setCurrentFilePath(filePath);
+        QFile openedFile(filePath);
+
+        if (!openedFile.open(QIODevice::ReadOnly)) {
+            qWarning("Couldn't open file.");
+            return false;
+        }
+
+        QByteArray saveData = openedFile.readAll();
+        QJsonDocument json = QJsonDocument::fromJson(saveData);
+        _model->reset();
+        _model->read(json.object());
     }
 
-    QByteArray saveData = openedFile.readAll();
-    QJsonDocument json = QJsonDocument::fromJson(saveData);
-    _model->reset();
-    _model->read(json.object());
-
+    Instrumentor::Get().EndSession();
     return true;
 }
 

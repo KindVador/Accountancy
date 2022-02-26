@@ -15,9 +15,10 @@ set(CMAKE_INCLUDE_CURRENT_DIR ON)
 
 find_package(Qt6 COMPONENTS Widgets Sql REQUIRED)
 
-add_subdirectory(src/core "${CMAKE_CURRENT_BINARY_DIR}/core_build")
-add_subdirectory(src/ui "${CMAKE_CURRENT_BINARY_DIR}/ui_build")
-add_subdirectory(tests/core)
+add_subdirectory(src/core "${CMAKE_CURRENT_BINARY_DIR}/build_core")
+add_subdirectory(src/ui "${CMAKE_CURRENT_BINARY_DIR}/build_ui")
+add_subdirectory(src/utils "${CMAKE_CURRENT_BINARY_DIR}/build_utils")
+add_subdirectory(tests/core "${CMAKE_CURRENT_BINARY_DIR}/build_tests")
 
 set(HEADER_FILES
         )
@@ -65,6 +66,6 @@ ENDIF()
 
 # Since Qt 5.15, the CMake targets are also available as Qt::Core, Qt::Gui, and so on.
 # This eases writing CMake code that can work with both Qt 5 and Qt 6.
-target_link_libraries(Accountancy PRIVATE Qt::Widgets AccountancyCore AccountancyUi)
+target_link_libraries(Accountancy PRIVATE Qt::Widgets AccountancyCore AccountancyUi AccountancyUtils)
 
 qt_finalize_executable(Accountancy)
