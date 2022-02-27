@@ -5,6 +5,7 @@
 #include "transactionswidget.hpp"
 #include "../core/controller.hpp"
 #include "addownerdialog.hpp"
+#include "addaccountdialog.hpp"
 
 #include <QMessageBox>
 #include <QString>
@@ -40,6 +41,8 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWi
     connect(ui->actionCreate, &QAction::triggered, this, &MainWindow::onCreateAction);
     connect(ui->addOwnerButton, &QPushButton::clicked, this, &MainWindow::onAddOwnerAction);
     connect(ui->removeOwnerButton, &QPushButton::clicked, this, &MainWindow::onRemoveOwnerAction);
+    connect(ui->addAccountButton, &QPushButton::clicked, this, &MainWindow::onAddAccountAction);
+    connect(ui->removeAccountButton, &QPushButton::clicked, this, &MainWindow::onRemoveAccountAction);
 }
 
 MainWindow::~MainWindow()
@@ -181,4 +184,18 @@ void MainWindow::onRemoveOwnerAction()
     QList<QModelIndex> selIndexes = ui->ownersView->selectionModel()->selectedIndexes();
     for (const QModelIndex &selIndex : qAsConst(selIndexes))
         ownerModel->removeOwner(selIndex);
+}
+
+void MainWindow::onAddAccountAction()
+{
+    auto dialog = AddAccountDialog(this);
+    dialog.exec();
+}
+
+void MainWindow::onRemoveAccountAction()
+{
+    AccountModel *accountModel = _model->getAccountModel();
+    QList<QModelIndex> selIndexes = ui->accountsView->selectionModel()->selectedIndexes();
+    for (const QModelIndex &selIndex : qAsConst(selIndexes))
+        accountModel->removeAccount(selIndex);
 }

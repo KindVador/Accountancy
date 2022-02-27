@@ -20,6 +20,7 @@ public:
     Account *addAccount(const FinancialInstitution *institution, AccountType type, Currency *currency, const Owner *owner,
                    float initialBalance, float warningBalance, const QString &accountNumber, const QString &comment,
                    bool isIncludedInTotal, bool isHidden);
+    void removeAccount(const QModelIndex &index);
 
     void reset();
 

@@ -61,3 +61,11 @@ void AccountModel::reset()
     _accounts.clear();
     endResetModel();
 }
+
+void AccountModel::removeAccount(const QModelIndex &index)
+{
+    beginResetModel();
+    delete _accounts.at(index.row());
+    _accounts.removeAt(index.row());
+    endResetModel();
+}
