@@ -1,19 +1,19 @@
-#ifndef ACCOUNTANCY_TIMER_HPP
-#define ACCOUNTANCY_TIMER_HPP
+#ifndef ACCOUNTANCY_SCOPEDTIMER_HPP
+#define ACCOUNTANCY_SCOPEDTIMER_HPP
 
 #include <chrono>
 #include <iostream>
 
-class Timer
+class ScopedTimer
 {
 public:
-    Timer(const char *name)
+    explicit ScopedTimer(const char *name)
     : m_Name(name), m_Stopped(false)
     {
         m_StartTimePoint = std::chrono::high_resolution_clock::now();
     }
 
-    ~Timer()
+    ~ScopedTimer()
     {
         if (!m_Stopped)
             Stop();
@@ -41,4 +41,4 @@ private:
     bool m_Stopped;
 };
 
-#endif //ACCOUNTANCY_TIMER_HPP
+#endif //ACCOUNTANCY_SCOPEDTIMER_HPP

@@ -1,5 +1,5 @@
 add_library(AccountancyUtils
-        timer.hpp
+        scopedtimer.hpp
         instrumentor.hpp
         )
 
