@@ -6,6 +6,8 @@
 #include "../core/controller.hpp"
 #include "addownerdialog.hpp"
 #include "addaccountdialog.hpp"
+#include "currenciesdialog.hpp"
+#include "institutionsdialog.hpp"
 
 #include <QMessageBox>
 #include <QString>
@@ -14,31 +16,37 @@
 #include <QAction>
 #include <QFileDialog>
 
-#include <vector>
-
 constexpr const int ObjectRole = Qt::UserRole + 1;
 
 MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
 
-    // Init Ui
-    ui->ownersView->setContextMenuPolicy(Qt::CustomContextMenu);
+    // File Menu
     ui->actionSave->setEnabled(false);
     ui->actionSaveAs->setEnabled(false);
+    connect(ui->actionCreate, &QAction::triggered, this, &MainWindow::onCreateAction);
+    connect(ui->actionOpen, &QAction::triggered, this, &MainWindow::onOpenAction);
+    connect(ui->actionImport, &QAction::triggered, this, &MainWindow::onActionImport);
+    connect(ui->actionSave, &QAction::triggered, this, &MainWindow::onSaveAction);
+    connect(ui->actionSaveAs, &QAction::triggered, this, &MainWindow::onSaveAsAction);
 
-    // Connect Actions to Slots
+    // Edit Menu
+    connect(ui->actionCurrencies, &QAction::triggered, this, &MainWindow::onCurrenciesAction);
+    connect(ui->actionInstitutions, &QAction::triggered, this, &MainWindow::onInstitutionsAction);
+
+    // View Menu
+    connect(ui->actionMainDock, &QAction::triggered, this, &MainWindow::onActionMainDock);
+
+    // Help Menu
     connect(ui->actionCredits, &QAction::triggered, this, &MainWindow::showCredits);
+
+    // Main Dock Widget
+    ui->ownersView->setContextMenuPolicy(Qt::CustomContextMenu);
     connect(ui->ownersView, &QListView::clicked, this, [this](const QModelIndex &index) { emit selectedOwnerChanged(index); });
     connect(ui->accountsView, &QListView::clicked, this, [this](const QModelIndex &index) { emit selectedAccountChanged(index); });
     connect(ui->accountsView, &QListView::doubleClicked, this, &MainWindow::onAccountDoubleClicked);
     connect(ui->ownersView, &QListView::customContextMenuRequested, this, &MainWindow::contextualOwnerMenuRequested);
-    connect(ui->actionMainDock, &QAction::triggered, this, &MainWindow::onActionMainDock);
-    connect(ui->actionImport, &QAction::triggered, this, &MainWindow::onActionImport);
-    connect(ui->actionOpen, &QAction::triggered, this, &MainWindow::onOpenAction);
-    connect(ui->actionSave, &QAction::triggered, this, &MainWindow::onSaveAction);
-    connect(ui->actionSaveAs, &QAction::triggered, this, &MainWindow::onSaveAsAction);
-    connect(ui->actionCreate, &QAction::triggered, this, &MainWindow::onCreateAction);
     connect(ui->addOwnerButton, &QPushButton::clicked, this, &MainWindow::onAddOwnerAction);
     connect(ui->removeOwnerButton, &QPushButton::clicked, this, &MainWindow::onRemoveOwnerAction);
     connect(ui->addAccountButton, &QPushButton::clicked, this, &MainWindow::onAddAccountAction);
@@ -59,8 +67,11 @@ void MainWindow::showCredits()
 
 void MainWindow::onActionImport()
 {
-    ImportDataDialog dialog = ImportDataDialog();
-    dialog.exec();
+    ImportDataDialog dialog = ImportDataDialog(this);
+    int res = dialog.exec();
+    if (res == QDialog::Accepted) {
+
+    }
 }
 
 Model *MainWindow::getModel() const
@@ -164,7 +175,10 @@ void MainWindow::onCreateAction()
 void MainWindow::onAddOwnerAction()
 {
     auto dialog = AddOwnerDialog(this);
-    dialog.exec();
+    int res = dialog.exec();
+    if (res == QDialog::Accepted) {
+
+    }
 }
 
 void MainWindow::updateEditionInterface(bool enable)
@@ -189,7 +203,10 @@ void MainWindow::onRemoveOwnerAction()
 void MainWindow::onAddAccountAction()
 {
     auto dialog = AddAccountDialog(this);
-    dialog.exec();
+    int res = dialog.exec();
+    if (res == QDialog::Accepted) {
+
+    }
 }
 
 void MainWindow::onRemoveAccountAction()
@@ -198,4 +215,22 @@ void MainWindow::onRemoveAccountAction()
     QList<QModelIndex> selIndexes = ui->accountsView->selectionModel()->selectedIndexes();
     for (const QModelIndex &selIndex : qAsConst(selIndexes))
         accountModel->removeAccount(selIndex);
+}
+
+void MainWindow::onCurrenciesAction()
+{
+    auto dlg = new CurrenciesDialog(this);
+    int res = dlg->exec();
+    if (res == QDialog::Accepted) {
+
+    }
+}
+
+void MainWindow::onInstitutionsAction()
+{
+    auto dlg = new InstitutionsDialog(this);
+    int res = dlg->exec();
+    if (res == QDialog::Accepted) {
+
+    }
 }

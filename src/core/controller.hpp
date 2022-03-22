@@ -62,7 +62,7 @@ private:
     QString _currentFilePath;
 
     // Singleton
-    Controller();
+    explicit Controller();
 };
 
 #endif //ACCOUNTANCY_CONTROLLER_HPP

@@ -42,6 +42,8 @@ private slots:
     void onRemoveOwnerAction();
     void onAddAccountAction();
     void onRemoveAccountAction();
+    void onCurrenciesAction();
+    void onInstitutionsAction();
 
 private:
     Ui::MainWindow *ui = nullptr;
