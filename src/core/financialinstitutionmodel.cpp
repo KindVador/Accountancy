@@ -45,7 +45,7 @@ int FinancialInstitutionModel::addFinancialInstitution(FinancialInstitution *ins
     return nextId;
 }
 
-FinancialInstitution *FinancialInstitutionModel::addFinancialInstitution(QString name)
+FinancialInstitution *FinancialInstitutionModel::addFinancialInstitution(const QString &name)
 {
     auto *newFinancialInstitution = new FinancialInstitution(name);
     addFinancialInstitution(newFinancialInstitution);

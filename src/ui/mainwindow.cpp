@@ -219,7 +219,7 @@ void MainWindow::onRemoveAccountAction()
 
 void MainWindow::onCurrenciesAction()
 {
-    auto dlg = new CurrenciesDialog(this);
+    auto dlg = new CurrenciesDialog(this, _model->getCurrencyModel());
     int res = dlg->exec();
     if (res == QDialog::Accepted) {
 

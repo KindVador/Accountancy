@@ -1,11 +1,13 @@
 #include "currenciesdialog.hpp"
 #include "ui_CurrenciesDialog.h"
 
-CurrenciesDialog::CurrenciesDialog(QWidget *parent) :
-        QDialog(parent),
-        ui(new Ui::CurrenciesDialog)
+CurrenciesDialog::CurrenciesDialog(QWidget *parent, CurrencyModel *model) :
+        QDialog(parent), ui(new Ui::CurrenciesDialog), _model(model)
 {
     ui->setupUi(this);
+
+    // init TableView model
+    ui->tableView->setModel(_model);
 }
 
 CurrenciesDialog::~CurrenciesDialog()

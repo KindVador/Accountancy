@@ -17,13 +17,12 @@ public:
     [[nodiscard]] QVariant data(const QModelIndex &index, int role) const override;
 
     int addFinancialInstitution(FinancialInstitution *institution);
-    FinancialInstitution *addFinancialInstitution(QString name);
+    FinancialInstitution *addFinancialInstitution(const QString &name);
 
     void reset();
 
 private:
     QList<FinancialInstitution *> _institutions;
 };
-
 
 #endif //ACCOUNTANCY_FINANCIALINSTITUTIONMODEL_HPP

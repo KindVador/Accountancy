@@ -65,4 +65,9 @@ Currency *Currency::fromJson(const QJsonObject &json)
     return currency;
 }
 
+QString Currency::getDisplayedName() const
+{
+    return QString("%1 (%2)").arg(_name, _symbol);
+}
+
 

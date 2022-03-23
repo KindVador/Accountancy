@@ -21,6 +21,9 @@ public:
     [[nodiscard]] int getId() const;
     void setId(int id);
 
+    // Displayed Data for Model
+    [[nodiscard]] QString getDisplayedName() const;
+
     // Serialization
     void read(const QJsonObject &json);
     void write(QJsonObject &json) const;

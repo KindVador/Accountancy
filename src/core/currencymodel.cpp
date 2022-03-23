@@ -15,7 +15,7 @@ QVariant CurrencyModel::data(const QModelIndex &index, int role) const
     QVariant v;
     switch (role) {
         case Qt::DisplayRole:
-            v.setValue(_currencies.at(index.row())->getName());
+            v.setValue(_currencies.at(index.row())->getDisplayedName());
             break;
         case Qt::UserRole:
             v.setValue(_currencies.at(index.row())->getId());
@@ -50,7 +50,15 @@ void CurrencyModel::removeCurrency(int id)
     // TODO
 }
 
-Currency *CurrencyModel::addCurrency(QString &name, QString &symbol)
+Currency *CurrencyModel::addCurrency(const QString &name, const QString &symbol)
+{
+    auto *newCurrency = new Currency(name, symbol);
+    newCurrency->setId(getLastId());
+    addCurrency(newCurrency);
+    return newCurrency;
+}
+
+Currency *CurrencyModel::addCurrency(QString &&name, QString &&symbol)
 {
     auto *newCurrency = new Currency(name, symbol);
     newCurrency->setId(getLastId());

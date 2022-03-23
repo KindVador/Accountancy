@@ -23,9 +23,13 @@ public:
 
     void showMainWindow();
 
+    // CURRENCIES
+    void addCurrency(Currency *currency);
+    Currency *addCurrency(const QString &name, const QString &symbol);
+
     // FINANCIAL INSTITUTIONS
     void addFinancialInstitution(FinancialInstitution *institution);
-    FinancialInstitution *addFinancialInstitution(QString name);
+    FinancialInstitution *addFinancialInstitution(const QString &name);
 
     // OWNERS
     void addOwner(Owner *owner);

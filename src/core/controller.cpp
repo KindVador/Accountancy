@@ -16,6 +16,10 @@ Controller::Controller(): _model(Model::getInstance()), _mainWindow(new MainWind
         connect(_mainWindow, &MainWindow::selectedOwnerChanged, this, &Controller::onSelectedOwner);
         connect(_mainWindow, &MainWindow::selectedAccountChanged, this, &Controller::onSelectedAccount);
     }
+
+    // Populate some data in model for Dev only
+    addCurrency("Euro", "€");
+    addFinancialInstitution("Caisse d'Epargne");
 }
 
 Controller::~Controller() = default;
@@ -114,7 +118,7 @@ void Controller::addFinancialInstitution(FinancialInstitution *institution)
     _model->getFinancialInstitutionModel()->addFinancialInstitution(institution);
 }
 
-FinancialInstitution *Controller::addFinancialInstitution(QString name)
+FinancialInstitution *Controller::addFinancialInstitution(const QString &name)
 {
     return _model->getFinancialInstitutionModel()->addFinancialInstitution(name);
 }
@@ -205,4 +209,17 @@ bool Controller::createNewFile(const QString &filePath)
     saveFile.write(QJsonDocument(modelJsonObject).toJson());
 
     return true;
+}
+
+void Controller::addCurrency(Currency *currency)
+{
+    if (_model == nullptr)
+        return;
+
+    _model->getCurrencyModel()->addCurrency(currency);
+}
+
+Currency *Controller::addCurrency(const QString &name, const QString &symbol)
+{
+    return _model->getCurrencyModel()->addCurrency(name, symbol);
 }
