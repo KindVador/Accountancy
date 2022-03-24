@@ -26,6 +26,7 @@ public:
     // CURRENCIES
     void addCurrency(Currency *currency);
     Currency *addCurrency(const QString &name, const QString &symbol);
+    void removeCurrency(int id);
 
     // FINANCIAL INSTITUTIONS
     void addFinancialInstitution(FinancialInstitution *institution);

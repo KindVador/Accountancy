@@ -35,19 +35,29 @@ int CurrencyModel::addCurrency(Currency *currency)
     if (currency == nullptr)
         return -1;
 
+    beginResetModel();
     currency->setId(getLastId());
     _currencies.append(currency);
+    endResetModel();
     return currency->getId();
 }
 
 void CurrencyModel::removeCurrency(Currency *currency)
 {
-    // TODO
+    beginResetModel();
+    auto res = std::find_if(_currencies.cbegin(), _currencies.cend(), [&currency] (const Currency *c2){ return currency == c2;});
+    if (res != _currencies.cend())
+        _currencies.erase(res);
+    endResetModel();
 }
 
 void CurrencyModel::removeCurrency(int id)
 {
-    // TODO
+    beginResetModel();
+    auto res = std::find_if(_currencies.cbegin(), _currencies.cend(), [&id] (const Currency *currency){ return currency->getId() == id;});
+    if (res != _currencies.cend())
+        _currencies.erase(res);
+    endResetModel();
 }
 
 Currency *CurrencyModel::addCurrency(const QString &name, const QString &symbol)

@@ -1,7 +1,6 @@
 #include "addaccountdialog.hpp"
 #include "ui_AddAccountDialog.h"
 #include "../core/controller.hpp"
-#include "../core/account.hpp"
 
 
 AddAccountDialog::AddAccountDialog(QWidget *parent) :
@@ -13,11 +12,14 @@ AddAccountDialog::AddAccountDialog(QWidget *parent) :
     for (auto it = STRING_2_ACCOUNT_TYPE.cbegin(); it != STRING_2_ACCOUNT_TYPE.cend(); ++it)
         ui->typeComboBox->addItem(it.key());
 
-    // TODO: Populate Currency ComboBox
+    // Populate Currency ComboBox
+    ui->currencyComboBox->setModel(Model::getInstance()->getCurrencyModel());
 
-    // TODO: Populate Institution ComboBox
+    // Populate Institution ComboBox
+    ui->institutionComboBox->setModel(Model::getInstance()->getFinancialInstitutionModel());
 
-    // TODO: Populate Owners List
+    // Populate Owners List
+    ui->ownersListView->setModel(Model::getInstance()->getOwnerModel());
 }
 
 AddAccountDialog::~AddAccountDialog()

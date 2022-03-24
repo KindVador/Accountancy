@@ -7,7 +7,9 @@ add_library(AccountancyUi
             transactionswidget.hpp transactionswidget.cpp transactionswidget.ui
             addownerdialog.hpp addownerdialog.cpp addownerdialog.ui
             addaccountdialog.hpp addaccountdialog.cpp addaccountdialog.ui
-            currenciesdialog.hpp currenciesdialog.cpp currenciesdialog.ui institutionsdialog.cpp institutionsdialog.hpp institutionsdialog.ui)
+            currenciesdialog.hpp currenciesdialog.cpp currenciesdialog.ui
+            institutionsdialog.cpp institutionsdialog.hpp institutionsdialog.ui
+            reatecurrencydialog.cpp createcurrencydialog.hpp createcurrencydialog.ui)
 
 target_link_libraries(AccountancyUi PRIVATE Qt::Widgets)
 target_include_directories(AccountancyUi PUBLIC "${CMAKE_CURRENT_SOURCE_DIR}")

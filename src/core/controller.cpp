@@ -223,3 +223,8 @@ Currency *Controller::addCurrency(const QString &name, const QString &symbol)
 {
     return _model->getCurrencyModel()->addCurrency(name, symbol);
 }
+
+void Controller::removeCurrency(int id)
+{
+    _model->getCurrencyModel()->removeCurrency(id);
+}

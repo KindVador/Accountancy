@@ -20,6 +20,10 @@ public slots:
     void accept() override;
     void reject() override;
 
+private slots:
+    void onAddCurrencyAction();
+    void onRemoveCurrencyAction();
+
 private:
     Ui::CurrenciesDialog *ui;
     CurrencyModel *_model = nullptr;
