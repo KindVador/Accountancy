@@ -175,10 +175,7 @@ void MainWindow::onCreateAction()
 void MainWindow::onAddOwnerAction()
 {
     auto dialog = AddOwnerDialog(this);
-    int res = dialog.exec();
-    if (res == QDialog::Accepted) {
-
-    }
+    dialog.exec();
 }
 
 void MainWindow::updateEditionInterface(bool enable)
@@ -203,10 +200,7 @@ void MainWindow::onRemoveOwnerAction()
 void MainWindow::onAddAccountAction()
 {
     auto dialog = AddAccountDialog(this);
-    int res = dialog.exec();
-    if (res == QDialog::Accepted) {
-
-    }
+    dialog.exec();
 }
 
 void MainWindow::onRemoveAccountAction()
@@ -220,17 +214,11 @@ void MainWindow::onRemoveAccountAction()
 void MainWindow::onCurrenciesAction()
 {
     auto dlg = new CurrenciesDialog(this, _model->getCurrencyModel());
-    int res = dlg->exec();
-    if (res == QDialog::Accepted) {
-
-    }
+    dlg->exec();
 }
 
 void MainWindow::onInstitutionsAction()
 {
-    auto dlg = new InstitutionsDialog(this);
-    int res = dlg->exec();
-    if (res == QDialog::Accepted) {
-
-    }
+    auto dlg = new InstitutionsDialog(this, _model->getFinancialInstitutionModel());
+    dlg->exec();
 }

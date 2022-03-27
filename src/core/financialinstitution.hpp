@@ -14,6 +14,8 @@ public:
     explicit FinancialInstitution(QString name);
     ~FinancialInstitution() override = default ;
 
+    static FinancialInstitution *fromJson(const QJsonObject &json);
+
     // Getter & Setter
     [[nodiscard]] int getId() const;
     void setId(int id);

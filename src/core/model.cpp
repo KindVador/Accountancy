@@ -175,14 +175,19 @@ void Model::read(const QJsonObject &json)
             _currencyModel->addCurrency(Currency::fromJson(currency.toObject()));
     }
 
+    // Financial Institutions
+    if (json.contains("institutions") && json["institutions"].isArray()) {
+        QJsonArray institutionsJsonArray = json["institutions"].toArray();
+        for (const QJsonValueRef &institution : qAsConst(institutionsJsonArray))
+            _institutionsModel->addFinancialInstitution(FinancialInstitution::fromJson(institution.toObject()));
+    }
+
     // Accounts
     if (json.contains("accounts") && json["accounts"].isArray()) {
         QJsonArray accountsJsonArray = json["accounts"].toArray();
         for (const QJsonValueRef &account : qAsConst(accountsJsonArray))
             _accountModel->addAccount(Account::fromJson(account.toObject()));
     }
-
-    // Financial Institutions
 
     // Transactions
 

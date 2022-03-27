@@ -82,3 +82,13 @@ void FinancialInstitution::write(QJsonObject &json) const
     json["id"] = _id;
     json["name"] = _name;
 }
+
+FinancialInstitution *FinancialInstitution::fromJson(const QJsonObject &json)
+{
+    if (json.isEmpty())
+        return nullptr;
+
+    auto fi = new FinancialInstitution;
+    fi->read(json);
+    return fi;
+}

@@ -40,8 +40,10 @@ int FinancialInstitutionModel::addFinancialInstitution(FinancialInstitution *ins
     else
         nextId = _institutions.last()->getId() + 1;
 
+    beginResetModel();
     institution->setId(nextId);
     _institutions.append(institution);
+    endResetModel();
     return nextId;
 }
 
