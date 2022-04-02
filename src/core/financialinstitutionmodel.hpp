@@ -18,6 +18,8 @@ public:
 
     int addFinancialInstitution(FinancialInstitution *institution);
     FinancialInstitution *addFinancialInstitution(const QString &name);
+    void removeFinancialInstitution(FinancialInstitution *institution);
+    void removeFinancialInstitution(int id);
 
     void reset();
 

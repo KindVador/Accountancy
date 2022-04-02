@@ -60,3 +60,21 @@ void FinancialInstitutionModel::reset()
     _institutions.clear();
     endResetModel();
 }
+
+void FinancialInstitutionModel::removeFinancialInstitution(int id)
+{
+    beginResetModel();
+    auto res = std::find_if(_institutions.cbegin(), _institutions.cend(), [&id] (const FinancialInstitution *institution){ return institution->getId() == id;});
+    if (res != _institutions.cend())
+        _institutions.erase(res);
+    endResetModel();
+}
+
+void FinancialInstitutionModel::removeFinancialInstitution(FinancialInstitution *institution)
+{
+    beginResetModel();
+    auto res = std::find_if(_institutions.cbegin(), _institutions.cend(), [&institution] (const FinancialInstitution *other){ return institution == other;});
+    if (res != _institutions.cend())
+        _institutions.erase(res);
+    endResetModel();
+}

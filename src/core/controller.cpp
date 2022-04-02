@@ -228,3 +228,8 @@ void Controller::removeCurrency(int id)
 {
     _model->getCurrencyModel()->removeCurrency(id);
 }
+
+void Controller::removeInstitution(int id)
+{
+    _model->getFinancialInstitutionModel()->removeFinancialInstitution(id);
+}

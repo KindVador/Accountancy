@@ -45,6 +45,6 @@ void InstitutionsDialog::onRemoveInstitutionAction()
     QList<QModelIndex> selectedIndexes = ui->tableView->selectionModel()->selectedIndexes();
     for (QModelIndex selectedIndex : selectedIndexes) {
         int id = _model->data(selectedIndex, Qt::UserRole).toInt();
-        Controller::getInstance()->removeCurrency(id);
+        Controller::getInstance()->removeInstitution(id);
     }
 }

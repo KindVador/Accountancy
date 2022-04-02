@@ -31,6 +31,7 @@ public:
     // FINANCIAL INSTITUTIONS
     void addFinancialInstitution(FinancialInstitution *institution);
     FinancialInstitution *addFinancialInstitution(const QString &name);
+    void removeInstitution(int id);
 
     // OWNERS
     void addOwner(Owner *owner);
