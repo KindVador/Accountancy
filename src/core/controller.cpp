@@ -177,6 +177,7 @@ bool Controller::loadFile(const QString &filePath)
         _model->read(json.object());
     }
 
+    _mainWindow->updateEditionInterface(true);
     Instrumentor::Get().EndSession();
     return true;
 }

@@ -39,8 +39,18 @@ int main(int argc, char *argv[])
     QIcon app_icon(":/imgs/accountancy.svg");
     QApplication::setWindowIcon(app_icon);
 
+    // Parse command line arguments
+    QString filePath;
+    QStringList arguments = QCoreApplication::arguments();
+     if (arguments.count() > 1) {
+        qWarning() << arguments;
+        filePath = arguments.at(1);
+     }
+
     // Controller
     Controller *controller = Controller::getInstance();
+    if (!filePath.isEmpty())
+        controller->loadFile(filePath);
     controller->showMainWindow();
 
     // Lancement de l'application
