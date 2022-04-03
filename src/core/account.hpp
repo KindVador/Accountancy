@@ -46,7 +46,7 @@ class Account
 {
 public:
     Account() = default;
-    Account(const FinancialInstitution *_institution, AccountType type, Currency *currency, const Owner *owner,
+    Account(const FinancialInstitution *_institution, AccountType type, Currency *currency, const QList<const Owner*> &owners,
             float initialBalance, float warningBalance, QString accountNumber, QString comment,
             bool isIncludedInTotal, bool isHidden);
     ~Account() = default;

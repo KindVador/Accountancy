@@ -2,6 +2,7 @@
 #define ACCOUNTANCY_ADDACCOUNTDIALOG_HPP
 
 #include <QDialog>
+#include "../core/account.hpp"
 
 
 QT_BEGIN_NAMESPACE
@@ -16,6 +17,9 @@ Q_OBJECT
 public:
     explicit AddAccountDialog(QWidget *parent = nullptr);
     ~AddAccountDialog() override;
+
+private:
+    [[nodiscard]] QList<const Owner*> getSelectedOwners() const;
 
 public slots:
     void accept() override;

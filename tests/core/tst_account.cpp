@@ -26,7 +26,7 @@ private slots:
         auto *fi = new FinancialInstitution("Institution1");
         auto *currency = new Currency("Euro", "€");
         auto *owner = new Owner("Owner1", 150.0, "Comment1", false);
-        Account a{fi, AccountType::Cash, currency, owner, 147.85, 100.0, "123456789AX", "CommentAccount1", true, false};
+        Account a{fi, AccountType::Cash, currency, {owner}, 147.85, 100.0, "123456789AX", "CommentAccount1", true, false};
         QJsonObject jsonData;
         a.write(jsonData);
         QVERIFY(jsonData.contains("id") && !jsonData["id"].isNull());
@@ -58,7 +58,7 @@ private slots:
         auto *fi = new FinancialInstitution("Institution1");
         auto *currency = new Currency("Euro", "€");
         auto *owner = new Owner("Owner1", 150.0, "Comment1", false);
-        Account a0{fi, AccountType::Cash, currency, owner, 147.85, 100.0, "123456789AX", "CommentAccount1", true, false};
+        Account a0{fi, AccountType::Cash, currency, {owner}, 147.85, 100.0, "123456789AX", "CommentAccount1", true, false};
         a0.setId(99);
         QJsonObject jsonData;
         a0.write(jsonData);

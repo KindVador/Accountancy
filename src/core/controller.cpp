@@ -54,7 +54,7 @@ Owner *Controller::addOwner(const QString &name, float warningBalance, const QSt
 }
 
 Account *Controller::addAccount(const FinancialInstitution *institution, AccountType type, Currency *currency,
-                                const Owner *owner, float initialBalance, float warningBalance,
+                                const QList<const Owner*> &owners, float initialBalance, float warningBalance,
                                 const QString &accountNumber, const QString &comment, bool isIncludedInTotal,
                                 bool isHidden)
 {
@@ -62,7 +62,7 @@ Account *Controller::addAccount(const FinancialInstitution *institution, Account
         return nullptr;
 
     // model update
-    return _model->getAccountModel()->addAccount(institution, type, currency, owner, initialBalance, warningBalance,
+    return _model->getAccountModel()->addAccount(institution, type, currency, owners, initialBalance, warningBalance,
                                                  accountNumber, comment, isIncludedInTotal, isHidden);
 }
 

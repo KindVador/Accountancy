@@ -39,7 +39,7 @@ public:
 
     // ACCOUNTS
     Account *addAccount(const FinancialInstitution *institution, AccountType type, Currency *currency,
-                        const Owner *owner, float initialBalance, float warningBalance,
+                        const QList<const Owner*> &owners, float initialBalance, float warningBalance,
                         const QString &accountNumber, const QString &comment, bool isIncludedInTotal, bool isHidden);
 
     // TRANSACTIONS

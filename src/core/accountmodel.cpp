@@ -46,11 +46,11 @@ int AccountModel::addAccount(Account *account)
 }
 
 Account *AccountModel::addAccount(const FinancialInstitution *institution, AccountType type, Currency *currency,
-                             const Owner *owner, float initialBalance, float warningBalance,
+                             const QList<const Owner*> &owners, float initialBalance, float warningBalance,
                              const QString &accountNumber, const QString &comment, bool isIncludedInTotal,
                              bool isHidden)
 {
-    auto *newAccount = new Account(institution, type, currency, owner, initialBalance, warningBalance, accountNumber, comment, isIncludedInTotal, isHidden);
+    auto *newAccount = new Account(institution, type, currency, owners, initialBalance, warningBalance, accountNumber, comment, isIncludedInTotal, isHidden);
     addAccount(newAccount);
     return newAccount;
 }
