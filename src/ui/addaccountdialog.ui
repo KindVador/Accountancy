@@ -47,7 +47,14 @@
       </widget>
      </item>
      <item row="2" column="1">
-      <widget class="QDoubleSpinBox" name="initialBalanceDoubleSpinBox"/>
+      <widget class="QDoubleSpinBox" name="initialBalanceDoubleSpinBox">
+       <property name="minimum">
+        <double>-9999999999.000000000000000</double>
+       </property>
+       <property name="maximum">
+        <double>9999999999.000000000000000</double>
+       </property>
+      </widget>
      </item>
      <item row="3" column="0">
       <widget class="QLabel" name="warningBalanceLabel">
@@ -57,7 +64,14 @@
       </widget>
      </item>
      <item row="3" column="1">
-      <widget class="QDoubleSpinBox" name="warningBalanceDoubleSpinBox"/>
+      <widget class="QDoubleSpinBox" name="warningBalanceDoubleSpinBox">
+       <property name="minimum">
+        <double>-9999999999.000000000000000</double>
+       </property>
+       <property name="maximum">
+        <double>9999999999.000000000000000</double>
+       </property>
+      </widget>
      </item>
      <item row="4" column="0">
       <widget class="QLabel" name="institutionLabel">
