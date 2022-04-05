@@ -8,7 +8,7 @@ constexpr const int ObjectRole = Qt::UserRole + 1;
 
 Controller *Controller::_singleton = nullptr;
 
-Controller::Controller(): _model(Model::getInstance()), _mainWindow(new MainWindow)
+Controller::Controller(): _model(Model::instance()), _mainWindow(new MainWindow)
 {
     // connect with MainWindow
     if (_mainWindow != nullptr) {
@@ -94,7 +94,7 @@ void Controller::clearOwnerSelection()
     _model->getAccountFilter()->invalidate();
 }
 
-Controller *Controller::getInstance()
+Controller *Controller::instance()
 {
     if (_singleton == nullptr)
         _singleton = new Controller();

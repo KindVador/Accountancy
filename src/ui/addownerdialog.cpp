@@ -16,7 +16,7 @@ AddOwnerDialog::~AddOwnerDialog()
 
 void AddOwnerDialog::accept()
 {
-    Controller *controller = Controller::getInstance();
+    Controller *controller = Controller::instance();
     controller->addOwner(ui->nameLineEdit->text(),
                          ui->warningBalanceDoubleSpinBox->value(),
                          ui->commentsTextEdit->toPlainText(),

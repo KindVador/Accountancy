@@ -19,7 +19,7 @@ void CreateCurrencyDialog::accept()
     QString name = ui->nameLineEdit->text();
     QString symbol = ui->symbolLineEdit->text();
     if (!name.isEmpty() && !symbol.isEmpty())
-        Controller::getInstance()->addCurrency(name, symbol);
+        Controller::instance()->addCurrency(name, symbol);
 
     QDialog::accept();
 }

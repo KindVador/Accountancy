@@ -18,7 +18,7 @@ void CreateInstitutionDialog::accept()
 {
     QString name = ui->nameLineEdit->text();
     if (!name.isEmpty())
-        Controller::getInstance()->addFinancialInstitution(name);
+        Controller::instance()->addFinancialInstitution(name);
 
     QDialog::accept();
 }

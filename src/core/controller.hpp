@@ -16,7 +16,7 @@ class Controller : public QObject
 
 public:
     // Singleton
-    static Controller *getInstance();
+    static Controller *instance();
     Controller(Controller &other) = delete;
 
     ~Controller() override;

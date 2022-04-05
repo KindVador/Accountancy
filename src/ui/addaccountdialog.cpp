@@ -14,13 +14,13 @@ AddAccountDialog::AddAccountDialog(QWidget *parent) :
         ui->typeComboBox->addItem(it.key());
 
     // Populate Currency ComboBox
-    ui->currencyComboBox->setModel(Model::getInstance()->getCurrencyModel());
+    ui->currencyComboBox->setModel(Model::instance()->getCurrencyModel());
 
     // Populate Institution ComboBox
-    ui->institutionComboBox->setModel(Model::getInstance()->getFinancialInstitutionModel());
+    ui->institutionComboBox->setModel(Model::instance()->getFinancialInstitutionModel());
 
     // Populate Owners List
-    ui->ownersListView->setModel(Model::getInstance()->getOwnerModel());
+    ui->ownersListView->setModel(Model::instance()->getOwnerModel());
 
     // make connections
     connect(ui->buttonBox, &QDialogButtonBox::accepted, this, &AddAccountDialog::accept);
@@ -39,7 +39,7 @@ void AddAccountDialog::reject()
 
 void AddAccountDialog::accept()
 {
-    Controller *controller = Controller::getInstance();
+    Controller *controller = Controller::instance();
     QString accountNumber = ui->numberLineEdit->text();
     auto institution = ui->institutionComboBox->currentData(ObjectRole).value<FinancialInstitution *>();
     AccountType type = STRING_2_ACCOUNT_TYPE[ui->typeComboBox->currentText()];

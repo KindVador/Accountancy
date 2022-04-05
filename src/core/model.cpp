@@ -7,7 +7,7 @@ constexpr const int ObjectRole = Qt::UserRole + 1;
 
 Model *Model::_singleton = nullptr;
 
-Model *Model::getInstance()
+Model *Model::instance()
 {
     if (_singleton == nullptr)
         _singleton = new Model();

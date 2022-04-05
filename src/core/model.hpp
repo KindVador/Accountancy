@@ -15,7 +15,7 @@ class Model : public QObject
 
 public:
     // Singleton
-    static Model *getInstance();
+    static Model *instance();
     Model(Model &other) = delete;
 
     ~Model() override;

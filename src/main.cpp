@@ -48,7 +48,7 @@ int main(int argc, char *argv[])
      }
 
     // Controller
-    Controller *controller = Controller::getInstance();
+    Controller *controller = Controller::instance();
     if (!filePath.isEmpty())
         controller->loadFile(filePath);
     controller->showMainWindow();

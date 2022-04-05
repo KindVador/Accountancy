@@ -134,14 +134,14 @@ void MainWindow::onOpenAction()
                                                     "Accountancy files (*.acty)");
 
     // update current file variable
-    Controller *controller = Controller::getInstance();
+    Controller *controller = Controller::instance();
     if (controller->loadFile(fileName))
         updateEditionInterface(true);
 }
 
 void MainWindow::onSaveAction()
 {
-    Controller *controller = Controller::getInstance();
+    Controller *controller = Controller::instance();
     controller->saveToFile(controller->getCurrentFilePath());
 }
 
@@ -154,7 +154,7 @@ void MainWindow::onSaveAsAction()
                                                     "Accountancy files (*.acty)");
 
     // update current file variable
-    Controller *controller = Controller::getInstance();
+    Controller *controller = Controller::instance();
     controller->saveToFile(fileName);
 }
 
@@ -167,7 +167,7 @@ void MainWindow::onCreateAction()
                                                     "Accountancy files (*.acty)");
 
     // update current file variable
-    Controller *controller = Controller::getInstance();
+    Controller *controller = Controller::instance();
     if (controller->createNewFile(fileName))
         updateEditionInterface(true);
 }
