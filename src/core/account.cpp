@@ -138,6 +138,15 @@ void Account::read(const QJsonObject &json)
 
     if (json.contains("type") && json["type"].isString())
         _type = STRING_2_ACCOUNT_TYPE[json["type"].toString()];
+
+    if (json.contains("transactions") && json["transactions"].isArray()) {
+        QJsonArray transactionsArray = json["transactions"].toArray();
+        for (QJsonValue transaction : transactionsArray) {
+            auto transactionPtr = new Transaction;
+            transactionPtr->read(transaction.toObject());
+            _transactions.append(transactionPtr);
+        }
+    }
 }
 
 void Account::write(QJsonObject &json) const
