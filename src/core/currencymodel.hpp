@@ -23,7 +23,8 @@ public:
     Currency *addCurrency(QString &&name, QString &&symbol);
     void removeCurrency(Currency *currency);
     void removeCurrency(int id);
-    Currency* getCurrency(const QString &name);
+    [[nodiscard]] Currency* getCurrency(const QString &name) const;
+    [[nodiscard]] Currency* getCurrency(int id) const;
 
     void reset();
 

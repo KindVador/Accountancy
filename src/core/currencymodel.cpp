@@ -76,7 +76,7 @@ Currency *CurrencyModel::addCurrency(QString &&name, QString &&symbol)
     return newCurrency;
 }
 
-Currency *CurrencyModel::getCurrency(const QString &name)
+Currency *CurrencyModel::getCurrency(const QString &name) const
 {
     auto currencyIt = std::find_if(_currencies.begin(), _currencies.end(), [&name](Currency *currency) { return currency->getName() == name; });
     // case NOT FOUND
@@ -99,4 +99,14 @@ void CurrencyModel::reset()
     beginResetModel();
     _currencies.clear();
     endResetModel();
+}
+
+Currency *CurrencyModel::getCurrency(int id) const
+{
+    auto currencyIt = std::find_if(_currencies.begin(), _currencies.end(), [&id](Currency *currency) { return currency->getId() == id; });
+    // case NOT FOUND
+    if (currencyIt == _currencies.end())
+        return nullptr;
+
+    return *currencyIt;
 }

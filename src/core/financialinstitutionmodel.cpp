@@ -78,3 +78,11 @@ void FinancialInstitutionModel::removeFinancialInstitution(FinancialInstitution 
         _institutions.erase(res);
     endResetModel();
 }
+
+FinancialInstitution *FinancialInstitutionModel::getFinancialInstitution(int id) const
+{
+    auto res = std::find_if(_institutions.cbegin(), _institutions.cend(), [&id] (const FinancialInstitution *other){ return id == other->getId();});
+    if (res != _institutions.cend())
+        return *res;
+    return nullptr;
+}

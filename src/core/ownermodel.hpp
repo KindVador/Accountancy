@@ -22,7 +22,8 @@ public:
     int addOwner(Owner *owner);
     Owner *addOwner(const QString &name, float warningBalance, const QString &comment, bool isHidden);
     void removeOwner(const QModelIndex &index);
-    Owner* getOwner(const QString &name);
+    Owner* getOwner(const QString &name) const;
+    Owner* getOwner(int id) const;
 
     void reset();
 

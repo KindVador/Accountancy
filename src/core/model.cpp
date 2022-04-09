@@ -188,9 +188,20 @@ void Model::read(const QJsonObject &json)
         for (const QJsonValueRef &account : qAsConst(accountsJsonArray))
             _accountModel->addAccount(Account::fromJson(account.toObject()));
     }
-
-    // Transactions
-
+    // link model objects to each account
+    for (Account *account : _accountModel->accounts()) {
+        // link currency
+        int currencyId = account->getCurrency()->getId();
+        account->setCurrency(_currencyModel->getCurrency(currencyId));
+        // link financial institution
+        int institutionId = account->getInstitution()->getId();
+        account->setInstitution(_institutionsModel->getFinancialInstitution(institutionId));
+        // link owners
+        QList<int> ownersIds = account->getOwnersId();
+        account->getOwners().clear();
+        for (int ownerId : ownersIds)
+            account->addOwner(_ownerModel->getOwner(ownerId));
+    }
 }
 
 /*!

@@ -69,3 +69,8 @@ void AccountModel::removeAccount(const QModelIndex &index)
     _accounts.removeAt(index.row());
     endResetModel();
 }
+
+const QList<Account *>& AccountModel::accounts() const
+{
+    return _accounts;
+}

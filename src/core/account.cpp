@@ -27,7 +27,7 @@ void Account::setId(int id)
     _id = id;
 }
 
-const QList<const Owner *> &Account::getOwners() const
+QList<const Owner *> &Account::getOwners()
 {
     return _owners;
 }
@@ -259,4 +259,9 @@ Account *Account::fromJson(const QJsonObject &json)
     auto account = new Account;
     account->read(json);
     return account;
+}
+
+void Account::addOwner(const Owner *owner)
+{
+    _owners.append(owner);
 }

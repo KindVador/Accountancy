@@ -78,11 +78,12 @@ public:
     // public API
     [[nodiscard]] QString getDisplayedName() const;
     [[nodiscard]] QList<int> getOwnersId() const;
-    [[nodiscard]] const QList<const Owner *> &getOwners() const;
+    [[nodiscard]] QList<const Owner *> &getOwners();
     void addTransaction(Transaction *transaction);
     void removeTransaction(Transaction *transaction);
     [[nodiscard]] int count() const;
     [[nodiscard]] Transaction *transactionAt(int pos) const;
+    void addOwner(const Owner *owner);
 
     // Serialization
     void read(const QJsonObject &json);

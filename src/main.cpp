@@ -4,6 +4,7 @@
 #include <QTranslator>
 #include <QString>
 #include <QSettings>
+#include <QIcon>
 
 static QString ACC_MAJOR_VERSION = QString("1");
 static QString ACC_MINOR_VERSION = QString("0");

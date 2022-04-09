@@ -22,6 +22,8 @@ public:
                         const QString &accountNumber, const QString &comment, bool isIncludedInTotal, bool isHidden);
     void removeAccount(const QModelIndex &index);
 
+    [[nodiscard]] const QList<Account *>& accounts() const;
+
     void reset();
 
 private:
