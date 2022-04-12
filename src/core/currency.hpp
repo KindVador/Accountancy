@@ -3,11 +3,12 @@
 
 #include <QString>
 #include <QJsonObject>
+#include <QUuid>
 
 class Currency
 {
 public:
-    Currency() = default;
+    Currency();
     explicit Currency(QString name, QString symbol);
     ~Currency() = default;
 
@@ -18,8 +19,8 @@ public:
     void setName(const QString &value);
     [[nodiscard]] QString getSymbol() const;
     void setSymbol(QString value);
-    [[nodiscard]] int getId() const;
-    void setId(int id);
+    [[nodiscard]] QUuid getUid() const;
+    void setUid(QUuid uid);
 
     // Displayed Data for Model
     [[nodiscard]] QString getDisplayedName() const;
@@ -29,7 +30,7 @@ public:
     void write(QJsonObject &json) const;
 
 private:
-    int _id = -1;
+    QUuid _uid;
     QString _name;
     QString _symbol;
 };

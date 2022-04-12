@@ -2,9 +2,26 @@
 #include <QDebug>
 #include <utility>
 
+Transaction::Transaction()
+{
+    _uid = QUuid::createUuid();
+}
+
+Transaction::Transaction(QString &name, QString &comment, TransactionStatus status, QDate &date, double amount):
+        _name(name), _comment(comment), _status(status), _date(date), _amount(amount)
+{
+    _uid = QUuid::createUuid();
+}
+
+Transaction::Transaction(QString name, QString comment, TransactionStatus status, QDate date, double amount):
+        _name(std::move(name)), _comment(std::move(comment)), _status(status), _date(date), _amount(amount)
+{
+    _uid = QUuid::createUuid();
+}
+
 void Transaction::printToConsole() const
 {
-    qDebug() << "Transaction:" << _id << " " << _name << " " << _comment;
+    qDebug() << "Transaction:" << _uid << " " << _name << " " << _comment;
 }
 
 const QString &Transaction::getName() const
@@ -59,8 +76,8 @@ void Transaction::setAmount(double amount)
 
 void Transaction::read(const QJsonObject &json)
 {
-    if (json.contains("id") && json["id"].isDouble())
-        _id = json["id"].toInt();
+    if (json.contains("uid") && json["uid"].isString())
+        _uid = QUuid(json["uid"].toString());
 
     if (json.contains("name") && json["name"].isString())
         _name = json["name"].toString();
@@ -81,7 +98,7 @@ void Transaction::read(const QJsonObject &json)
 
 void Transaction::write(QJsonObject &json) const
 {
-    json["id"] = _id;
+    json["uid"] = _uid.toString();
     json["name"] = _name;
     json["comment"] = _comment;
     json["status"] = TRANSACTION_STATUS_2_STRING[_status];
@@ -89,19 +106,7 @@ void Transaction::write(QJsonObject &json) const
     json["amount"] = _amount;
 }
 
-Transaction::Transaction(QString &name, QString &comment, TransactionStatus status, QDate &date, double amount):
-             _name(name), _comment(comment), _status(status), _date(date), _amount(amount)
+QUuid Transaction::getUid() const
 {
-
-}
-
-Transaction::Transaction(QString name, QString comment, TransactionStatus status, QDate date, double amount):
-        _name(std::move(name)), _comment(std::move(comment)), _status(status), _date(date), _amount(amount)
-{
-
-}
-
-int Transaction::getId() const
-{
-    return _id;
+    return _uid;
 }

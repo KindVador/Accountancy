@@ -35,7 +35,7 @@ public:
     void write(QJsonObject &json) const;
     void read(const QJsonObject &json);
 
-    void setOwnerFilter(int OwnerId);
+    void setOwnerFilter(QUuid OwnerUid);
     void setOwnerFilter(const QString &ownerName);
     static float balanceForOwner(const Owner *owner);
 

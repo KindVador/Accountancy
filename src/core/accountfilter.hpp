@@ -2,6 +2,8 @@
 #define ACCOUNTANCY_ACCOUNTFILTER_HPP
 
 #include <QSortFilterProxyModel>
+#include <QUuid>
+
 #include "account.hpp"
 
 class AccountFilter : public QSortFilterProxyModel
@@ -11,13 +13,13 @@ class AccountFilter : public QSortFilterProxyModel
 public:
     explicit AccountFilter(QObject *parent=nullptr);
 
-    void setActiveOwnerId(int ownerId);
+    void setActiveOwnerUid(QUuid ownerUid);
 
 protected:
-    bool filterAcceptsRow(int source_row, const QModelIndex &source_parent) const override;
+    [[nodiscard]] bool filterAcceptsRow(int source_row, const QModelIndex &source_parent) const override;
 
 private:
-    int _activeOwnerId = -1;
+    QUuid _activeOwnerUid;
 };
 
 #endif //ACCOUNTANCY_ACCOUNTFILTER_HPP

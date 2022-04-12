@@ -18,7 +18,7 @@ QVariant FinancialInstitutionModel::data(const QModelIndex &index, int role) con
             v.setValue(_institutions.at(index.row())->getName());
             break;
         case Qt::UserRole:
-            v.setValue(_institutions.at(index.row())->getId());
+            v.setValue(_institutions.at(index.row())->getUid());
             break;
         case ObjectRole:
             v.setValue(_institutions.at(index.row()));
@@ -29,22 +29,14 @@ QVariant FinancialInstitutionModel::data(const QModelIndex &index, int role) con
     return v;
 }
 
-int FinancialInstitutionModel::addFinancialInstitution(FinancialInstitution *institution)
+void FinancialInstitutionModel::addFinancialInstitution(FinancialInstitution *institution)
 {
     if (institution == nullptr)
-        return -1;
-
-    int nextId = -1;
-    if (_institutions.isEmpty())
-        nextId = 0;
-    else
-        nextId = _institutions.last()->getId() + 1;
+        return;
 
     beginResetModel();
-    institution->setId(nextId);
     _institutions.append(institution);
     endResetModel();
-    return nextId;
 }
 
 FinancialInstitution *FinancialInstitutionModel::addFinancialInstitution(const QString &name)
@@ -61,10 +53,11 @@ void FinancialInstitutionModel::reset()
     endResetModel();
 }
 
-void FinancialInstitutionModel::removeFinancialInstitution(int id)
+void FinancialInstitutionModel::removeFinancialInstitution(QUuid uid)
 {
     beginResetModel();
-    auto res = std::find_if(_institutions.cbegin(), _institutions.cend(), [&id] (const FinancialInstitution *institution){ return institution->getId() == id;});
+    auto res = std::find_if(_institutions.cbegin(), _institutions.cend(), [&uid] (const FinancialInstitution *institution){ return
+            institution->getUid() == uid;});
     if (res != _institutions.cend())
         _institutions.erase(res);
     endResetModel();
@@ -79,9 +72,10 @@ void FinancialInstitutionModel::removeFinancialInstitution(FinancialInstitution 
     endResetModel();
 }
 
-FinancialInstitution *FinancialInstitutionModel::getFinancialInstitution(int id) const
+FinancialInstitution *FinancialInstitutionModel::getFinancialInstitution(QUuid uid) const
 {
-    auto res = std::find_if(_institutions.cbegin(), _institutions.cend(), [&id] (const FinancialInstitution *other){ return id == other->getId();});
+    auto res = std::find_if(_institutions.cbegin(), _institutions.cend(), [&uid] (const FinancialInstitution *other){ return uid ==
+                                                                                                                             other->getUid();});
     if (res != _institutions.cend())
         return *res;
     return nullptr;

@@ -4,6 +4,7 @@
 #include <QString>
 #include <QList>
 #include <QJsonObject>
+#include <QUuid>
 
 #include "currency.hpp"
 #include "owner.hpp"
@@ -45,7 +46,7 @@ static QHash<QString, AccountType> STRING_2_ACCOUNT_TYPE {
 class Account
 {
 public:
-    Account() = default;
+    Account();
     Account(const FinancialInstitution *_institution, AccountType type, Currency *currency, const QList<const Owner*> &owners,
             float initialBalance, float warningBalance, QString accountNumber, QString comment,
             bool isIncludedInTotal, bool isHidden);
@@ -54,8 +55,8 @@ public:
     static Account *fromJson(const QJsonObject &json);
 
     // Getter & Setter
-    [[nodiscard]] int getId() const;
-    void setId(int id);
+    [[nodiscard]] QUuid getUid() const;
+    void setUid(QUuid id);
     [[nodiscard]] const FinancialInstitution *getInstitution() const;
     void setInstitution(const FinancialInstitution *institution);
     [[nodiscard]] const Currency *getCurrency() const;
@@ -77,7 +78,7 @@ public:
 
     // public API
     [[nodiscard]] QString getDisplayedName() const;
-    [[nodiscard]] QList<int> getOwnersId() const;
+    [[nodiscard]] QList<QUuid> getOwnersUid() const;
     [[nodiscard]] QList<const Owner *> &getOwners();
     void addTransaction(Transaction *transaction);
     void removeTransaction(Transaction *transaction);
@@ -90,7 +91,7 @@ public:
     void write(QJsonObject &json) const;
 
 private:
-    int _id = -1;
+    QUuid _uid;
     const FinancialInstitution *_institution = nullptr;
     const Currency* _currency = nullptr;
     QList<const Owner*> _owners;

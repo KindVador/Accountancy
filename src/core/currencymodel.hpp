@@ -2,6 +2,7 @@
 #define CURRENCYMODEL_H
 
 #include <QAbstractListModel>
+#include <QUuid>
 #include <QDebug>
 
 #include "currency.hpp"
@@ -18,20 +19,18 @@ public:
     [[nodiscard]] int rowCount(const QModelIndex &parent) const override;
     [[nodiscard]] QVariant data(const QModelIndex &index, int role) const override;
 
-    int addCurrency(Currency *currency);
+    void addCurrency(Currency *currency);
     Currency *addCurrency(const QString &name, const QString &symbol);
     Currency *addCurrency(QString &&name, QString &&symbol);
     void removeCurrency(Currency *currency);
-    void removeCurrency(int id);
+    void removeCurrency(QUuid uid);
     [[nodiscard]] Currency* getCurrency(const QString &name) const;
-    [[nodiscard]] Currency* getCurrency(int id) const;
+    [[nodiscard]] Currency* getCurrency(QUuid uid) const;
 
     void reset();
 
 private:
     QList<Currency*> _currencies;
-
-    [[nodiscard]] int getLastId() const;
 };
 
 #endif // CURRENCYMODEL_H

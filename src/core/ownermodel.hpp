@@ -2,6 +2,7 @@
 #define OWNERMODEL_H
 
 #include <QAbstractListModel>
+#include <QUuid>
 #include <QDebug>
 
 #include "owner.hpp"
@@ -19,18 +20,16 @@ public:
     [[nodiscard]] int rowCount(const QModelIndex &parent) const override;
     [[nodiscard]] QVariant data(const QModelIndex &index, int role) const override;
 
-    int addOwner(Owner *owner);
+    void addOwner(Owner *owner);
     Owner *addOwner(const QString &name, float warningBalance, const QString &comment, bool isHidden);
     void removeOwner(const QModelIndex &index);
-    Owner* getOwner(const QString &name) const;
-    Owner* getOwner(int id) const;
+    [[nodiscard]] Owner* getOwner(const QString &name) const;
+    [[nodiscard]] Owner* getOwner(QUuid uid) const;
 
     void reset();
 
 private:
     QList<Owner*> _owners;
-
-    [[nodiscard]] int getLastId() const;
 };
 
 #endif // OWNERMODEL_H

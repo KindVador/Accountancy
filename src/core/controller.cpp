@@ -73,11 +73,11 @@ void Controller::onSelectedOwner(const QModelIndex &index)
 
     OwnerModel *model = _model->getOwnerModel();
     auto ownerName = model->data(index, Qt::DisplayRole).value<QString>();
-    int ownerId = model->data(index, ObjectRole).value<Owner*>()->getId();
-    qDebug() << "Controller::onSelectedOwner" << index.isValid() << ownerName << ownerId;
+    QUuid ownerUid = model->data(index, ObjectRole).value<Owner *>()->getUid();
+    qDebug() << "Controller::onSelectedOwner" << index.isValid() << ownerName << ownerUid;
 
     // Apply filtering on Account's model
-    _model->setOwnerFilter(ownerId);
+    _model->setOwnerFilter(ownerUid);
     _model->getAccountFilter()->invalidate();
 }
 
@@ -90,7 +90,7 @@ void Controller::onSelectedAccount(const QModelIndex &index)
 
 void Controller::clearOwnerSelection()
 {
-    _model->setOwnerFilter(-1);
+    _model->setOwnerFilter(QUuid());
     _model->getAccountFilter()->invalidate();
 }
 
@@ -225,12 +225,12 @@ Currency *Controller::addCurrency(const QString &name, const QString &symbol)
     return _model->getCurrencyModel()->addCurrency(name, symbol);
 }
 
-void Controller::removeCurrency(int id)
+void Controller::removeCurrency(QUuid uid)
 {
-    _model->getCurrencyModel()->removeCurrency(id);
+    _model->getCurrencyModel()->removeCurrency(uid);
 }
 
-void Controller::removeInstitution(int id)
+void Controller::removeInstitution(QUuid uid)
 {
-    _model->getFinancialInstitutionModel()->removeFinancialInstitution(id);
+    _model->getFinancialInstitutionModel()->removeFinancialInstitution(uid);
 }

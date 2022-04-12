@@ -2,21 +2,19 @@
 
 constexpr const int ObjectRole = Qt::UserRole + 1;
 
-int OwnerModel::addOwner(Owner *owner)
+void OwnerModel::addOwner(Owner *owner)
 {
     if (owner == nullptr)
-        return -1;
+        return;
+
     beginResetModel();
-    owner->setId(getLastId());
     _owners.append(owner);
     endResetModel();
-    return owner->getId();
 }
 
 Owner *OwnerModel::addOwner(const QString &name, float warningBalance, const QString &comment, bool isHidden)
 {
     auto *newOwner = new Owner(name, warningBalance, comment, isHidden);
-    newOwner->setId(getLastId());
     addOwner(newOwner);
     return newOwner;
 }
@@ -33,7 +31,7 @@ Owner *OwnerModel::getOwner(const QString &name) const
 
 int OwnerModel::rowCount(const QModelIndex &parent) const
 {
-    return _owners.count();
+    return (int)_owners.count();
 }
 
 QVariant OwnerModel::data(const QModelIndex &index, int role) const
@@ -47,7 +45,7 @@ QVariant OwnerModel::data(const QModelIndex &index, int role) const
             v.setValue(_owners.at(index.row())->getName());
             break;
         case Qt::UserRole:
-            v.setValue(_owners.at(index.row())->getId());
+            v.setValue(_owners.at(index.row())->getUid());
             break;
         case ObjectRole:
             v.setValue(_owners.at(index.row()));
@@ -57,13 +55,6 @@ QVariant OwnerModel::data(const QModelIndex &index, int role) const
     }
 
     return v;
-}
-
-int OwnerModel::getLastId() const {
-    if (_owners.isEmpty())
-        return 0;
-    else
-        return _owners.last()->getId() + 1;
 }
 
 void OwnerModel::reset()
@@ -81,9 +72,9 @@ void OwnerModel::removeOwner(const QModelIndex &index)
     endResetModel();
 }
 
-Owner *OwnerModel::getOwner(int id) const
+Owner *OwnerModel::getOwner(QUuid uid) const
 {
-    auto ownerIt = std::find_if(_owners.begin(), _owners.end(), [&id](Owner *owner) { return owner->getId() == id; });
+    auto ownerIt = std::find_if(_owners.begin(), _owners.end(), [&uid](Owner *owner) { return owner->getUid() == uid; });
     // case NOT FOUND
     if (ownerIt == _owners.end())
         return nullptr;

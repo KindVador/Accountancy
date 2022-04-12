@@ -1,15 +1,16 @@
 #ifndef OWNER_H
 #define OWNER_H
 
-#include <string>
 #include <QString>
 #include <QMetaType>
+#include <QUuid>
+
 #include "currency.hpp"
 
 class Owner
 {
 public:
-    Owner() = default;
+    Owner();
     Owner(QString &name, double warningBalance, QString &comment, bool isHidden);
     Owner(QString name, double warningBalance, QString comment, bool isHidden);
     ~Owner() = default;
@@ -25,15 +26,15 @@ public:
     void setComment(const QString &value);
     [[nodiscard]] bool getIsHidden() const;
     void setIsHidden(bool value);
-    [[nodiscard]] int getId() const;
-    void setId(int id);
+    [[nodiscard]] QUuid getUid() const;
+    void setUid(QUuid uid);
 
     // Serialization
     void read(const QJsonObject &json);
     void write(QJsonObject &json) const;
 
 private:
-    int _id = -1;
+    QUuid _uid;
     QString _name;
     double _warningBalance = 0.0;
     QString _comment;

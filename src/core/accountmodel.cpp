@@ -18,7 +18,7 @@ QVariant AccountModel::data(const QModelIndex &index, int role) const
             v.setValue(_accounts.at(index.row())->getDisplayedName());
             break;
         case Qt::UserRole:
-            v.setValue(_accounts.at(index.row())->getId());
+            v.setValue(_accounts.at(index.row())->getUid());
             break;
         case ObjectRole:
             v.setValue(_accounts.at(index.row()));
@@ -29,20 +29,12 @@ QVariant AccountModel::data(const QModelIndex &index, int role) const
     return v;
 }
 
-int AccountModel::addAccount(Account *account)
+void AccountModel::addAccount(Account *account)
 {
     if (account == nullptr)
-        return -1;
+        return;
 
-    int nextId = -1;
-    if (_accounts.isEmpty())
-        nextId = 0;
-    else
-        nextId = _accounts.last()->getId() + 1;
-
-    account->setId(nextId);
     _accounts.append(account);
-    return nextId;
 }
 
 Account *AccountModel::addAccount(const FinancialInstitution *institution, AccountType type, Currency *currency,

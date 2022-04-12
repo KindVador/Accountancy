@@ -1,13 +1,20 @@
 #include "owner.hpp"
 
+Owner::Owner()
+{
+    _uid = QUuid::createUuid();
+}
+
 Owner::Owner(QString &name, double warningBalance, QString &comment, bool isHidden)
         : _name(name), _warningBalance(warningBalance), _comment(comment), _isHidden(isHidden)
 {
+    _uid = QUuid::createUuid();
 }
 
 Owner::Owner(QString name, double warningBalance, QString comment, bool isHidden)
         : _name(std::move(name)), _warningBalance(warningBalance), _comment(std::move(comment)), _isHidden(isHidden)
 {
+    _uid = QUuid::createUuid();
 }
 
 QString Owner::getName() const
@@ -50,20 +57,20 @@ void Owner::setIsHidden(bool value)
     _isHidden = value;
 }
 
-int Owner::getId() const
+QUuid Owner::getUid() const
 {
-    return _id;
+    return _uid;
 }
 
-void Owner::setId(int id)
+void Owner::setUid(QUuid uid)
 {
-    _id = id;
+    _uid = uid;
 }
 
 void Owner::read(const QJsonObject &json)
 {
-    if (json.contains("id") && json["id"].isDouble())
-        _id = json["id"].toInt();
+    if (json.contains("uid") && json["uid"].isString())
+        _uid = QUuid(json["uid"].toString());
 
     if (json.contains("name") && json["name"].isString())
         _name = json["name"].toString();
@@ -80,7 +87,7 @@ void Owner::read(const QJsonObject &json)
 
 void Owner::write(QJsonObject &json) const
 {
-    json["id"] = _id;
+    json["uid"] = _uid.toString();
     json["name"] = _name;
     json["comment"] = _comment;
     json["warning_balance"] = _warningBalance;

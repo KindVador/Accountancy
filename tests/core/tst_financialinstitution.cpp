@@ -13,13 +13,13 @@ private slots:
 
     void defaultConstructorTestCase() {
         FinancialInstitution fi{};
-        QVERIFY(fi.getId());
+        QVERIFY(!fi.getUid().isNull());
         QCOMPARE(fi.getName(), QString());
     }
 
     void initConstructorTestCase() {
         auto fi = FinancialInstitution("Institution1");
-        QVERIFY(fi.getId());
+        QVERIFY(!fi.getUid().isNull());
         QCOMPARE(fi.getName(), "Institution1");
     }
 
@@ -27,7 +27,7 @@ private slots:
         auto fi = FinancialInstitution("Institution1");
         QJsonObject jsonData;
         fi.write(jsonData);
-        QVERIFY(jsonData.contains("id") && !jsonData["id"].isNull());
+        QVERIFY(jsonData.contains("uid") && !jsonData["uid"].isNull());
         QVERIFY(jsonData.contains("name") && jsonData["name"] == "Institution1");
     }
 
@@ -38,7 +38,7 @@ private slots:
         FinancialInstitution fi1;
         fi1.read(jsonData);
         QCOMPARE(fi1.getName(), "Institution1");
-        QVERIFY(fi1.getId());
+        QVERIFY(!fi1.getUid().isNull());
     }
 
 };

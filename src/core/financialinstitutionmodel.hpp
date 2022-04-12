@@ -16,12 +16,12 @@ public:
     [[nodiscard]] int rowCount(const QModelIndex &parent) const override;
     [[nodiscard]] QVariant data(const QModelIndex &index, int role) const override;
 
-    int addFinancialInstitution(FinancialInstitution *institution);
+    void addFinancialInstitution(FinancialInstitution *institution);
     FinancialInstitution *addFinancialInstitution(const QString &name);
     void removeFinancialInstitution(FinancialInstitution *institution);
-    void removeFinancialInstitution(int id);
+    void removeFinancialInstitution(QUuid uid);
 
-    [[nodiscard]] FinancialInstitution* getFinancialInstitution(int id) const;
+    [[nodiscard]] FinancialInstitution* getFinancialInstitution(QUuid uid) const;
 
     void reset();
 

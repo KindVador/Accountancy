@@ -3,6 +3,11 @@
 
 #include <QJsonArray>
 
+Account::Account()
+{
+    _uid = QUuid::createUuid();
+}
+
 Account::Account(const FinancialInstitution *institution, AccountType type, Currency *currency,
                  const QList<const Owner*> &owners, float initialBalance, float warningBalance, QString accountNumber,
                  QString comment, bool isIncludedInTotal, bool isHidden) :
@@ -10,6 +15,7 @@ Account::Account(const FinancialInstitution *institution, AccountType type, Curr
                  _warningBalance(warningBalance), _accountNumber(std::move(accountNumber)),
                  _comment(std::move(comment)), _isIncludedInTotal(isIncludedInTotal), _isHidden(isHidden), _type(type)
 {
+    _uid = QUuid::createUuid();
 }
 
 QString Account::getDisplayedName() const
@@ -17,14 +23,14 @@ QString Account::getDisplayedName() const
     return QString("%1").arg(_accountNumber);
 }
 
-int Account::getId() const
+QUuid Account::getUid() const
 {
-    return _id;
+    return _uid;
 }
 
-void Account::setId(int id)
+void Account::setUid(QUuid uid)
 {
-    _id = id;
+    _uid = uid;
 }
 
 QList<const Owner *> &Account::getOwners()
@@ -32,15 +38,15 @@ QList<const Owner *> &Account::getOwners()
     return _owners;
 }
 
-QList<int> Account::getOwnersId() const
+QList<QUuid> Account::getOwnersUid() const
 {
     if (_owners.isEmpty())
         return {};
 
-    QList<int> ids;
+    QList<QUuid> ids;
     for (const Owner *owner : qAsConst(_owners)) {
         if (owner != nullptr)
-            ids.append(owner->getId());
+            ids.append(owner->getUid());
     }
 
     return ids;
@@ -74,7 +80,7 @@ void Account::setInstitution(const FinancialInstitution *institution)
 
 int Account::count() const
 {
-    return _transactions.count();
+    return (int)_transactions.count();
 }
 
 Transaction *Account::transactionAt(int pos) const
@@ -94,18 +100,18 @@ void Account::setCurrency(const Currency *currency)
 
 void Account::read(const QJsonObject &json)
 {
-    if (json.contains("id") && json["id"].isDouble())
-        _id = json["id"].toInt();
+    if (json.contains("uid") && json["uid"].isDouble())
+        _uid = QUuid(json["uid"].toString());
 
     if (json.contains("institution")) {
         auto fi = new FinancialInstitution;
-        fi->setId(json["institution"].toInt());
+        fi->setUid(QUuid(json["institution"].toString()));
         setInstitution(fi);
     }
 
     if (json.contains("currency")) {
         auto  c = new Currency;
-        c->setId(json["currency"].toInt());
+        c->setUid(QUuid(json["currency"].toString()));
         setCurrency(c);
     }
 
@@ -113,7 +119,7 @@ void Account::read(const QJsonObject &json)
         QJsonArray ownersArray = json["owners"].toArray();
         for (QJsonValue owner : ownersArray) {
             auto ownerPtr = new Owner;
-            ownerPtr->setId(owner.toInt());
+            ownerPtr->setUid(QUuid(owner.toString()));
             _owners.append(ownerPtr);
         }
     }
@@ -151,17 +157,17 @@ void Account::read(const QJsonObject &json)
 
 void Account::write(QJsonObject &json) const
 {
-    json["id"] = _id;
+    json["uid"] = _uid.toString();
 
     if (_institution != nullptr)
-        json["institution"] = _institution->getId();
+        json["institution"] = _institution->getUid().toString();
 
     if (_currency != nullptr)
-        json["currency"] = _currency->getId();
+        json["currency"] = _currency->getUid().toString();
 
     QJsonArray ownersArray;
     for (const Owner *owner : _owners)
-        ownersArray.append(owner->getId());
+        ownersArray.append(owner->getUid().toString());
     json["owners"] = ownersArray;
 
     json["initialBalance"] = _initialBalance;

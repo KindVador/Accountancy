@@ -2,9 +2,11 @@
 #define TRANSACTION_H
 
 #include <iostream>
+
 #include <QString>
 #include <QDate>
 #include <QJsonObject>
+#include <QUuid>
 
 class Account;
 
@@ -39,13 +41,13 @@ static QHash<QString, TransactionStatus> STRING_2_TRANSACTION_STATUS {
 class Transaction
 {
 public:
-    Transaction() = default;
+    Transaction();
     explicit Transaction(QString &name, QString &comment, TransactionStatus status, QDate &date, double amount);
     explicit Transaction(QString name, QString comment, TransactionStatus status, QDate date, double amount);
     ~Transaction() = default;
 
     // Getter & Setter
-    [[nodiscard]] int getId() const;
+    [[nodiscard]] QUuid getUid() const;
     [[nodiscard]] const QString &getName() const;
     void setName(const QString &name);
     [[nodiscard]] const QString &getComment() const;
@@ -65,7 +67,7 @@ public:
     void printToConsole() const;
 
 private:
-    int _id = -1;
+    QUuid _uid;
     QString _name;
     QString _comment;
     TransactionStatus _status = TransactionStatus::Imported;

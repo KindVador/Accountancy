@@ -13,14 +13,14 @@ private slots:
 
     void defaultConstructorTestCase() {
         Currency c{};
-        QVERIFY(c.getId());
+        QVERIFY(!c.getUid().isNull());
         QCOMPARE(c.getName(), QString());
         QCOMPARE(c.getSymbol(), QString());
     }
 
     void initConstructorTestCase() {
         Currency c{"Euro", "€"};
-        QVERIFY(c.getId());
+        QVERIFY(!c.getUid().isNull());
         QCOMPARE(c.getName(), QString("Euro"));
         QCOMPARE(c.getSymbol(), QString("€"));
     }
@@ -29,7 +29,7 @@ private slots:
         Currency c{"Euro", "€"};
         QJsonObject jsonData;
         c.write(jsonData);
-        QVERIFY(jsonData.contains("id") && !jsonData["id"].isNull());
+        QVERIFY(jsonData.contains("uid") && !jsonData["uid"].isNull());
         QVERIFY(jsonData.contains("name") && jsonData["name"] == "Euro");
         QVERIFY(jsonData.contains("symbol") && jsonData["symbol"] == "€");
     }
@@ -40,7 +40,7 @@ private slots:
         c0.write(jsonData);
         Currency c1;
         c1.read(jsonData);
-        QVERIFY(c1.getId());
+        QVERIFY(!c1.getUid().isNull());
         QCOMPARE(c1.getName(), "Euro");
         QCOMPARE(c1.getSymbol(), "€");
     }

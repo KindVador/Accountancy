@@ -22,7 +22,7 @@ private slots:
 
     void initConstructorTestCase() {
         Transaction t(QString("Name1"), QString("Comment1"), TransactionStatus::Created, QDate(2021, 12, 25), -14.99);
-        QVERIFY(t.getId());
+        QVERIFY(!t.getUid().isNull());
         QVERIFY(t.getName() == "Name1");
         QVERIFY(t.getComment() == "Comment1");
         QVERIFY(t.getStatus() == TransactionStatus::Created);
@@ -34,7 +34,7 @@ private slots:
         Transaction t(QString("Name1"), QString("Comment1"), TransactionStatus::Created, QDate(2021, 12, 25), -14.99);
         QJsonObject jsonData;
         t.write(jsonData);
-        QVERIFY(jsonData.contains("id") && !jsonData["id"].isNull());
+        QVERIFY(jsonData.contains("uid") && !jsonData["uid"].isNull());
         QVERIFY(jsonData.contains("name") && jsonData["name"] == "Name1");
         QVERIFY(jsonData.contains("comment") && jsonData["comment"] == "Comment1");
         QVERIFY(jsonData.contains("status") && jsonData["status"] == TRANSACTION_STATUS_2_STRING[TransactionStatus::Created]);
@@ -50,7 +50,7 @@ private slots:
         t0.write(jsonData);
         Transaction t1;
         t1.read(jsonData);
-        QVERIFY(t1.getId());
+        QVERIFY(!t1.getUid().isNull());
         QCOMPARE(t1.getName(), "Name1");
         QCOMPARE(t1.getComment(), "Comment1");
         QCOMPARE(t1.getStatus(), TransactionStatus::Created);

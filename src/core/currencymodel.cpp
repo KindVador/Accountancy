@@ -4,7 +4,7 @@ constexpr const int ObjectRole = Qt::UserRole + 1;
 
 int CurrencyModel::rowCount(const QModelIndex &parent) const
 {
-    return _currencies.size();
+    return (int)_currencies.size();
 }
 
 QVariant CurrencyModel::data(const QModelIndex &index, int role) const
@@ -18,7 +18,7 @@ QVariant CurrencyModel::data(const QModelIndex &index, int role) const
             v.setValue(_currencies.at(index.row())->getDisplayedName());
             break;
         case Qt::UserRole:
-            v.setValue(_currencies.at(index.row())->getId());
+            v.setValue(_currencies.at(index.row())->getUid());
             break;
         case ObjectRole:
             v.setValue(_currencies.at(index.row()));
@@ -30,16 +30,14 @@ QVariant CurrencyModel::data(const QModelIndex &index, int role) const
     return v;
 }
 
-int CurrencyModel::addCurrency(Currency *currency)
+void CurrencyModel::addCurrency(Currency *currency)
 {
     if (currency == nullptr)
-        return -1;
+        return;
 
     beginResetModel();
-    currency->setId(getLastId());
     _currencies.append(currency);
     endResetModel();
-    return currency->getId();
 }
 
 void CurrencyModel::removeCurrency(Currency *currency)
@@ -51,10 +49,11 @@ void CurrencyModel::removeCurrency(Currency *currency)
     endResetModel();
 }
 
-void CurrencyModel::removeCurrency(int id)
+void CurrencyModel::removeCurrency(QUuid uid)
 {
     beginResetModel();
-    auto res = std::find_if(_currencies.cbegin(), _currencies.cend(), [&id] (const Currency *currency){ return currency->getId() == id;});
+    auto res = std::find_if(_currencies.cbegin(), _currencies.cend(), [&uid] (const Currency *currency){ return
+            currency->getUid() == uid;});
     if (res != _currencies.cend())
         _currencies.erase(res);
     endResetModel();
@@ -63,7 +62,6 @@ void CurrencyModel::removeCurrency(int id)
 Currency *CurrencyModel::addCurrency(const QString &name, const QString &symbol)
 {
     auto *newCurrency = new Currency(name, symbol);
-    newCurrency->setId(getLastId());
     addCurrency(newCurrency);
     return newCurrency;
 }
@@ -71,7 +69,6 @@ Currency *CurrencyModel::addCurrency(const QString &name, const QString &symbol)
 Currency *CurrencyModel::addCurrency(QString &&name, QString &&symbol)
 {
     auto *newCurrency = new Currency(name, symbol);
-    newCurrency->setId(getLastId());
     addCurrency(newCurrency);
     return newCurrency;
 }
@@ -86,14 +83,6 @@ Currency *CurrencyModel::getCurrency(const QString &name) const
     return *currencyIt;
 }
 
-int CurrencyModel::getLastId() const
-{
-    if (_currencies.isEmpty())
-        return 0;
-    else
-        return _currencies.last()->getId() + 1;
-}
-
 void CurrencyModel::reset()
 {
     beginResetModel();
@@ -101,9 +90,10 @@ void CurrencyModel::reset()
     endResetModel();
 }
 
-Currency *CurrencyModel::getCurrency(int id) const
+Currency *CurrencyModel::getCurrency(QUuid uid) const
 {
-    auto currencyIt = std::find_if(_currencies.begin(), _currencies.end(), [&id](Currency *currency) { return currency->getId() == id; });
+    auto currencyIt = std::find_if(_currencies.begin(), _currencies.end(), [&uid](Currency *currency) { return
+            currency->getUid() == uid; });
     // case NOT FOUND
     if (currencyIt == _currencies.end())
         return nullptr;

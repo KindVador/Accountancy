@@ -4,18 +4,24 @@
 #include <QTextStream>
 #include <QDebug>
 
+FinancialInstitution::FinancialInstitution()
+{
+    _uid = QUuid::createUuid();
+}
+
 FinancialInstitution::FinancialInstitution(QString name): _name(std::move(name))
 {
+    _uid = QUuid::createUuid();
 }
 
-int FinancialInstitution::getId() const
+QUuid FinancialInstitution::getUid() const
 {
-    return _id;
+    return _uid;
 }
 
-void FinancialInstitution::setId(int id)
+void FinancialInstitution::setUid(QUuid uid)
 {
-    _id = id;
+    _uid = uid;
 }
 
 const QString &FinancialInstitution::getName() const
@@ -70,8 +76,8 @@ QList<Transaction *> FinancialInstitution::readTransactionsFromFile(QFile &dataF
 
 void FinancialInstitution::read(const QJsonObject &json)
 {
-    if (json.contains("id") && json["id"].isDouble())
-        _id = json["id"].toInt();
+    if (json.contains("uid") && json["uid"].isDouble())
+        _uid = QUuid(json["uid"].toString());
 
     if (json.contains("name") && json["name"].isString())
         _name = json["name"].toString();
@@ -79,7 +85,7 @@ void FinancialInstitution::read(const QJsonObject &json)
 
 void FinancialInstitution::write(QJsonObject &json) const
 {
-    json["id"] = _id;
+    json["uid"] = _uid.toString();
     json["name"] = _name;
 }
 

@@ -26,12 +26,12 @@ public:
     // CURRENCIES
     void addCurrency(Currency *currency);
     Currency *addCurrency(const QString &name, const QString &symbol);
-    void removeCurrency(int id);
+    void removeCurrency(QUuid uid);
 
     // FINANCIAL INSTITUTIONS
     void addFinancialInstitution(FinancialInstitution *institution);
     FinancialInstitution *addFinancialInstitution(const QString &name);
-    void removeInstitution(int id);
+    void removeInstitution(QUuid uid);
 
     // OWNERS
     void addOwner(Owner *owner);

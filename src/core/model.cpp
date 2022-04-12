@@ -70,13 +70,13 @@ AccountFilter *Model::getAccountFilter() const
     return _accountFilteredModel;
 }
 
-void Model::setOwnerFilter(int ownerId)
+void Model::setOwnerFilter(QUuid OwnerUid)
 {
-    if (_accountFilteredModel == nullptr)
+    if (_accountFilteredModel == nullptr || OwnerUid.isNull())
         return;
 
-    qWarning() << "Model::setOwnerFilter" << ownerId;
-    _accountFilteredModel->setActiveOwnerId(ownerId);
+    qWarning() << "Model::setOwnerFilter" << OwnerUid;
+    _accountFilteredModel->setActiveOwnerUid(OwnerUid);
 }
 
 void Model::setOwnerFilter(const QString &ownerName)
@@ -86,7 +86,7 @@ void Model::setOwnerFilter(const QString &ownerName)
 
     qWarning() << "Model::setOwnerFilter" << ownerName;
     Owner *owner = _ownerModel->getOwner(ownerName);
-    _accountFilteredModel->setActiveOwnerId(owner->getId());
+    _accountFilteredModel->setActiveOwnerUid(owner->getUid());
 }
 
 FinancialInstitutionModel *Model::getFinancialInstitutionModel() const
@@ -191,16 +191,16 @@ void Model::read(const QJsonObject &json)
     // link model objects to each account
     for (Account *account : _accountModel->accounts()) {
         // link currency
-        int currencyId = account->getCurrency()->getId();
-        account->setCurrency(_currencyModel->getCurrency(currencyId));
+        QUuid currencyUid = account->getCurrency()->getUid();
+        account->setCurrency(_currencyModel->getCurrency(currencyUid));
         // link financial institution
-        int institutionId = account->getInstitution()->getId();
-        account->setInstitution(_institutionsModel->getFinancialInstitution(institutionId));
+        QUuid institutionUid = account->getInstitution()->getUid();
+        account->setInstitution(_institutionsModel->getFinancialInstitution(institutionUid));
         // link owners
-        QList<int> ownersIds = account->getOwnersId();
+        QList<QUuid> ownersIds = account->getOwnersUid();
         account->getOwners().clear();
-        for (int ownerId : ownersIds)
-            account->addOwner(_ownerModel->getOwner(ownerId));
+        for (QUuid ownerUid : ownersIds)
+            account->addOwner(_ownerModel->getOwner(ownerUid));
     }
 }
 

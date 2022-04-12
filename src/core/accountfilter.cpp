@@ -12,10 +12,10 @@ bool AccountFilter::filterAcceptsRow(int sourceRow, const QModelIndex &sourcePar
     const QModelIndex modelRequestIdx = sourceModel()->index(sourceRow, 0, sourceParent);
     const Account *account = sourceModel()->data(modelRequestIdx, ObjectRole).value<Account*>();
 
-    if (account == nullptr || _activeOwnerId == -1)
+    if (account == nullptr || _activeOwnerUid.isNull())
         return true;
 
-    if (account->getOwnersId().contains(_activeOwnerId)) {
+    if (account->getOwnersUid().contains(_activeOwnerUid)) {
         qWarning() << account->getDisplayedName() << true;
         return true;
     } else {
@@ -24,10 +24,10 @@ bool AccountFilter::filterAcceptsRow(int sourceRow, const QModelIndex &sourcePar
     }
 }
 
-void AccountFilter::setActiveOwnerId(int ownerId)
+void AccountFilter::setActiveOwnerUid(QUuid ownerUid)
 {
-    qWarning() << "AccountFilter::setActiveOwnerId" << ownerId;
+    qWarning() << "AccountFilter::setActiveOwnerUid" << ownerUid.toString();
     beginResetModel();
-    _activeOwnerId = ownerId;
+    _activeOwnerUid = ownerUid;
     endResetModel();
 }

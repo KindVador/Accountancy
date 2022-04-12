@@ -16,7 +16,7 @@ public:
     [[nodiscard]] int rowCount(const QModelIndex &parent) const override;
     [[nodiscard]] QVariant data(const QModelIndex &index, int role) const override;
 
-    int addAccount(Account *account);
+    void addAccount(Account *account);
     Account *addAccount(const FinancialInstitution *institution, AccountType type, Currency *currency,
                         const QList<const Owner*> &owners, float initialBalance, float warningBalance,
                         const QString &accountNumber, const QString &comment, bool isIncludedInTotal, bool isHidden);

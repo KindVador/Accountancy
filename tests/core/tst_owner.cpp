@@ -17,7 +17,7 @@ private slots:
         QCOMPARE(o.getWarningBalance(), 0.0);
         QCOMPARE(o.getComment(), QString());
         QVERIFY(!o.getIsHidden());
-        QVERIFY(o.getId());
+        QVERIFY(!o.getUid().isNull());
     }
 
     void initConstructorTestCase() {
@@ -26,14 +26,14 @@ private slots:
         QCOMPARE(o.getWarningBalance(), 150.0);
         QCOMPARE(o.getComment(), "Comment1");
         QVERIFY(!o.getIsHidden());
-        QVERIFY(o.getId());
+        QVERIFY(!o.getUid().isNull());
     }
 
     void writeJsonTestCase() {
         Owner o{"Name1", 150.0, "Comment1", false};
         QJsonObject jsonData;
         o.write(jsonData);
-        QVERIFY(jsonData.contains("id") && !jsonData["id"].isNull());
+        QVERIFY(jsonData.contains("uid") && !jsonData["uid"].isNull());
         QVERIFY(jsonData.contains("name") && jsonData["name"] == "Name1");
         QVERIFY(jsonData.contains("comment") && jsonData["comment"] == "Comment1");
         QVERIFY(jsonData.contains("warning_balance"));
@@ -51,7 +51,7 @@ private slots:
         QCOMPARE(o1.getWarningBalance(), 150.0);
         QCOMPARE(o1.getComment(), "Comment1");
         QVERIFY(!o1.getIsHidden());
-        QVERIFY(o1.getId());
+        QVERIFY(!o1.getUid().isNull());
     }
 };
 

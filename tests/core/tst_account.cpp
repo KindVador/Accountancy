@@ -14,7 +14,7 @@ private slots:
 
     void defaultConstructorTestCase() {
         Account a{};
-        QVERIFY(a.getId());
+        QVERIFY(!a.getUid().isNull());
         QCOMPARE(a.getInstitution(), nullptr);
         QCOMPARE(a.getCurrency(), nullptr);
         QCOMPARE(a.getOwners().count(), 0);
@@ -29,7 +29,7 @@ private slots:
         Account a{fi, AccountType::Cash, currency, {owner}, 147.85, 100.0, "123456789AX", "CommentAccount1", true, false};
         QJsonObject jsonData;
         a.write(jsonData);
-        QVERIFY(jsonData.contains("id") && !jsonData["id"].isNull());
+        QVERIFY(jsonData.contains("uid") && !jsonData["uid"].isNull());
         QVERIFY(jsonData.contains("institution") && !jsonData["institution"].isNull());
         QVERIFY(jsonData.contains("currency") && !jsonData["currency"].isNull());
         QVERIFY(jsonData.contains("owners") && !jsonData["owners"].isNull());
@@ -59,7 +59,7 @@ private slots:
         auto *currency = new Currency("Euro", "€");
         auto *owner = new Owner("Owner1", 150.0, "Comment1", false);
         Account a0{fi, AccountType::Cash, currency, {owner}, 147.85, 100.0, "123456789AX", "CommentAccount1", true, false};
-        a0.setId(99);
+        a0.setUid(QUuid("67C8770B-44F1-410A-AB9A-F9B5446F13EE"));
         QJsonObject jsonData;
         a0.write(jsonData);
 
@@ -68,7 +68,7 @@ private slots:
         a1.read(jsonData);
 
         // check that values are correctly read
-        QCOMPARE(a1.getId(), 99);
+        QCOMPARE(a1.getUid().toString(), "67C8770B-44F1-410A-AB9A-F9B5446F13EE");
         QVERIFY(a1.getInstitution() != nullptr);
         QVERIFY(a1.getCurrency() != nullptr);
         QVERIFY(a1.getOwners().count() > 0);
