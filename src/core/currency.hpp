@@ -2,28 +2,39 @@
 #define CURRENCY_H
 
 #include <QString>
+#include <QJsonObject>
+#include <QUuid>
 
 class Currency
 {
 public:
-    Currency() = default;
-    Currency(QString &name, QString &symbol);
+    Currency();
+    explicit Currency(QString name, QString symbol);
     ~Currency() = default;
 
-    QString getName() const;
+    static Currency *fromJson(const QJsonObject &json);
+
+    // Getter & Setter
+    [[nodiscard]] QString getName() const;
     void setName(const QString &value);
-
-    QString getSymbol() const;
+    [[nodiscard]] QString getSymbol() const;
     void setSymbol(QString value);
+    [[nodiscard]] QUuid getUid() const;
+    void setUid(QUuid uid);
 
-    int getId() const;
+    // Displayed Data for Model
+    [[nodiscard]] QString getDisplayedName() const;
+
+    // Serialization
+    void read(const QJsonObject &json);
+    void write(QJsonObject &json) const;
 
 private:
-    int id = -1;
-    QString name;
-    QString symbol;
+    QUuid _uid;
+    QString _name;
+    QString _symbol;
 };
 
-//Q_DECLARE_METATYPE(Currency*)
+Q_DECLARE_METATYPE(Currency*)
 
 #endif // CURRENCY_H

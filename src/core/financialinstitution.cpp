@@ -4,18 +4,24 @@
 #include <QTextStream>
 #include <QDebug>
 
+FinancialInstitution::FinancialInstitution()
+{
+    _uid = QUuid::createUuid();
+}
+
 FinancialInstitution::FinancialInstitution(QString name): _name(std::move(name))
 {
+    _uid = QUuid::createUuid();
 }
 
-int FinancialInstitution::getId() const
+QUuid FinancialInstitution::getUid() const
 {
-    return _id;
+    return _uid;
 }
 
-void FinancialInstitution::setId(int id)
+void FinancialInstitution::setUid(QUuid uid)
 {
-    _id = id;
+    _uid = uid;
 }
 
 const QString &FinancialInstitution::getName() const
@@ -55,8 +61,7 @@ QList<Transaction *> FinancialInstitution::readTransactionsFromFile(QFile &dataF
         // fix year date as 20 is interpreted as 1920 instead of 2020
         if (date1.year() + 100 < QDate::currentDate().year())
             date1 = date1.addYears(100);
-        transaction->setTransactionDate(date1);
-        transaction->setValueDate(date1);
+        transaction->setDate(date1);
         if (!fields[3].isEmpty())
             transaction->setAmount(locale.toDouble(fields[3]));
         else
@@ -67,4 +72,29 @@ QList<Transaction *> FinancialInstitution::readTransactionsFromFile(QFile &dataF
     dataFile.close();
 
     return transactions;
+}
+
+void FinancialInstitution::read(const QJsonObject &json)
+{
+    if (json.contains("uid") && json["uid"].isString())
+        _uid = QUuid(json["uid"].toString());
+
+    if (json.contains("name") && json["name"].isString())
+        _name = json["name"].toString();
+}
+
+void FinancialInstitution::write(QJsonObject &json) const
+{
+    json["uid"] = _uid.toString();
+    json["name"] = _name;
+}
+
+FinancialInstitution *FinancialInstitution::fromJson(const QJsonObject &json)
+{
+    if (json.isEmpty())
+        return nullptr;
+
+    auto fi = new FinancialInstitution;
+    fi->read(json);
+    return fi;
 }

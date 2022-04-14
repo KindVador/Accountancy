@@ -3,6 +3,7 @@
 
 #include <QString>
 #include <QList>
+#include <QUuid>
 
 #include "currency.hpp"
 #include "owner.hpp"
@@ -10,14 +11,14 @@
 class LoanAccount
 {
 public:
-    LoanAccount() = default;
-    LoanAccount(Currency *currency, const Owner *owner, float initialBalance, const QString &accountNumber,
-                const QString &comment, bool isHidden);
+    LoanAccount();
+    LoanAccount(Currency *currency, const Owner *owner, float initialBalance, QString accountNumber,
+                QString comment, bool isHidden);
     ~LoanAccount() = default;
 
 private:
-    int id = -1;
-    Currency* _currency;
+    QUuid _uid;
+    Currency* _currency = nullptr;
     QList<const Owner*> _owners;
     float _initialBalance = 0;
     QString _accountNumber;

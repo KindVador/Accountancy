@@ -15,35 +15,19 @@ set(CMAKE_INCLUDE_CURRENT_DIR ON)
 
 find_package(Qt6 COMPONENTS Widgets Sql REQUIRED)
 
-add_subdirectory(src/ui)
-add_subdirectory(src/core)
-add_subdirectory(tests)
+add_subdirectory(src/core "${CMAKE_CURRENT_BINARY_DIR}/build_core")
+add_subdirectory(src/ui "${CMAKE_CURRENT_BINARY_DIR}/build_ui")
+add_subdirectory(src/utils "${CMAKE_CURRENT_BINARY_DIR}/build_utils")
+add_subdirectory(tests/core "${CMAKE_CURRENT_BINARY_DIR}/build_tests")
 
 set(HEADER_FILES
-        src/model.hpp
-        src/controller.hpp
-        src/currencymodel.hpp
-        src/ownermodel.hpp
-        src/accountmodel.hpp
-        src/accountfilter.hpp
-        src/financialinstitutionmodel.hpp
-        src/transactionmodel.hpp
         )
 
 set(SOURCE_FILES
-        src/model.cpp
-        src/controller.cpp
-        src/currencymodel.cpp
         src/main.cpp
-        src/ownermodel.cpp
-        src/accountmodel.cpp
-        src/accountfilter.cpp
-        src/financialinstitutionmodel.cpp
-        src/transactionmodel.cpp
         )
 
 set(UI_FILES
-
         )
 
 set(RESOURCE_FILES
@@ -67,6 +51,11 @@ IF(${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
 
     set_source_files_properties(${app_icon_macos} PROPERTIES MACOSX_PACKAGE_LOCATION "Resources")
     qt_add_executable(Accountancy MACOSX_BUNDLE MANUAL_FINALIZATION ${HEADER_FILES} ${SOURCE_FILES} ${UI_FILES} ${RESOURCE_FILES} ${TRANSLATION_FILES} ${app_icon_macos})
+    set_target_properties(Accountancy PROPERTIES
+        MACOSX_BUNDLE_GUI_IDENTIFIER kindvador.com
+        MACOSX_BUNDLE_BUNDLE_VERSION ${PROJECT_VERSION}
+        MACOSX_BUNDLE_SHORT_VERSION_STRING ${PROJECT_VERSION_MAJOR}.${PROJECT_VERSION_MINOR}
+        )
 ELSEIF(${CMAKE_SYSTEM_NAME} MATCHES "Linux")
     message("linux detected")
     qt_add_executable(Accountancy MANUAL_FINALIZATION ${HEADER_FILES} ${SOURCE_FILES} ${UI_FILES} ${RESOURCE_FILES} ${TRANSLATION_FILES})
@@ -77,12 +66,6 @@ ENDIF()
 
 # Since Qt 5.15, the CMake targets are also available as Qt::Core, Qt::Gui, and so on.
 # This eases writing CMake code that can work with both Qt 5 and Qt 6.
-target_link_libraries(Accountancy PRIVATE Qt::Widgets AccountancyCore AccountancyUi)
-
-set_target_properties(Accountancy PROPERTIES
-        MACOSX_BUNDLE_GUI_IDENTIFIER kindvador.com
-        MACOSX_BUNDLE_BUNDLE_VERSION ${PROJECT_VERSION}
-        MACOSX_BUNDLE_SHORT_VERSION_STRING ${PROJECT_VERSION_MAJOR}.${PROJECT_VERSION_MINOR}
-        )
+target_link_libraries(Accountancy PRIVATE Qt::Widgets AccountancyCore AccountancyUi AccountancyUtils)
 
 qt_finalize_executable(Accountancy)

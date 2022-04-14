@@ -1,6 +1,6 @@
 #include "importdatadialog.hpp"
 #include "ui_importdatadialog.h"
-#include "../model.hpp"
+#include "../core/model.hpp"
 
 #include <QFileDialog>
 
@@ -15,13 +15,13 @@ ImportDataDialog::ImportDataDialog(QWidget *parent) :
     setWindowTitle("Import transactions to an account");
 
     // Populate owner ComboBox
-    ui->ownerComboBox->setModel(Model::getInstance()->getOwnerModel());
+    ui->ownerComboBox->setModel(Model::instance()->getOwnerModel());
     // Populate account ComboBox
-    ui->accountComboBox->setModel(Model::getInstance()->getAccountFilter());
+    ui->accountComboBox->setModel(Model::instance()->getAccountFilter());
 
     connect(ui->addFileButton, &QPushButton::clicked, this, &ImportDataDialog::addFiles);
     connect(ui->removeFileButton, &QPushButton::clicked, this, &ImportDataDialog::removeSelectedFiles);
-    connect(ui->ownerComboBox, &QComboBox::currentTextChanged, this, [this](const QString &text) { Model::getInstance()->setOwnerFilter(text);});
+    connect(ui->ownerComboBox, &QComboBox::currentTextChanged, this, [this](const QString &text) { Model::instance()->setOwnerFilter(text);});
 }
 
 ImportDataDialog::~ImportDataDialog()
@@ -37,7 +37,7 @@ void ImportDataDialog::addFiles()
     fileDlg.setViewMode(QFileDialog::Detail);
 
     // case if user close the dialog without selecting any file
-    if (fileDlg.exec() == DialogCode::Rejected)
+    if (fileDlg.exec() == QFileDialog::Reject)
         return;
 
     // add selected file to the QListWidget

@@ -4,7 +4,7 @@
 #include <QMainWindow>
 #include <QString>
 
-#include "../model.hpp"
+class Model;
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
@@ -22,18 +22,28 @@ public:
     void setModel(Model *model);
 
 public slots:
-    void onOwnerModelUpdate();
+    void updateEditionInterface(bool enable);
 
 signals:
     void selectedOwnerChanged(const QModelIndex &ownerIndex);
     void selectedAccountChanged(const QModelIndex &accountIndex);
 
 private slots:
+    void onCreateAction();
+    void onOpenAction();
+    void onSaveAction();
+    void onSaveAsAction();
     void showCredits();
     void onActionImport();
     void contextualOwnerMenuRequested(const QPoint &pos);
     void onActionMainDock(bool checked);
     void onAccountDoubleClicked(const QModelIndex &index);
+    void onAddOwnerAction();
+    void onRemoveOwnerAction();
+    void onAddAccountAction();
+    void onRemoveAccountAction();
+    void onCurrenciesAction();
+    void onInstitutionsAction();
 
 private:
     Ui::MainWindow *ui = nullptr;
