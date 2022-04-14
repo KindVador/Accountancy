@@ -100,7 +100,7 @@ void Account::setCurrency(const Currency *currency)
 
 void Account::read(const QJsonObject &json)
 {
-    if (json.contains("uid") && json["uid"].isDouble())
+    if (json.contains("uid") && json["uid"].isString())
         _uid = QUuid(json["uid"].toString());
 
     if (json.contains("institution")) {

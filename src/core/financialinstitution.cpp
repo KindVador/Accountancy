@@ -76,7 +76,7 @@ QList<Transaction *> FinancialInstitution::readTransactionsFromFile(QFile &dataF
 
 void FinancialInstitution::read(const QJsonObject &json)
 {
-    if (json.contains("uid") && json["uid"].isDouble())
+    if (json.contains("uid") && json["uid"].isString())
         _uid = QUuid(json["uid"].toString());
 
     if (json.contains("name") && json["name"].isString())
