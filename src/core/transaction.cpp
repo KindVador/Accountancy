@@ -110,3 +110,13 @@ QUuid Transaction::getUid() const
 {
     return _uid;
 }
+
+double Transaction::getCurrentBalance() const
+{
+    return _current_balance;
+}
+
+void Transaction::setCurrentBalance(double currentBalance)
+{
+    _current_balance = currentBalance;
+}

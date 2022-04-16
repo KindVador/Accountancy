@@ -58,6 +58,8 @@ public:
     void setDate(const QDate &date);
     [[nodiscard]] double getAmount() const;
     void setAmount(double amount);
+    [[nodiscard]] double getCurrentBalance() const;
+    void setCurrentBalance(double currentBalance);
 
     // Serialization
     void read(const QJsonObject &json);
@@ -73,6 +75,7 @@ private:
     TransactionStatus _status = TransactionStatus::Imported;
     QDate _date;
     double _amount = 0.0;
+    double _current_balance = 0.0;
     Account *_accountFrom = nullptr;
     Account *_accountTo = nullptr;
 };

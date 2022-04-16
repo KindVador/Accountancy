@@ -2,7 +2,7 @@
 
 #include <QColor>
 
-QList<QString> TransactionModel::headerLabels = {"Date", "Name", "Amount", "Status", "Comment"};
+QList<QString> TransactionModel::headerLabels = {"Date", "Name", "Amount", "Balance", "Status", "Comment"};
 
 TransactionModel::TransactionModel(Account *account): _account(account)
 {
@@ -35,14 +35,17 @@ QVariant TransactionModel::data(const QModelIndex &index, int role) const
             case 2:
                 return QString("%1%2").arg(QString::number(t->getAmount()), currency->getSymbol());
             case 3:
-                return TRANSACTION_STATUS_2_STRING[t->getStatus()];
+                return QString("%1%2").arg(QString::number(t->getCurrentBalance()), currency->getSymbol());
             case 4:
+                return TRANSACTION_STATUS_2_STRING[t->getStatus()];
+            case 5:
                 return t->getComment();
             default:
                 return {};
         }
-    } else if (role == Qt::ForegroundRole && index.column() == 2) {
-        if (t->getAmount() < 0)
+    } else if (role == Qt::ForegroundRole && (index.column() == 2 || index.column() == 3)) {
+        double cellValue = index.column() == 2 ? t->getAmount() : t->getCurrentBalance();
+        if (cellValue < 0)
             return QColorConstants::Red;
         else
             return QColorConstants::Green;
