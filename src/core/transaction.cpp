@@ -154,6 +154,9 @@ void Transaction::read(const QJsonObject &json)
     if (json.contains("amount") && json["amount"].isDouble())
         _amount = json["amount"].toDouble();
 
+    if (json.contains("current_balance") && json["current_balance"].isDouble())
+        _current_balance = json["current_balance"].toDouble();
+
 }
 
 void Transaction::write(QJsonObject &json) const
@@ -164,6 +167,7 @@ void Transaction::write(QJsonObject &json) const
     json["status"] = TRANSACTION_STATUS_2_STRING[_status];
     json["date"] = _date.toString("dd/MM/yyyy");
     json["amount"] = _amount;
+    json["current_balance"] = _current_balance;
 }
 
 QUuid Transaction::getUid() const
