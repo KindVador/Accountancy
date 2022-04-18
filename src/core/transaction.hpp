@@ -45,6 +45,21 @@ public:
     explicit Transaction(QString &name, QString &comment, TransactionStatus status, QDate &date, double amount);
     explicit Transaction(QString name, QString comment, TransactionStatus status, QDate date, double amount);
     ~Transaction() = default;
+    static Transaction fromJson(const QJsonObject &json);
+    // Copy constructor
+    Transaction(const Transaction &origin);
+    // Move constructor
+    Transaction(Transaction &&origin) noexcept;
+
+    friend void swap(Transaction &lhs, Transaction &rhs);
+
+    // Operators
+    Transaction& operator=(const Transaction &rhs);     // Copy-Assignment Operator
+    Transaction& operator=(Transaction &&rhs) noexcept; // Move-Assignment Operator
+    bool operator<(const Transaction &rhs) const;
+    bool operator>(const Transaction &rhs) const;
+    bool operator<=(const Transaction &rhs) const;
+    bool operator>=(const Transaction &rhs) const;
 
     // Getter & Setter
     [[nodiscard]] QUuid getUid() const;
