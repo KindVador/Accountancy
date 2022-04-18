@@ -3,6 +3,7 @@
 
 #include <QJsonArray>
 
+// Constructors
 Account::Account()
 {
     _uid = QUuid::createUuid();
@@ -16,6 +17,12 @@ Account::Account(const FinancialInstitution *institution, AccountType type, Curr
                  _comment(std::move(comment)), _isIncludedInTotal(isIncludedInTotal), _isHidden(isHidden), _type(type)
 {
     _uid = QUuid::createUuid();
+}
+
+// Destructor
+Account::~Account()
+{
+    qDeleteAll(_transactions);
 }
 
 QString Account::getDisplayedName() const
@@ -270,4 +277,17 @@ Account *Account::fromJson(const QJsonObject &json)
 void Account::addOwner(const Owner *owner)
 {
     _owners.append(owner);
+}
+
+void Account::updateTransactionsBalance()
+{
+    // sort transactions by date
+    std::sort(_transactions.begin(), _transactions.end(), [](Transaction *t1, Transaction *t2) -> bool {return t1->getDate() < t2->getDate();});
+
+    // update current balance for each transactions
+    double previousBalance = _initialBalance;
+    for (Transaction *transaction : _transactions) {
+        transaction->setCurrentBalance(previousBalance + transaction->getAmount());
+        previousBalance = transaction->getCurrentBalance();
+    }
 }

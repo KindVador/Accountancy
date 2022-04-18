@@ -19,6 +19,66 @@ Transaction::Transaction(QString name, QString comment, TransactionStatus status
     _uid = QUuid::createUuid();
 }
 
+// Copy constructor
+Transaction::Transaction(const Transaction &origin):
+        _name(origin._name), _comment(origin._comment), _status(origin._status), _date(origin._date), _amount(origin._amount)
+{
+    _uid = QUuid::fromString(origin._uid.toString());
+    _accountFrom = origin._accountFrom;
+    _accountTo = origin._accountTo;
+}
+
+// Move constructor
+Transaction::Transaction(Transaction &&origin) noexcept:
+        _name(std::move(origin._name)), _comment(std::move(origin._comment)),
+        _status(origin._status), _date(origin._date), _amount(origin._amount)
+{
+    _uid = QUuid::fromString(origin._uid.toString());
+    _accountFrom = origin._accountFrom;
+    _accountTo = origin._accountTo;
+
+    // leave origin object in a state in which it is safe to run the destructor
+    origin._accountFrom = nullptr;
+    origin._accountTo = nullptr;
+}
+
+// Copy-Assignment operator
+Transaction &Transaction::operator=(const Transaction &rhs)
+{
+    _uid = QUuid::fromString(rhs._uid.toString());
+    _name = rhs._name;
+    _comment = rhs._comment;
+    _status = rhs._status;
+    _date = rhs._date;
+    _amount = rhs._amount;
+    _current_balance = rhs._current_balance;
+    _accountFrom = rhs._accountFrom;
+    _accountTo = rhs._accountTo;
+    return *this;
+}
+
+// Move-Assignment operator
+Transaction &Transaction::operator=(Transaction &&rhs) noexcept
+{
+    // test for self-assignment
+    if (this != &rhs) {
+        _uid = QUuid::fromString(rhs._uid.toString());
+        _name = std::move(rhs._name);
+        _comment = std::move(rhs._comment);
+        _status = rhs._status;
+        _date = rhs._date;
+        _amount = rhs._amount;
+        _current_balance = rhs._current_balance;
+        _accountFrom = rhs._accountFrom;
+        _accountTo = rhs._accountTo;
+
+        // leave rhs object in a destructible state
+        rhs._accountFrom = nullptr;
+        rhs._accountTo = nullptr;
+    }
+    return *this;
+}
+
 void Transaction::printToConsole() const
 {
     qDebug() << "Transaction:" << _uid << " " << _name << " " << _comment;
@@ -94,6 +154,9 @@ void Transaction::read(const QJsonObject &json)
     if (json.contains("amount") && json["amount"].isDouble())
         _amount = json["amount"].toDouble();
 
+    if (json.contains("current_balance") && json["current_balance"].isDouble())
+        _current_balance = json["current_balance"].toDouble();
+
 }
 
 void Transaction::write(QJsonObject &json) const
@@ -104,9 +167,66 @@ void Transaction::write(QJsonObject &json) const
     json["status"] = TRANSACTION_STATUS_2_STRING[_status];
     json["date"] = _date.toString("dd/MM/yyyy");
     json["amount"] = _amount;
+    json["current_balance"] = _current_balance;
 }
 
 QUuid Transaction::getUid() const
 {
     return _uid;
+}
+
+double Transaction::getCurrentBalance() const
+{
+    return _current_balance;
+}
+
+void Transaction::setCurrentBalance(double currentBalance)
+{
+    _current_balance = currentBalance;
+}
+
+inline
+void swap(Transaction &lhs, Transaction &rhs)
+{
+    // swap Functions should call swap, NOT std::swap in order to call swap function if defined in specific type.
+    using std::swap;
+    swap(lhs._uid, rhs._uid);
+    swap(lhs._name, rhs._name);
+    swap(lhs._comment, rhs._comment);
+    swap(lhs._status, rhs._status);
+    swap(lhs._date, rhs._date);
+    swap(lhs._amount, rhs._amount);
+    swap(lhs._current_balance, rhs._current_balance);
+    swap(lhs._accountFrom, rhs._accountFrom);   // swap the pointers, not the objects
+    swap(lhs._accountTo, rhs._accountTo);       // swap the pointers, not the objects
+}
+
+Transaction Transaction::fromJson(const QJsonObject &json)
+{
+    Transaction t;
+    t.read(json);
+    return t;
+}
+
+bool Transaction::operator<(const Transaction &rhs) const
+{
+    if (_date ==  rhs._date)
+        return _name < rhs._name;
+    else
+        return _date < rhs._date;
+}
+
+bool Transaction::operator>(const Transaction &rhs) const
+{
+    return rhs < *this;
+}
+
+bool Transaction::operator<=(const Transaction &rhs) const
+{
+    return !(rhs < *this);
+}
+
+bool Transaction::operator>=(const Transaction &rhs) const
+{
+    return !(*this < rhs);
 }

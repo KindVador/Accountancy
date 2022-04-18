@@ -73,6 +73,9 @@ void ImportDataDialog::accept()
     for (Transaction *t : transactions)
         account->addTransaction(t);
 
+    // update Current Balance for each Transaction
+    account->updateTransactionsBalance();
+
     QDialog::accept();
 }
 

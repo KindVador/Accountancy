@@ -45,12 +45,14 @@ static QHash<QString, AccountType> STRING_2_ACCOUNT_TYPE {
 
 class Account
 {
+    Q_DISABLE_COPY(Account)
+
 public:
     Account();
     Account(const FinancialInstitution *_institution, AccountType type, Currency *currency, const QList<const Owner*> &owners,
             float initialBalance, float warningBalance, QString accountNumber, QString comment,
             bool isIncludedInTotal, bool isHidden);
-    ~Account() = default;
+    ~Account();
 
     static Account *fromJson(const QJsonObject &json);
 
@@ -85,6 +87,7 @@ public:
     [[nodiscard]] int count() const;
     [[nodiscard]] Transaction *transactionAt(int pos) const;
     void addOwner(const Owner *owner);
+    void updateTransactionsBalance();
 
     // Serialization
     void read(const QJsonObject &json);
