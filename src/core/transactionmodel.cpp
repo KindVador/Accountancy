@@ -46,9 +46,9 @@ QVariant TransactionModel::data(const QModelIndex &index, int role) const
     } else if (role == Qt::ForegroundRole && (index.column() == 2 || index.column() == 3)) {
         double cellValue = index.column() == 2 ? t->getAmount() : t->getCurrentBalance();
         if (cellValue < 0)
-            return QColorConstants::Red;
+            return QColorConstants::DarkRed;
         else
-            return QColorConstants::Green;
+            return QColorConstants::DarkGreen;
     }
     return {};
 }
