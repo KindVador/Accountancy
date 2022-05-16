@@ -29,7 +29,7 @@ QVariant TransactionModel::data(const QModelIndex &index, int role) const
 
         switch (index.column()) {
             case 0:
-                return t->getDate().toString("dd/MM/yyyy");
+                return t->getDateTime().toString("dd/MM/yyyy");
             case 1:
                 return t->getName();
             case 2:
@@ -46,9 +46,9 @@ QVariant TransactionModel::data(const QModelIndex &index, int role) const
     } else if (role == Qt::ForegroundRole && (index.column() == 2 || index.column() == 3)) {
         double cellValue = index.column() == 2 ? t->getAmount() : t->getCurrentBalance();
         if (cellValue < 0)
-            return QColorConstants::Red;
+            return QColorConstants::DarkRed;
         else
-            return QColorConstants::Green;
+            return QColorConstants::DarkGreen;
     }
     return {};
 }

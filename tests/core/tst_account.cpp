@@ -68,7 +68,7 @@ private slots:
         a1.read(jsonData);
 
         // check that values are correctly read
-        QCOMPARE(a1.getUid().toString(), "67C8770B-44F1-410A-AB9A-F9B5446F13EE");
+        QCOMPARE(a1.getUid().toString().toUpper(), "{67C8770B-44F1-410A-AB9A-F9B5446F13EE}");
         QVERIFY(a1.getInstitution() != nullptr);
         QVERIFY(a1.getCurrency() != nullptr);
         QVERIFY(a1.getOwners().count() > 0);

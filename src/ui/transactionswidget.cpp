@@ -9,6 +9,7 @@ TransactionsWidget::TransactionsWidget(QWidget *parent) :
 {
     ui->setupUi(this);
     ui->tableView->setAlternatingRowColors(true);
+    ui->tableView->setSortingEnabled(true);
     ui->tableView->horizontalHeader()->setSectionResizeMode(QHeaderView::ResizeToContents);
 }
 
@@ -23,10 +24,11 @@ void TransactionsWidget::setModel(TransactionModel *model)
     if (ui == nullptr)
         return;
 
-    ui->tableView->setModel(model);
+    _proxyModel->setSourceModel(model);
+    ui->tableView->setModel(_proxyModel.get());
 }
 
-void TransactionsWidget::setTitle(QString text)
+void TransactionsWidget::setTitle(const QString &text)
 {
     if (ui == nullptr)
         return;

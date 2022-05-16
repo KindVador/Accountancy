@@ -70,11 +70,7 @@ void ImportDataDialog::accept()
     }
 
     // add transactions to the selected count
-    for (Transaction *t : transactions)
-        account->addTransaction(t);
-
-    // update Current Balance for each Transaction
-    account->updateTransactionsBalance();
+    account->addTransactions(transactions);
 
     QDialog::accept();
 }

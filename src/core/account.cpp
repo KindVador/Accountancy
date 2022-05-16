@@ -61,8 +61,11 @@ QList<QUuid> Account::getOwnersUid() const
 
 void Account::addTransaction(Transaction *transaction)
 {
-    if (transaction == nullptr)
+    // check if transaction already exist in account
+    if (transaction == nullptr || isTransactionRegistered(transaction)) {
+        qWarning() << "Null Transaction or Transaction already registered in this account";
         return;
+    }
 
     _transactions.append(transaction);
 }
@@ -282,7 +285,9 @@ void Account::addOwner(const Owner *owner)
 void Account::updateTransactionsBalance()
 {
     // sort transactions by date
-    std::sort(_transactions.begin(), _transactions.end(), [](Transaction *t1, Transaction *t2) -> bool {return t1->getDate() < t2->getDate();});
+    std::sort(_transactions.begin(), _transactions.end(), [](Transaction *t1, Transaction *t2) -> bool {return
+            t1->getDateTime() <
+                                                                                                               t2->getDateTime();});
 
     // update current balance for each transactions
     double previousBalance = _initialBalance;
@@ -290,4 +295,22 @@ void Account::updateTransactionsBalance()
         transaction->setCurrentBalance(previousBalance + transaction->getAmount());
         previousBalance = transaction->getCurrentBalance();
     }
+}
+
+void Account::addTransactions(const QList<Transaction*> &transactions)
+{
+    // add transactions to the selected count
+    for (Transaction *t : transactions)
+        addTransaction(t);
+
+    // update Current Balance for each Transaction
+    updateTransactionsBalance();
+}
+
+bool Account::isTransactionRegistered(const Transaction *transaction) const
+{
+    if (transaction == nullptr)
+        return false;
+
+    return std::any_of(_transactions.cbegin(), _transactions.cend(), [&transaction] (const Transaction *t) {return *transaction == *t;});
 }

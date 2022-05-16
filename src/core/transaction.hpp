@@ -4,7 +4,7 @@
 #include <iostream>
 
 #include <QString>
-#include <QDate>
+#include <QDateTime>
 #include <QJsonObject>
 #include <QUuid>
 
@@ -42,8 +42,8 @@ class Transaction
 {
 public:
     Transaction();
-    explicit Transaction(QString &name, QString &comment, TransactionStatus status, QDate &date, double amount);
-    explicit Transaction(QString name, QString comment, TransactionStatus status, QDate date, double amount);
+    explicit Transaction(QString &name, QString &comment, TransactionStatus status, QDateTime &datetime, double amount);
+    explicit Transaction(QString name, QString comment, TransactionStatus status, QDateTime datetime, double amount);
     ~Transaction() = default;
     static Transaction fromJson(const QJsonObject &json);
     // Copy constructor
@@ -60,6 +60,7 @@ public:
     bool operator>(const Transaction &rhs) const;
     bool operator<=(const Transaction &rhs) const;
     bool operator>=(const Transaction &rhs) const;
+    friend bool operator==(const Transaction &lhs, const Transaction &rhs);
 
     // Getter & Setter
     [[nodiscard]] QUuid getUid() const;
@@ -69,8 +70,8 @@ public:
     void setComment(const QString &comment);
     [[nodiscard]] TransactionStatus getStatus() const;
     void setStatus(TransactionStatus ts);
-    [[nodiscard]] const QDate &getDate() const;
-    void setDate(const QDate &date);
+    [[nodiscard]] const QDateTime & getDateTime() const;
+    void setDateTime(const QDateTime &datetime);
     [[nodiscard]] double getAmount() const;
     void setAmount(double amount);
     [[nodiscard]] double getCurrentBalance() const;
@@ -88,7 +89,7 @@ private:
     QString _name;
     QString _comment;
     TransactionStatus _status = TransactionStatus::Imported;
-    QDate _date;
+    QDateTime _dateTime;
     double _amount = 0.0;
     double _current_balance = 0.0;
     Account *_accountFrom = nullptr;
