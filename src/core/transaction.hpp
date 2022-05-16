@@ -60,6 +60,7 @@ public:
     bool operator>(const Transaction &rhs) const;
     bool operator<=(const Transaction &rhs) const;
     bool operator>=(const Transaction &rhs) const;
+    friend bool operator==(const Transaction &lhs, const Transaction &rhs);
 
     // Getter & Setter
     [[nodiscard]] QUuid getUid() const;

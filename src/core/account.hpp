@@ -84,6 +84,7 @@ public:
     [[nodiscard]] QList<const Owner *> &getOwners();
     void addTransaction(Transaction *transaction);
     void removeTransaction(Transaction *transaction);
+    void addTransactions(const QList<Transaction*> &transactions);
     [[nodiscard]] int count() const;
     [[nodiscard]] Transaction *transactionAt(int pos) const;
     void addOwner(const Owner *owner);
@@ -92,6 +93,9 @@ public:
     // Serialization
     void read(const QJsonObject &json);
     void write(QJsonObject &json) const;
+
+private:
+    bool isTransactionRegistered(const Transaction *transaction) const;
 
 private:
     QUuid _uid;

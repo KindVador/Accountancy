@@ -230,3 +230,10 @@ bool Transaction::operator>=(const Transaction &rhs) const
 {
     return !(*this < rhs);
 }
+
+bool operator==(const Transaction &lhs, const Transaction &rhs)
+{
+    return  lhs._name == rhs._name
+            && lhs._date == rhs._date
+            && lhs._amount == rhs._amount;
+}
