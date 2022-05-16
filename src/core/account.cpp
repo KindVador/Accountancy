@@ -285,7 +285,9 @@ void Account::addOwner(const Owner *owner)
 void Account::updateTransactionsBalance()
 {
     // sort transactions by date
-    std::sort(_transactions.begin(), _transactions.end(), [](Transaction *t1, Transaction *t2) -> bool {return t1->getDate() < t2->getDate();});
+    std::sort(_transactions.begin(), _transactions.end(), [](Transaction *t1, Transaction *t2) -> bool {return
+            t1->getDateTime() <
+                                                                                                               t2->getDateTime();});
 
     // update current balance for each transactions
     double previousBalance = _initialBalance;

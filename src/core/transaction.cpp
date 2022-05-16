@@ -7,21 +7,21 @@ Transaction::Transaction()
     _uid = QUuid::createUuid();
 }
 
-Transaction::Transaction(QString &name, QString &comment, TransactionStatus status, QDate &date, double amount):
-        _name(name), _comment(comment), _status(status), _date(date), _amount(amount)
+Transaction::Transaction(QString &name, QString &comment, TransactionStatus status, QDateTime &datetime, double amount):
+        _name(name), _comment(comment), _status(status), _dateTime(datetime), _amount(amount)
 {
     _uid = QUuid::createUuid();
 }
 
-Transaction::Transaction(QString name, QString comment, TransactionStatus status, QDate date, double amount):
-        _name(std::move(name)), _comment(std::move(comment)), _status(status), _date(date), _amount(amount)
+Transaction::Transaction(QString name, QString comment, TransactionStatus status, QDateTime datetime, double amount):
+        _name(std::move(name)), _comment(std::move(comment)), _status(status), _dateTime(datetime), _amount(amount)
 {
     _uid = QUuid::createUuid();
 }
 
 // Copy constructor
 Transaction::Transaction(const Transaction &origin):
-        _name(origin._name), _comment(origin._comment), _status(origin._status), _date(origin._date), _amount(origin._amount)
+        _name(origin._name), _comment(origin._comment), _status(origin._status), _dateTime(origin._dateTime), _amount(origin._amount)
 {
     _uid = QUuid::fromString(origin._uid.toString());
     _accountFrom = origin._accountFrom;
@@ -31,7 +31,7 @@ Transaction::Transaction(const Transaction &origin):
 // Move constructor
 Transaction::Transaction(Transaction &&origin) noexcept:
         _name(std::move(origin._name)), _comment(std::move(origin._comment)),
-        _status(origin._status), _date(origin._date), _amount(origin._amount)
+        _status(origin._status), _dateTime(origin._dateTime), _amount(origin._amount)
 {
     _uid = QUuid::fromString(origin._uid.toString());
     _accountFrom = origin._accountFrom;
@@ -49,7 +49,7 @@ Transaction &Transaction::operator=(const Transaction &rhs)
     _name = rhs._name;
     _comment = rhs._comment;
     _status = rhs._status;
-    _date = rhs._date;
+    _dateTime = rhs._dateTime;
     _amount = rhs._amount;
     _current_balance = rhs._current_balance;
     _accountFrom = rhs._accountFrom;
@@ -66,7 +66,7 @@ Transaction &Transaction::operator=(Transaction &&rhs) noexcept
         _name = std::move(rhs._name);
         _comment = std::move(rhs._comment);
         _status = rhs._status;
-        _date = rhs._date;
+        _dateTime = rhs._dateTime;
         _amount = rhs._amount;
         _current_balance = rhs._current_balance;
         _accountFrom = rhs._accountFrom;
@@ -114,14 +114,14 @@ void Transaction::setStatus(TransactionStatus ts)
     _status = ts;
 }
 
-const QDate &Transaction::getDate() const
+const QDateTime & Transaction::getDateTime() const
 {
-    return _date;
+    return _dateTime;
 }
 
-void Transaction::setDate(const QDate &date)
+void Transaction::setDateTime(const QDateTime &datetime)
 {
-    _date = date;
+    _dateTime = datetime;
 }
 
 double Transaction::getAmount() const
@@ -148,8 +148,8 @@ void Transaction::read(const QJsonObject &json)
     if (json.contains("status") && json["status"].isString())
         _status = STRING_2_TRANSACTION_STATUS[json["status"].toString()];
 
-    if (json.contains("date") && json["date"].isString())
-        _date = QDate::fromString(json["date"].toString(), "dd/MM/yyyy");
+    if (json.contains("datetime") && json["datetime"].isString())
+        _dateTime = QDateTime::fromString(json["datetime"].toString(), Qt::ISODateWithMs);
 
     if (json.contains("amount") && json["amount"].isDouble())
         _amount = json["amount"].toDouble();
@@ -165,7 +165,7 @@ void Transaction::write(QJsonObject &json) const
     json["name"] = _name;
     json["comment"] = _comment;
     json["status"] = TRANSACTION_STATUS_2_STRING[_status];
-    json["date"] = _date.toString("dd/MM/yyyy");
+    json["datetime"] = _dateTime.toString(Qt::ISODateWithMs);
     json["amount"] = _amount;
     json["current_balance"] = _current_balance;
 }
@@ -194,7 +194,7 @@ void swap(Transaction &lhs, Transaction &rhs)
     swap(lhs._name, rhs._name);
     swap(lhs._comment, rhs._comment);
     swap(lhs._status, rhs._status);
-    swap(lhs._date, rhs._date);
+    swap(lhs._dateTime, rhs._dateTime);
     swap(lhs._amount, rhs._amount);
     swap(lhs._current_balance, rhs._current_balance);
     swap(lhs._accountFrom, rhs._accountFrom);   // swap the pointers, not the objects
@@ -210,10 +210,10 @@ Transaction Transaction::fromJson(const QJsonObject &json)
 
 bool Transaction::operator<(const Transaction &rhs) const
 {
-    if (_date ==  rhs._date)
+    if (_dateTime == rhs._dateTime)
         return _name < rhs._name;
     else
-        return _date < rhs._date;
+        return _dateTime < rhs._dateTime;
 }
 
 bool Transaction::operator>(const Transaction &rhs) const
@@ -234,6 +234,6 @@ bool Transaction::operator>=(const Transaction &rhs) const
 bool operator==(const Transaction &lhs, const Transaction &rhs)
 {
     return  lhs._name == rhs._name
-            && lhs._date == rhs._date
+            && lhs._dateTime == rhs._dateTime
             && lhs._amount == rhs._amount;
 }
