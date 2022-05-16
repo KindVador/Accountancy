@@ -2,6 +2,7 @@
 #define ACCOUNTANCY_TRANSACTIONSWIDGET_HPP
 
 #include <QWidget>
+#include <QSortFilterProxyModel>
 #include "../core/transactionmodel.hpp"
 
 
@@ -23,10 +24,11 @@ public:
     ~TransactionsWidget() override;
 
     void setModel(TransactionModel *model);
-    void setTitle(QString text);
+    void setTitle(const QString &text);
 
 private:
     Ui::TransactionsWidget *ui;
+    std::unique_ptr<QSortFilterProxyModel> _proxyModel = std::make_unique<QSortFilterProxyModel>();
 };
 
 
