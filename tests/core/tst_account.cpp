@@ -4,7 +4,7 @@
 #include "../../src/core/account.hpp"
 #include "../../src/core/financialinstitution.hpp"
 
-TEST_CASE( "defaultConstructorTestCase", "[qt]" )
+TEST_CASE( "Account defaultConstructor", "[core]" )
 {
     Account a{};
     CHECK(!a.getUid().isNull());
@@ -15,7 +15,7 @@ TEST_CASE( "defaultConstructorTestCase", "[qt]" )
     CHECK(a.getWarningBalance() == 0.0);
 }
 
-TEST_CASE( "writeJsonTestCase", "[qt]" )
+TEST_CASE( "Account writeJson", "[core]" )
 {
     auto *fi = new FinancialInstitution("Institution1");
     auto *currency = new Currency("Euro", "€");
@@ -47,7 +47,7 @@ TEST_CASE( "writeJsonTestCase", "[qt]" )
     delete owner;
 }
 
-TEST_CASE( "readJsonTestCase", "[qt]" )
+TEST_CASE( "Account readJson", "[core]" )
 {
     // write data to Json object
     auto *fi = new FinancialInstitution("Institution1");
