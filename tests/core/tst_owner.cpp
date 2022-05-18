@@ -1,59 +1,50 @@
-#include <QTest>
+#include <catch2/catch.hpp>
 
 #include "../../src/core/owner.hpp"
 
-class OwnerTest : public QObject
+TEST_CASE( "Owner defaultConstructor", "[core]" )
 {
-    Q_OBJECT
+    Owner o{};
+    CHECK(o.getName() == QString());
+    CHECK(o.getWarningBalance() == 0.0);
+    CHECK(o.getComment() == QString());
+    CHECK(!o.getIsHidden());
+    CHECK(!o.getUid().isNull());
+}
 
-private slots:
-    void initTestCase() {
-        qDebug("Called before everything else.");
-    }
+TEST_CASE( "Owner initConstructor", "[core]" )
+{
+    Owner o{"Name1", 150.0, "Comment1", false};
+    CHECK(o.getName() == "Name1");
+    CHECK(o.getWarningBalance() == 150.0);
+    CHECK(o.getComment() == "Comment1");
+    CHECK(!o.getIsHidden());
+    CHECK(!o.getUid().isNull());
+}
 
-    void defaultConstructorTestCase() {
-        Owner o{};
-        QCOMPARE(o.getName(), QString());
-        QCOMPARE(o.getWarningBalance(), 0.0);
-        QCOMPARE(o.getComment(), QString());
-        QVERIFY(!o.getIsHidden());
-        QVERIFY(!o.getUid().isNull());
-    }
+TEST_CASE( "Owner writeJson", "[core]" )
+{
+    Owner o{"Name1", 150.0, "Comment1", false};
+    QJsonObject jsonData;
+    o.write(jsonData);
+    CHECK((jsonData.contains("uid") && !jsonData["uid"].isNull()));
+    CHECK((jsonData.contains("name") && jsonData["name"] == "Name1"));
+    CHECK((jsonData.contains("comment") && jsonData["comment"] == "Comment1"));
+    CHECK(jsonData.contains("warning_balance"));
+    CHECK(jsonData["warning_balance"].toDouble() == 150.0);
+    CHECK((jsonData.contains("is_hidden") && !jsonData["is_hidden"].toBool()));
+}
 
-    void initConstructorTestCase() {
-        Owner o{"Name1", 150.0, "Comment1", false};
-        QCOMPARE(o.getName(), "Name1");
-        QCOMPARE(o.getWarningBalance(), 150.0);
-        QCOMPARE(o.getComment(), "Comment1");
-        QVERIFY(!o.getIsHidden());
-        QVERIFY(!o.getUid().isNull());
-    }
-
-    void writeJsonTestCase() {
-        Owner o{"Name1", 150.0, "Comment1", false};
-        QJsonObject jsonData;
-        o.write(jsonData);
-        QVERIFY(jsonData.contains("uid") && !jsonData["uid"].isNull());
-        QVERIFY(jsonData.contains("name") && jsonData["name"] == "Name1");
-        QVERIFY(jsonData.contains("comment") && jsonData["comment"] == "Comment1");
-        QVERIFY(jsonData.contains("warning_balance"));
-        QCOMPARE(jsonData["warning_balance"].toDouble(), 150.0);
-        QVERIFY(jsonData.contains("is_hidden") && !jsonData["is_hidden"].toBool());
-    }
-
-    void readJsonTestCase() {
-        Owner o0{"Name1", 150.0, "Comment1", false};
-        QJsonObject jsonData;
-        o0.write(jsonData);
-        Owner o1;
-        o1.read(jsonData);
-        QCOMPARE(o1.getName(), "Name1");
-        QCOMPARE(o1.getWarningBalance(), 150.0);
-        QCOMPARE(o1.getComment(), "Comment1");
-        QVERIFY(!o1.getIsHidden());
-        QVERIFY(!o1.getUid().isNull());
-    }
-};
-
-QTEST_APPLESS_MAIN(OwnerTest)
-#include "tst_owner.moc"
+TEST_CASE( "Owner readJson", "[core]" )
+{
+    Owner o0{"Name1", 150.0, "Comment1", false};
+    QJsonObject jsonData;
+    o0.write(jsonData);
+    Owner o1;
+    o1.read(jsonData);
+    CHECK(o1.getName() == "Name1");
+    CHECK(o1.getWarningBalance() == 150.0);
+    CHECK(o1.getComment() == "Comment1");
+    CHECK(!o1.getIsHidden());
+    CHECK(!o1.getUid().isNull());
+}

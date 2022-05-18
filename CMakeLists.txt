@@ -18,7 +18,15 @@ find_package(Qt6 COMPONENTS Widgets Sql REQUIRED)
 add_subdirectory(src/core "${CMAKE_CURRENT_BINARY_DIR}/build_core")
 add_subdirectory(src/ui "${CMAKE_CURRENT_BINARY_DIR}/build_ui")
 add_subdirectory(src/utils "${CMAKE_CURRENT_BINARY_DIR}/build_utils")
-add_subdirectory(tests/core "${CMAKE_CURRENT_BINARY_DIR}/build_tests")
+
+###############################################################################
+## Testing
+###############################################################################
+option(ACCOUNTANCY_BUILD_TESTS "Determines whether to build tests." ON)
+if(ACCOUNTANCY_BUILD_TESTS)
+    enable_testing()
+    add_subdirectory(tests "${CMAKE_CURRENT_BINARY_DIR}/build_tests")
+endif()
 
 set(HEADER_FILES
         )

@@ -1,50 +1,41 @@
-#include <QTest>
+#include <catch2/catch.hpp>
 
 #include "../../src/core/currency.hpp"
 
-class CurrencyTest : public QObject
+TEST_CASE( "Currency default Constructor", "[core]" )
 {
-    Q_OBJECT
+    Currency c{};
+    CHECK(!c.getUid().isNull());
+    CHECK(c.getName() == QString());
+    CHECK(c.getSymbol() == QString());
+}
 
-private slots:
-    void initTestCase() {
-        qDebug("Called before everything else.");
-    }
+TEST_CASE( "Currency init Constructor", "[core]" )
+{
+    Currency c{"Euro", "€"};
+    CHECK(!c.getUid().isNull());
+    CHECK(c.getName() == QString("Euro"));
+    CHECK(c.getSymbol() == QString("€"));
+}
 
-    void defaultConstructorTestCase() {
-        Currency c{};
-        QVERIFY(!c.getUid().isNull());
-        QCOMPARE(c.getName(), QString());
-        QCOMPARE(c.getSymbol(), QString());
-    }
+TEST_CASE( "Currency writeJson", "[core]" )
+{
+    Currency c0{"Euro", "€"};
+    QJsonObject jsonData;
+    c0.write(jsonData);
+    Currency c1;
+    c1.read(jsonData);
+    CHECK(!c1.getUid().isNull());
+    CHECK(c1.getName() == "Euro");
+    CHECK(c1.getSymbol() == "€");
+}
 
-    void initConstructorTestCase() {
-        Currency c{"Euro", "€"};
-        QVERIFY(!c.getUid().isNull());
-        QCOMPARE(c.getName(), QString("Euro"));
-        QCOMPARE(c.getSymbol(), QString("€"));
-    }
-
-    void writeJsonTestCase() {
-        Currency c{"Euro", "€"};
-        QJsonObject jsonData;
-        c.write(jsonData);
-        QVERIFY(jsonData.contains("uid") && !jsonData["uid"].isNull());
-        QVERIFY(jsonData.contains("name") && jsonData["name"] == "Euro");
-        QVERIFY(jsonData.contains("symbol") && jsonData["symbol"] == "€");
-    }
-
-    void readJsonTestCase() {
-        Currency c0{"Euro", "€"};
-        QJsonObject jsonData;
-        c0.write(jsonData);
-        Currency c1;
-        c1.read(jsonData);
-        QVERIFY(!c1.getUid().isNull());
-        QCOMPARE(c1.getName(), "Euro");
-        QCOMPARE(c1.getSymbol(), "€");
-    }
-};
-
-QTEST_APPLESS_MAIN(CurrencyTest)
-#include "tst_currency.moc"
+TEST_CASE( "Currency readJson", "[core]" )
+{
+    Currency c{"Euro", "€"};
+    QJsonObject jsonData;
+    c.write(jsonData);
+    CHECK((jsonData.contains("uid") && !jsonData["uid"].isNull()));
+    CHECK((jsonData.contains("name") && jsonData["name"] == "Euro"));
+    CHECK((jsonData.contains("symbol") && jsonData["symbol"] == "€"));
+}

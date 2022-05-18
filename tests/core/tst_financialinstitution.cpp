@@ -1,47 +1,37 @@
-#include <QTest>
+#include <catch2/catch.hpp>
 
 #include "../../src/core/financialinstitution.hpp"
 
-class FinancialInstitutionTest : public QObject
+TEST_CASE( "FinancialInstitution defaultConstructor", "[core]" )
 {
-    Q_OBJECT
+    FinancialInstitution fi{};
+    CHECK(!fi.getUid().isNull());
+    CHECK(fi.getName() == QString());
+}
 
-private slots:
-    void initTestCase() {
-        qDebug("Called before everything else.");
-    }
+TEST_CASE( "FinancialInstitution initConstructor", "[core]" )
+{
+    auto fi = FinancialInstitution("Institution1");
+    CHECK(!fi.getUid().isNull());
+    CHECK(fi.getName() == "Institution1");
+}
 
-    void defaultConstructorTestCase() {
-        FinancialInstitution fi{};
-        QVERIFY(!fi.getUid().isNull());
-        QCOMPARE(fi.getName(), QString());
-    }
+TEST_CASE( "FinancialInstitution writeJson", "[core]" )
+{
+    auto fi = FinancialInstitution("Institution1");
+    QJsonObject jsonData;
+    fi.write(jsonData);
+    CHECK((jsonData.contains("uid") && !jsonData["uid"].isNull()));
+    CHECK((jsonData.contains("name") && jsonData["name"] == "Institution1"));
+}
 
-    void initConstructorTestCase() {
-        auto fi = FinancialInstitution("Institution1");
-        QVERIFY(!fi.getUid().isNull());
-        QCOMPARE(fi.getName(), "Institution1");
-    }
-
-    void writeJsonTestCase() {
-        auto fi = FinancialInstitution("Institution1");
-        QJsonObject jsonData;
-        fi.write(jsonData);
-        QVERIFY(jsonData.contains("uid") && !jsonData["uid"].isNull());
-        QVERIFY(jsonData.contains("name") && jsonData["name"] == "Institution1");
-    }
-
-    void readJsonTestCase() {
-        auto fi0 = FinancialInstitution("Institution1");
-        QJsonObject jsonData;
-        fi0.write(jsonData);
-        FinancialInstitution fi1;
-        fi1.read(jsonData);
-        QCOMPARE(fi1.getName(), "Institution1");
-        QVERIFY(!fi1.getUid().isNull());
-    }
-
-};
-
-QTEST_APPLESS_MAIN(FinancialInstitutionTest)
-#include "tst_financialinstitution.moc"
+TEST_CASE( "FinancialInstitution readJson", "[core]" )
+{
+    auto fi0 = FinancialInstitution("Institution1");
+    QJsonObject jsonData;
+    fi0.write(jsonData);
+    FinancialInstitution fi1;
+    fi1.read(jsonData);
+    CHECK(fi1.getName() == "Institution1");
+    CHECK(!fi1.getUid().isNull());
+}
