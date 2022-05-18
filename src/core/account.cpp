@@ -2,6 +2,7 @@
 #include "financialinstitution.hpp"
 
 #include <QJsonArray>
+#include <QMetaEnum>
 
 // Constructors
 Account::Account()
@@ -9,7 +10,7 @@ Account::Account()
     _uid = QUuid::createUuid();
 }
 
-Account::Account(const FinancialInstitution *institution, AccountType type, Currency *currency,
+Account::Account(const FinancialInstitution *institution, Account::AccountType type, Currency *currency,
                  const QList<const Owner*> &owners, float initialBalance, float warningBalance, QString accountNumber,
                  QString comment, bool isIncludedInTotal, bool isHidden) :
                  _institution(institution), _currency(currency), _owners(owners), _initialBalance(initialBalance),
@@ -152,8 +153,11 @@ void Account::read(const QJsonObject &json)
     if (json.contains("isHidden") && json["isHidden"].isBool())
         _isHidden = json["isHidden"].toBool();
 
-    if (json.contains("type") && json["type"].isString())
-        _type = STRING_2_ACCOUNT_TYPE[json["type"].toString()];
+    if (json.contains("type") && json["type"].isString()) {
+        QMetaEnum metaEnumAccountType = QMetaEnum::fromType<Account::AccountType>();
+        _type = metaEnumAccountType.keyToValue(json["type"].toString());
+//        _type = STRING_2_ACCOUNT_TYPE[json["type"].toString()];
+    }
 
     if (json.contains("transactions") && json["transactions"].isArray()) {
         QJsonArray transactionsArray = json["transactions"].toArray();
@@ -186,7 +190,9 @@ void Account::write(QJsonObject &json) const
     json["comment"] = _comment;
     json["isIncludedInTotal"] = _isIncludedInTotal;
     json["isHidden"] = _isHidden;
-    json["type"] = ACCOUNT_TYPE_2_STRING[_type];
+    QMetaEnum metaEnumAccountType = QMetaEnum::fromType<Account::AccountType>();
+    json["type"] = metaEnumAccountType.valueToKey(static_cast<int>(_type));
+//    json["type"] = ACCOUNT_TYPE_2_STRING[_type];
 
     QJsonArray transactionsArray;
     for (const Transaction *transaction : _transactions) {
@@ -257,12 +263,12 @@ void Account::setIsHidden(bool isHidden)
     _isHidden = isHidden;
 }
 
-AccountType Account::getType() const
+Account::AccountType Account::getType() const
 {
     return _type;
 }
 
-void Account::setType(AccountType type)
+void Account::setType(Account::AccountType type)
 {
     _type = type;
 }
@@ -285,9 +291,7 @@ void Account::addOwner(const Owner *owner)
 void Account::updateTransactionsBalance()
 {
     // sort transactions by date
-    std::sort(_transactions.begin(), _transactions.end(), [](Transaction *t1, Transaction *t2) -> bool {return
-            t1->getDateTime() <
-                                                                                                               t2->getDateTime();});
+    std::sort(_transactions.begin(), _transactions.end(), [](Transaction *t1, Transaction *t2) -> bool {return t1->getDateTime() < t2->getDateTime();});
 
     // update current balance for each transactions
     double previousBalance = _initialBalance;

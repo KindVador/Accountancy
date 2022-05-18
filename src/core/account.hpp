@@ -5,6 +5,7 @@
 #include <QList>
 #include <QJsonObject>
 #include <QUuid>
+#include <QObject>
 
 #include "currency.hpp"
 #include "owner.hpp"
@@ -12,44 +13,36 @@
 class Transaction;
 class FinancialInstitution;
 
-enum class AccountType: int
-{
-    Checking = 0,
-    CreditCard,
-    Savings,
-    Cash,
-    Assets,
-    Loan,
-    Investment
-};
+//static QHash<AccountType, QString> ACCOUNT_TYPE_2_STRING {
+//        {AccountType::Checking, "Checking"},
+//        {AccountType::CreditCard, "CreditCard"},
+//        {AccountType::Savings, "Savings"},
+//        {AccountType::Cash, "Cash"},
+//        {AccountType::Assets, "Assets"},
+//        {AccountType::Loan, "Loan"},
+//        {AccountType::Investment, "Investment"}
+//};
+//
+//static QHash<QString, AccountType> STRING_2_ACCOUNT_TYPE {
+//        {"Checking", AccountType::Checking},
+//        {"CreditCard", AccountType::CreditCard},
+//        {"Savings", AccountType::Savings},
+//        {"Cash", AccountType::Cash},
+//        {"Assets", AccountType::Assets},
+//        {"Loan", AccountType::Loan},
+//        {"Investment", AccountType::Investment}
+//};
 
-static QHash<AccountType, QString> ACCOUNT_TYPE_2_STRING {
-        {AccountType::Checking, "Checking"},
-        {AccountType::CreditCard, "CreditCard"},
-        {AccountType::Savings, "Savings"},
-        {AccountType::Cash, "Cash"},
-        {AccountType::Assets, "Assets"},
-        {AccountType::Loan, "Loan"},
-        {AccountType::Investment, "Investment"}
-};
-
-static QHash<QString, AccountType> STRING_2_ACCOUNT_TYPE {
-        {"Checking", AccountType::Checking},
-        {"CreditCard", AccountType::CreditCard},
-        {"Savings", AccountType::Savings},
-        {"Cash", AccountType::Cash},
-        {"Assets", AccountType::Assets},
-        {"Loan", AccountType::Loan},
-        {"Investment", AccountType::Investment}
-};
-
-class Account
+class Account : public QObject
 {
     Q_DISABLE_COPY(Account)
 
 public:
+    enum class AccountType { Checking, CreditCard, Savings, Cash, Assets, Loan, Investment };
+    Q_ENUM(AccountType)
+
     Account();
-    Account(const FinancialInstitution *_institution, AccountType type, Currency *currency, const QList<const Owner*> &owners,
+    Account(const FinancialInstitution *_institution, Account::AccountType type, Currency *currency, const QList<const Owner*> &owners,
             float initialBalance, float warningBalance, QString accountNumber, QString comment,
             bool isIncludedInTotal, bool isHidden);
     ~Account();
@@ -75,8 +68,8 @@ public:
     void setIsIncludedInTotal(bool isIncludedInTotal);
     [[nodiscard]] bool isHidden() const;
     void setIsHidden(bool isHidden);
-    [[nodiscard]] AccountType getType() const;
-    void setType(AccountType type);
+    [[nodiscard]] Account::AccountType getType() const;
+    void setType(Account::AccountType type);
 
     // public API
     [[nodiscard]] QString getDisplayedName() const;
@@ -108,7 +101,7 @@ private:
     QString _comment;
     bool _isIncludedInTotal = true;
     bool _isHidden = false;
-    AccountType _type = AccountType::Checking;
+    Account::AccountType _type = Account::AccountType::Checking;
     QList<Transaction *> _transactions;
 };
 

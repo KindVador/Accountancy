@@ -38,7 +38,7 @@ public:
     Owner *addOwner(const QString &name, float warningBalance, const QString &comment, bool isHidden);
 
     // ACCOUNTS
-    Account *addAccount(const FinancialInstitution *institution, AccountType type, Currency *currency,
+    Account *addAccount(const FinancialInstitution *institution, Account::AccountType type, Currency *currency,
                         const QList<const Owner*> &owners, float initialBalance, float warningBalance,
                         const QString &accountNumber, const QString &comment, bool isIncludedInTotal, bool isHidden);
 
