@@ -17,6 +17,7 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 add_subdirectory(../lib/Catch2 "${CMAKE_CURRENT_BINARY_DIR}/catch2")
 
 set(TEST_SRC
+        main.cpp
         core/tst_account.cpp
         core/tst_currency.cpp
         core/tst_dataimport.cpp
@@ -26,7 +27,7 @@ set(TEST_SRC
         )
 
 add_executable(TestsAccountancy ${TEST_SRC})
-target_link_libraries(TestsAccountancy PRIVATE Catch2::Catch2 Qt6::Core Qt6::Test AccountancyCore)
+target_link_libraries(TestsAccountancy PRIVATE Catch2::Catch2 Qt6::Core Qt6::Widgets AccountancyCore)
 
 include(CTest)
 include(../lib/Catch2/contrib/Catch.cmake)
