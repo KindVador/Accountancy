@@ -31,7 +31,7 @@ set(SOURCE_FILES
         financialinstitution.cpp
         model.cpp
         controller.cpp
-        )
+        importconfig.cpp importconfig.hpp)
 
 add_library(AccountancyCore ${HEADER_FILES} ${SOURCE_FILES})
 

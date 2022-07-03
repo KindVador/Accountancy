@@ -1,6 +1,7 @@
 #include "importdatadialog.hpp"
 #include "ui_importdatadialog.h"
 #include "../core/model.hpp"
+#include "../core/importconfig.hpp"
 
 #include <QFileDialog>
 
@@ -61,12 +62,15 @@ void ImportDataDialog::accept()
     // get Financial Institution from selected Account
     auto financialInstitution = account->getInstitution();
 
+    // config
+    ImportConfig config;
+
     // read transactions from files
     QList<Transaction *> transactions;
     for (int i = 0; i < ui->filesListWidget->count(); ++i) {
         const QListWidgetItem *item = ui->filesListWidget->item(i);
         auto dataFile = QFile(item->text());
-        transactions.append(financialInstitution->readTransactionsFromFile(dataFile));
+        transactions.append(financialInstitution->readTransactionsFromFile(dataFile, config));
     }
 
     // add transactions to the selected count
