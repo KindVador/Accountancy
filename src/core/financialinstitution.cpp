@@ -48,13 +48,11 @@ QList<Transaction *> FinancialInstitution::readTransactionsFromFile(QFile &dataF
     while (!inStream.atEnd())
         rawLines.append(inStream.readLine());
 
-    int firstLineToImport = config.getNbLinesToSkipStart() == 0 ? 0 : config.getNbLinesToSkipStart() - 1;
+    int firstLineToImport = config.getNbLinesToSkipStart() == 0 ? 0 : config.getNbLinesToSkipStart();
     int nbLinesToImport = (int) rawLines.count() - (config.getNbLinesToSkipStart() + config.getNbLinesToSkipEnd()) + 1;
     rawLines = rawLines.mid(firstLineToImport, nbLinesToImport);
-    qDebug() << firstLineToImport << " <--> " << nbLinesToImport << " <--> " << rawLines.count();
 
     for (int i = 0; i < rawLines.count(); ++i) {
-        qDebug() << rawLines[i];
         QStringList fields = rawLines[i].split(config.getSeparatorChar());
 
         if (fields.count() < config.nbFields())
@@ -76,10 +74,10 @@ QList<Transaction *> FinancialInstitution::readTransactionsFromFile(QFile &dataF
             time = QTime::fromString(timeString, timeFormat);
         }
         transaction->setDateTime(QDateTime(date, time));
-        if (!fields[3].isEmpty())
-            transaction->setAmount(locale.toDouble(fields[3]));
+        if (!fields[config.getColumnPosition("DebitAmount")].isEmpty())
+            transaction->setAmount(locale.toDouble(fields[config.getColumnPosition("DebitAmount")]));
         else
-            transaction->setAmount(locale.toDouble(fields[4]));
+            transaction->setAmount(locale.toDouble(fields[config.getColumnPosition("CreditAmount")]));
 
         transactions.append(transaction);
     }

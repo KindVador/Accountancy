@@ -11,14 +11,15 @@ TEST_CASE( "DataImport CaisseEpargne old format", "[core]" )
     ImportConfig config;
     config.setName("CaisseEpargne old format");
     config.setSeparatorChar(';');
-    config.setNbLinesToSkipStart(6);
+    config.setNbLinesToSkipStart(5);
     config.setNbLinesToSkipEnd(1);
     config.setDecimalChar('.');
     config.setDateFormat("dd/MM/yy");
     config.setHasTime(true);
     config.addColumn("Date", 0);
     config.addColumn("Name", 2);
-    config.addColumn("Amount", 5);
+    config.addColumn("DebitAmount", 3);
+    config.addColumn("CreditAmount", 4);
     config.addColumn("Comment", 5);
     config.addColumn("Time", 1);
     if (dataFile.exists()) {
@@ -56,11 +57,12 @@ TEST_CASE( "DataImport CaisseEpargne new format", "[core]" )
     config.setSeparatorChar(';');
     config.setNbLinesToSkipStart(1);
     config.setDecimalChar(',');
-    config.setDateFormat("dd/MM/yyyy");
+    config.setDateFormat("yyyy-MM-dd");
     config.setHasTime(false);
     config.addColumn("Date", 0);
     config.addColumn("Name", 4);
-    config.addColumn("Amount", 5);
+    config.addColumn("DebitAmount", 5);
+    config.addColumn("CreditAmount", 5);
     config.addColumn("Comment", 3);
 
     if (dataFile.exists()) {
