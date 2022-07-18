@@ -87,3 +87,44 @@ TEST_CASE( "DataImport CaisseEpargne new format", "[core]" )
         qWarning("File:new_format.csv doesn't exist");
     }
 }
+
+TEST_CASE( "DataImport CaisseEpargne new format with French Date format", "[core]" )
+{
+    FinancialInstitution fi("CaisseEpargne");
+
+    auto dataFile = QFile("../../data/caisse_epargne/new_format_date2.csv");
+    ImportConfig config;
+    config.setName("CaisseEpargne new format french date format");
+    config.setSeparatorChar(';');
+    config.setNbLinesToSkipStart(1);
+    config.setDecimalChar(',');
+    config.setDateFormat("dd/MM/yyyy");
+    config.setHasTime(false);
+    config.addColumn("Date", 0);
+    config.addColumn("Name", 4);
+    config.addColumn("DebitAmount", 7);
+    config.addColumn("CreditAmount", 7);
+    config.addColumn("Comment", 3);
+
+    if (dataFile.exists()) {
+        QList<Transaction *> transactions = fi.readTransactionsFromFile(dataFile, config);
+        // check that all transactions have been read
+        CHECK(transactions.count() == 2);
+
+        // check attributes of first transaction
+        const Transaction *firstTransaction = transactions.first();
+        CHECK(firstTransaction->getName() == "VIR SEPA M CONTIVAL FLORIAN");       // Libelle simplifie
+        CHECK(firstTransaction->getAmount() == 900);         // Montant operation
+        CHECK(firstTransaction->getComment() == "Virement reçu");    // Libelle operation
+        CHECK(firstTransaction->getDateTime() == QDateTime(QDate(2022, 07, 04), QTime(0, 0, 0, 0)));
+
+        // check attributes of last transaction
+        const Transaction *lastTransaction = transactions.last();
+        CHECK(lastTransaction->getName() == "VIR SEPA M CONTIVAL FLORIAN");       // Libelle simplifie
+        CHECK(lastTransaction->getAmount() == 400);         // Montant operation
+        CHECK(lastTransaction->getComment() == "Virement reçu");    // Libelle operation
+        CHECK(lastTransaction->getDateTime() == QDateTime(QDate(2022, 06, 06), QTime(0, 0, 0, 0)));
+    } else {
+        qWarning("File:new_format.csv doesn't exist");
+    }
+}
