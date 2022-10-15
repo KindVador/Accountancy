@@ -1,6 +1,7 @@
 #ifndef ACCOUNTANCY_IMPORTCONFIG_HPP
 #define ACCOUNTANCY_IMPORTCONFIG_HPP
 
+#include <QUuid>
 #include <QString>
 #include <QJsonObject>
 #include <QChar>
@@ -8,13 +9,16 @@
 class ImportConfig
 {
 public:
-    ImportConfig() = default;
+    ImportConfig();
 
     // Serialization
     void read(const QJsonObject &json);
     void write(QJsonObject &json) const;
 
     // Getter & Setter
+    [[nodiscard]] QUuid getUid() const;
+    void setUid(QUuid id);
+
     [[nodiscard]] bool hasTime() const;
     void setHasTime(bool state);
 
@@ -46,6 +50,7 @@ public:
     [[nodiscard]] int nbFields() const;
 
 private:
+    QUuid _uid;
     bool _hasTime = false;
     QChar _separatorChar{';'};
     QChar _decimalChar{','};

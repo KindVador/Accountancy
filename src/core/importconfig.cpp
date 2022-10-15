@@ -1,7 +1,16 @@
 #include "importconfig.hpp"
 
+// Constructors
+ImportConfig::ImportConfig()
+{
+    _uid = QUuid::createUuid();
+}
+
 void ImportConfig::read(const QJsonObject &json)
 {
+    if (json.contains("uid") && json["uid"].isString())
+        _uid = QUuid(json["uid"].toString());
+
     if (json.contains("hasTime") && json["hasTime"].isBool())
         _hasTime = json["hasTime"].toBool();
 
@@ -36,11 +45,12 @@ void ImportConfig::read(const QJsonObject &json)
 
 void ImportConfig::write(QJsonObject &json) const
 {
+    json["uid"] = _uid.toString();
     json["hasTime"] = _hasTime;
     json["separatorChar"] = QString(_separatorChar);
     json["decimalChar"] = QString(_decimalChar);
     json["nbLinesToSkipStart"] = _nbLinesToSkipStart;
-    json["nbLinesToSkipEnd"] = _nbLinesToSkipStart;
+    json["nbLinesToSkipEnd"] = _nbLinesToSkipEnd;
     json["dateFormat"] = _dateFormat;
     json["timeFormat"] = _timeFormat;
     json["name"] = _name;
@@ -49,7 +59,7 @@ void ImportConfig::write(QJsonObject &json) const
     QMapIterator<QString, int> mapIt(_columns);
     while (mapIt.hasNext()) {
         mapIt.next();
-        json.insert(mapIt.key(), mapIt.value());
+        columnsObject.insert(mapIt.key(), mapIt.value());
     }
     json["columns"] = columnsObject;
 }
@@ -153,4 +163,14 @@ void ImportConfig::removeColumn(const QString &columnName)
 int ImportConfig::nbFields() const
 {
     return (int) _columns.size();
+}
+
+QUuid ImportConfig::getUid() const
+{
+    return _uid;
+}
+
+void ImportConfig::setUid(QUuid id)
+{
+    _uid = id;
 }
