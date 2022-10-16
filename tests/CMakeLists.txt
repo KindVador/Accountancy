@@ -24,6 +24,7 @@ set(TEST_SRC
         core/tst_financialinstitution.cpp
         core/tst_owner.cpp
         core/tst_transaction.cpp
+        core/tst_import_config.cpp
         )
 
 add_executable(TestsAccountancy ${TEST_SRC})

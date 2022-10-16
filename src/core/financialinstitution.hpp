@@ -24,7 +24,7 @@ public:
     void setName(const QString &name);
 
     // DataFileInterface
-    QList<Transaction*> readTransactionsFromFile(QFile &dataFile) const override;
+    [[nodiscard]] QList<Transaction*> readTransactionsFromFile(QFile &dataFile, const ImportConfig &config) const override;
 
     // Serialization
     void read(const QJsonObject &json);
