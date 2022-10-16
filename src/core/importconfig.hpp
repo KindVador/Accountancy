@@ -10,6 +10,9 @@ class ImportConfig
 {
 public:
     ImportConfig();
+    ~ImportConfig() = default;
+
+    static ImportConfig* fromJson(const QJsonObject & json);
 
     // Serialization
     void read(const QJsonObject &json);
@@ -61,5 +64,7 @@ private:
     QString _name;
     QMap<QString, int> _columns;
 };
+
+Q_DECLARE_METATYPE(ImportConfig*)
 
 #endif //ACCOUNTANCY_IMPORTCONFIG_HPP

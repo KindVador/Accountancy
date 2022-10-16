@@ -8,6 +8,7 @@
 #include "accountfilter.hpp"
 #include "financialinstitutionmodel.hpp"
 #include "transactionmodel.hpp"
+#include "importconfigmodel.hpp"
 
 class Model : public QObject
 {
@@ -30,6 +31,8 @@ public:
     [[nodiscard]] AccountFilter *getAccountFilter() const;
     [[nodiscard]] FinancialInstitutionModel *getFinancialInstitutionModel() const;
     [[nodiscard]] FinancialInstitutionModel *getFinancialInstitutionModel();
+    [[nodiscard]] ImportConfigModel *getImportConfigModel() const;
+    [[nodiscard]] ImportConfigModel *getImportConfigModel();
 
     // Serialization
     void write(QJsonObject &json) const;
@@ -52,6 +55,7 @@ private:
     AccountModel *_accountModel = nullptr;
     FinancialInstitutionModel *_institutionsModel = nullptr;
     AccountFilter *_accountFilteredModel = nullptr;
+    ImportConfigModel *_importConfigModel = nullptr;
 
     // Singleton
     explicit Model();

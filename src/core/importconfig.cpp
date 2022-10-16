@@ -174,3 +174,13 @@ void ImportConfig::setUid(QUuid id)
 {
     _uid = id;
 }
+
+ImportConfig *ImportConfig::fromJson(const QJsonObject &json)
+{
+    if (json.isEmpty())
+        return nullptr;
+
+    auto importConfig = new ImportConfig;
+    importConfig->read(json);
+    return importConfig;
+}

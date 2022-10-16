@@ -19,6 +19,8 @@ ImportDataDialog::ImportDataDialog(QWidget *parent) :
     ui->ownerComboBox->setModel(Model::instance()->getOwnerModel());
     // Populate account ComboBox
     ui->accountComboBox->setModel(Model::instance()->getAccountFilter());
+    // Populate importConfiguration ComboBox
+    ui->importConfigComboBox->setModel(Model::instance()->getImportConfigModel());
 
     connect(ui->addFileButton, &QPushButton::clicked, this, &ImportDataDialog::addFiles);
     connect(ui->removeFileButton, &QPushButton::clicked, this, &ImportDataDialog::removeSelectedFiles);
@@ -55,22 +57,22 @@ void ImportDataDialog::removeSelectedFiles()
 void ImportDataDialog::accept()
 {
     // get selected Account
-    auto *account = ui->accountComboBox->currentData(ObjectRole).value<Account *>();
+    auto* account = ui->accountComboBox->currentData(ObjectRole).value<Account *>();
     if (account == nullptr)
         return;
 
     // get Financial Institution from selected Account
     auto financialInstitution = account->getInstitution();
 
-    // config
-    ImportConfig config;
+    // Get selected import configuration to use for reading data
+    auto* config = ui->importConfigComboBox->currentData(ObjectRole).value<ImportConfig *>();
 
     // read transactions from files
     QList<Transaction *> transactions;
     for (int i = 0; i < ui->filesListWidget->count(); ++i) {
         const QListWidgetItem *item = ui->filesListWidget->item(i);
         auto dataFile = QFile(item->text());
-        transactions.append(financialInstitution->readTransactionsFromFile(dataFile, config));
+        transactions.append(financialInstitution->readTransactionsFromFile(dataFile, *config));
     }
 
     // add transactions to the selected count

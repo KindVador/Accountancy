@@ -16,7 +16,8 @@ Model *Model::instance()
 }
 
 Model::Model(): _ownerModel(new OwnerModel), _currencyModel(new CurrencyModel), _accountModel(new AccountModel),
-                _accountFilteredModel(new AccountFilter), _institutionsModel(new FinancialInstitutionModel)
+                _accountFilteredModel(new AccountFilter), _institutionsModel(new FinancialInstitutionModel),
+                _importConfigModel(new ImportConfigModel)
 {
     // set source model for AccountFilter
     _accountFilteredModel->setSourceModel(_accountModel);
@@ -29,6 +30,7 @@ Model::~Model()
     delete _accountModel;
     delete _accountFilteredModel;
     delete _institutionsModel;
+    delete _importConfigModel;
 }
 
 OwnerModel *Model::getOwnerModel() const
@@ -151,6 +153,18 @@ void Model::write(QJsonObject &json) const
         }
         json["accounts"] = accounts;
     }
+
+    // Import Configs
+    if (_importConfigModel != nullptr) {
+        QJsonArray importConfigs;
+        for (int i = 0; i < _importConfigModel->rowCount(QModelIndex()); ++i) {
+            auto* importConfig = _importConfigModel->data(_importConfigModel->index(i, 0), ObjectRole).value<ImportConfig *>();
+            QJsonObject importConfigJson;
+            importConfig->write(importConfigJson);
+            importConfigs.append(importConfigJson);
+        }
+        json["importConfigurations"] = importConfigs;
+    }
 }
 
 void Model::read(const QJsonObject &json)
@@ -202,6 +216,13 @@ void Model::read(const QJsonObject &json)
         for (QUuid ownerUid : ownersIds)
             account->addOwner(_ownerModel->getOwner(ownerUid));
     }
+
+    // Import Configs
+    if (json.contains("importConfigurations") && json["importConfigurations"].isArray()) {
+        QJsonArray importConfigsJsonArray = json["importConfigurations"].toArray();
+        for (const QJsonValueRef &importConfig : qAsConst(importConfigsJsonArray))
+            _importConfigModel->addImportConfig(ImportConfig::fromJson(importConfig.toObject()));
+    }
 }
 
 /*!
@@ -234,4 +255,14 @@ void Model::reset()
 
 TransactionModel *Model::getTransactionModel(Account *selectedAccount) {
     return new TransactionModel(selectedAccount);
+}
+
+ImportConfigModel *Model::getImportConfigModel()
+{
+    return _importConfigModel;
+}
+
+ImportConfigModel *Model::getImportConfigModel() const
+{
+    return _importConfigModel;
 }
