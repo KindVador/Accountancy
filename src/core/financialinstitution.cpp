@@ -41,6 +41,8 @@ QList<Transaction*> FinancialInstitution::readTransactionsFromFile(QFile& dataFi
         return {};
 
     QLocale locale = QLocale::system();
+    bool replaceDecimalCharacter = config.getDecimalChar() != locale.decimalPoint();
+
     QList<Transaction*> transactions;
     QVector<QString> rawLines;
     QTextStream inStream(&dataFile);
@@ -74,10 +76,17 @@ QList<Transaction*> FinancialInstitution::readTransactionsFromFile(QFile& dataFi
             time = QTime::fromString(timeString, timeFormat);
         }
         transaction->setDateTime(QDateTime(date, time));
+
+        QString amountValue;
         if (!fields[config.getColumnPosition("DebitAmount")].isEmpty())
-            transaction->setAmount(locale.toDouble(fields[config.getColumnPosition("DebitAmount")]));
+            amountValue = fields[config.getColumnPosition("DebitAmount")];
         else
-            transaction->setAmount(locale.toDouble(fields[config.getColumnPosition("CreditAmount")]));
+            amountValue = fields[config.getColumnPosition("CreditAmount")];
+
+        if (replaceDecimalCharacter)
+            amountValue.replace(config.getDecimalChar(), locale.decimalPoint());
+
+        transaction->setAmount(locale.toDouble(amountValue));
 
         transactions.append(transaction);
     }
