@@ -3,14 +3,14 @@
 
 #include <iostream>
 
-#include <QString>
 #include <QDateTime>
 #include <QJsonObject>
+#include <QString>
 #include <QUuid>
 
 class Account;
 
-enum class TransactionStatus: int
+enum class TransactionStatus : int
 {
     Planned = 0,
     Created,
@@ -20,66 +20,64 @@ enum class TransactionStatus: int
     Cancelled
 };
 
-static QHash<TransactionStatus, QString> TRANSACTION_STATUS_2_STRING {
-    {TransactionStatus::Planned, "Planned"},
-    {TransactionStatus::Created, "Created"},
-    {TransactionStatus::Imported, "Imported"},
-    {TransactionStatus::Cleared, "Cleared"},
-    {TransactionStatus::Locked, "Locked"},
-    {TransactionStatus::Cancelled, "Cancelled"}
-    };
+static QHash<TransactionStatus, QString> TRANSACTION_STATUS_2_STRING{
+        {TransactionStatus::Planned, "Planned"},
+        {TransactionStatus::Created, "Created"},
+        {TransactionStatus::Imported, "Imported"},
+        {TransactionStatus::Cleared, "Cleared"},
+        {TransactionStatus::Locked, "Locked"},
+        {TransactionStatus::Cancelled, "Cancelled"}};
 
-static QHash<QString, TransactionStatus> STRING_2_TRANSACTION_STATUS {
+static QHash<QString, TransactionStatus> STRING_2_TRANSACTION_STATUS{
         {"Planned", TransactionStatus::Planned},
         {"Created", TransactionStatus::Created},
         {"Imported", TransactionStatus::Imported},
         {"Cleared", TransactionStatus::Cleared},
         {"Locked", TransactionStatus::Locked},
-        {"Cancelled", TransactionStatus::Cancelled}
-};
+        {"Cancelled", TransactionStatus::Cancelled}};
 
 class Transaction
 {
 public:
     Transaction();
-    explicit Transaction(QString &name, QString &comment, TransactionStatus status, QDateTime &datetime, double amount);
+    explicit Transaction(QString& name, QString& comment, TransactionStatus status, QDateTime& datetime, double amount);
     explicit Transaction(QString name, QString comment, TransactionStatus status, QDateTime datetime, double amount);
     ~Transaction() = default;
-    static Transaction fromJson(const QJsonObject &json);
+    static Transaction fromJson(const QJsonObject& json);
     // Copy constructor
-    Transaction(const Transaction &origin);
+    Transaction(const Transaction& origin);
     // Move constructor
-    Transaction(Transaction &&origin) noexcept;
+    Transaction(Transaction&& origin) noexcept;
 
-    friend void swap(Transaction &lhs, Transaction &rhs);
+    friend void swap(Transaction& lhs, Transaction& rhs);
 
     // Operators
-    Transaction& operator=(const Transaction &rhs);     // Copy-Assignment Operator
-    Transaction& operator=(Transaction &&rhs) noexcept; // Move-Assignment Operator
-    bool operator<(const Transaction &rhs) const;
-    bool operator>(const Transaction &rhs) const;
-    bool operator<=(const Transaction &rhs) const;
-    bool operator>=(const Transaction &rhs) const;
-    friend bool operator==(const Transaction &lhs, const Transaction &rhs);
+    Transaction& operator=(const Transaction& rhs);    // Copy-Assignment Operator
+    Transaction& operator=(Transaction&& rhs) noexcept;// Move-Assignment Operator
+    bool operator<(const Transaction& rhs) const;
+    bool operator>(const Transaction& rhs) const;
+    bool operator<=(const Transaction& rhs) const;
+    bool operator>=(const Transaction& rhs) const;
+    friend bool operator==(const Transaction& lhs, const Transaction& rhs);
 
     // Getter & Setter
     [[nodiscard]] QUuid getUid() const;
-    [[nodiscard]] const QString &getName() const;
-    void setName(const QString &name);
-    [[nodiscard]] const QString &getComment() const;
-    void setComment(const QString &comment);
+    [[nodiscard]] const QString& getName() const;
+    void setName(const QString& name);
+    [[nodiscard]] const QString& getComment() const;
+    void setComment(const QString& comment);
     [[nodiscard]] TransactionStatus getStatus() const;
     void setStatus(TransactionStatus ts);
-    [[nodiscard]] const QDateTime & getDateTime() const;
-    void setDateTime(const QDateTime &datetime);
+    [[nodiscard]] const QDateTime& getDateTime() const;
+    void setDateTime(const QDateTime& datetime);
     [[nodiscard]] double getAmount() const;
     void setAmount(double amount);
     [[nodiscard]] double getCurrentBalance() const;
     void setCurrentBalance(double currentBalance);
 
     // Serialization
-    void read(const QJsonObject &json);
-    void write(QJsonObject &json) const;
+    void read(const QJsonObject& json);
+    void write(QJsonObject& json) const;
 
     // public API
     void printToConsole() const;
@@ -92,10 +90,10 @@ private:
     QDateTime _dateTime;
     double _amount = 0.0;
     double _current_balance = 0.0;
-    Account *_accountFrom = nullptr;
-    Account *_accountTo = nullptr;
+    Account* _accountFrom = nullptr;
+    Account* _accountTo = nullptr;
 };
 
 Q_DECLARE_METATYPE(Transaction*)
 
-#endif // TRANSACTION_H
+#endif// TRANSACTION_H

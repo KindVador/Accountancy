@@ -5,14 +5,14 @@ Owner::Owner()
     _uid = QUuid::createUuid();
 }
 
-Owner::Owner(QString &name, double warningBalance, QString &comment, bool isHidden)
-        : _name(name), _warningBalance(warningBalance), _comment(comment), _isHidden(isHidden)
+Owner::Owner(QString& name, double warningBalance, QString& comment, bool isHidden)
+    : _name(name), _warningBalance(warningBalance), _comment(comment), _isHidden(isHidden)
 {
     _uid = QUuid::createUuid();
 }
 
 Owner::Owner(QString name, double warningBalance, QString comment, bool isHidden)
-        : _name(std::move(name)), _warningBalance(warningBalance), _comment(std::move(comment)), _isHidden(isHidden)
+    : _name(std::move(name)), _warningBalance(warningBalance), _comment(std::move(comment)), _isHidden(isHidden)
 {
     _uid = QUuid::createUuid();
 }
@@ -22,7 +22,7 @@ QString Owner::getName() const
     return _name;
 }
 
-void Owner::setName(const QString &value)
+void Owner::setName(const QString& value)
 {
     _name = value;
 }
@@ -42,7 +42,7 @@ QString Owner::getComment() const
     return _comment;
 }
 
-void Owner::setComment(const QString &value)
+void Owner::setComment(const QString& value)
 {
     _comment = value;
 }
@@ -67,7 +67,7 @@ void Owner::setUid(QUuid uid)
     _uid = uid;
 }
 
-void Owner::read(const QJsonObject &json)
+void Owner::read(const QJsonObject& json)
 {
     if (json.contains("uid") && json["uid"].isString())
         _uid = QUuid(json["uid"].toString());
@@ -85,7 +85,7 @@ void Owner::read(const QJsonObject &json)
         _isHidden = json["is_hidden"].toBool();
 }
 
-void Owner::write(QJsonObject &json) const
+void Owner::write(QJsonObject& json) const
 {
     json["uid"] = _uid.toString();
     json["name"] = _name;
@@ -94,7 +94,7 @@ void Owner::write(QJsonObject &json) const
     json["is_hidden"] = _isHidden;
 }
 
-Owner *Owner::fromJson(const QJsonObject &json)
+Owner* Owner::fromJson(const QJsonObject& json)
 {
     if (json.isEmpty())
         return nullptr;

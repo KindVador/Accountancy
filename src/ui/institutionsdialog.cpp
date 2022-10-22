@@ -1,12 +1,11 @@
 #include "institutionsdialog.hpp"
-#include "ui_InstitutionsDialog.h"
-#include "createinstitutiondialog.hpp"
 #include "../core/controller.hpp"
+#include "createinstitutiondialog.hpp"
+#include "ui_InstitutionsDialog.h"
 
-InstitutionsDialog::InstitutionsDialog(QWidget *parent, FinancialInstitutionModel *model) :
-        QDialog(parent),
-        ui(new Ui::InstitutionsDialog),
-        _model(model)
+InstitutionsDialog::InstitutionsDialog(QWidget* parent, FinancialInstitutionModel* model) : QDialog(parent),
+                                                                                            ui(new Ui::InstitutionsDialog),
+                                                                                            _model(model)
 {
     ui->setupUi(this);
 
@@ -16,7 +15,6 @@ InstitutionsDialog::InstitutionsDialog(QWidget *parent, FinancialInstitutionMode
     // connect buttons
     connect(ui->addPushButton, &QPushButton::clicked, this, &InstitutionsDialog::onAddInstitutionAction);
     connect(ui->removePushButton, &QPushButton::clicked, this, &InstitutionsDialog::onRemoveInstitutionAction);
-
 }
 
 InstitutionsDialog::~InstitutionsDialog()
@@ -43,7 +41,7 @@ void InstitutionsDialog::onAddInstitutionAction()
 void InstitutionsDialog::onRemoveInstitutionAction()
 {
     QList<QModelIndex> selectedIndexes = ui->tableView->selectionModel()->selectedIndexes();
-    for (QModelIndex selectedIndex : selectedIndexes) {
+    for (QModelIndex selectedIndex: selectedIndexes) {
         QUuid uid = _model->data(selectedIndex, Qt::UserRole).toUuid();
         Controller::instance()->removeInstitution(uid);
     }

@@ -2,12 +2,12 @@
 
 constexpr const int ObjectRole = Qt::UserRole + 1;
 
-int ImportConfigModel::rowCount(const QModelIndex &parent) const
+int ImportConfigModel::rowCount(const QModelIndex& parent) const
 {
     return (int) _importConfigs.count();
 }
 
-QVariant ImportConfigModel::data(const QModelIndex &index, int role) const
+QVariant ImportConfigModel::data(const QModelIndex& index, int role) const
 {
     if (!index.isValid() || index.row() >= _importConfigs.count() || index.row() < 0)
         return {};
@@ -29,7 +29,7 @@ QVariant ImportConfigModel::data(const QModelIndex &index, int role) const
     return v;
 }
 
-void ImportConfigModel::addImportConfig(ImportConfig *config)
+void ImportConfigModel::addImportConfig(ImportConfig* config)
 {
     if (config == nullptr)
         return;
@@ -37,7 +37,7 @@ void ImportConfigModel::addImportConfig(ImportConfig *config)
     _importConfigs.append(config);
 }
 
-void ImportConfigModel::removeImportConfig(const QModelIndex &index)
+void ImportConfigModel::removeImportConfig(const QModelIndex& index)
 {
     beginResetModel();
     delete _importConfigs.at(index.row());
@@ -45,7 +45,7 @@ void ImportConfigModel::removeImportConfig(const QModelIndex &index)
     endResetModel();
 }
 
-const QList<ImportConfig *> &ImportConfigModel::importConfigs() const
+const QList<ImportConfig*>& ImportConfigModel::importConfigs() const
 {
     return _importConfigs;
 }

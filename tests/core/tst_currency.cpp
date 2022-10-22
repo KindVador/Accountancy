@@ -2,7 +2,7 @@
 
 #include "../../src/core/currency.hpp"
 
-TEST_CASE( "Currency default Constructor", "[core]" )
+TEST_CASE("Currency default Constructor", "[core]")
 {
     Currency c{};
     CHECK(!c.getUid().isNull());
@@ -10,7 +10,7 @@ TEST_CASE( "Currency default Constructor", "[core]" )
     CHECK(c.getSymbol() == QString());
 }
 
-TEST_CASE( "Currency init Constructor", "[core]" )
+TEST_CASE("Currency init Constructor", "[core]")
 {
     Currency c{"Euro", "€"};
     CHECK(!c.getUid().isNull());
@@ -18,7 +18,7 @@ TEST_CASE( "Currency init Constructor", "[core]" )
     CHECK(c.getSymbol() == QString("€"));
 }
 
-TEST_CASE( "Currency writeJson", "[core]" )
+TEST_CASE("Currency writeJson", "[core]")
 {
     Currency c0{"Euro", "€"};
     QJsonObject jsonData;
@@ -30,7 +30,7 @@ TEST_CASE( "Currency writeJson", "[core]" )
     CHECK(c1.getSymbol() == "€");
 }
 
-TEST_CASE( "Currency readJson", "[core]" )
+TEST_CASE("Currency readJson", "[core]")
 {
     Currency c{"Euro", "€"};
     QJsonObject jsonData;

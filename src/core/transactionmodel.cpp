@@ -4,11 +4,11 @@
 
 QList<QString> TransactionModel::headerLabels = {"Date", "Name", "Amount", "Balance", "Status", "Comment"};
 
-TransactionModel::TransactionModel(Account *account): _account(account)
+TransactionModel::TransactionModel(Account* account) : _account(account)
 {
 }
 
-int TransactionModel::rowCount(const QModelIndex &parent) const
+int TransactionModel::rowCount(const QModelIndex& parent) const
 {
     if (_account == nullptr)
         return 0;
@@ -16,16 +16,16 @@ int TransactionModel::rowCount(const QModelIndex &parent) const
     return _account->count();
 }
 
-QVariant TransactionModel::data(const QModelIndex &index, int role) const
+QVariant TransactionModel::data(const QModelIndex& index, int role) const
 {
     if (!index.isValid() || _account == nullptr)
         return {};
 
-    Transaction *t = _account->transactionAt(index.row());
+    Transaction* t = _account->transactionAt(index.row());
     if (t == nullptr)
         return {};
-    
-    const Currency *currency = _account->getCurrency();
+
+    const Currency* currency = _account->getCurrency();
     if (role == Qt::DisplayRole) {
         switch (index.column()) {
             case 0:
@@ -70,9 +70,9 @@ QVariant TransactionModel::data(const QModelIndex &index, int role) const
     return {};
 }
 
-int TransactionModel::columnCount(const QModelIndex &parent) const
+int TransactionModel::columnCount(const QModelIndex& parent) const
 {
-    return (int)headerLabels.count();
+    return (int) headerLabels.count();
 }
 
 QVariant TransactionModel::headerData(int section, Qt::Orientation orientation, int role) const

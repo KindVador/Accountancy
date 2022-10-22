@@ -1,10 +1,9 @@
 #include "addownerdialog.hpp"
-#include "ui_addOwnerDialog.h"
 #include "../core/controller.hpp"
+#include "ui_addOwnerDialog.h"
 
 
-AddOwnerDialog::AddOwnerDialog(QWidget *parent) :
-        QDialog(parent), ui(new Ui::AddOwnerDialog)
+AddOwnerDialog::AddOwnerDialog(QWidget* parent) : QDialog(parent), ui(new Ui::AddOwnerDialog)
 {
     ui->setupUi(this);
 }
@@ -16,7 +15,7 @@ AddOwnerDialog::~AddOwnerDialog()
 
 void AddOwnerDialog::accept()
 {
-    Controller *controller = Controller::instance();
+    Controller* controller = Controller::instance();
     controller->addOwner(ui->nameLineEdit->text(),
                          ui->warningBalanceDoubleSpinBox->value(),
                          ui->commentsTextEdit->toPlainText(),
@@ -28,4 +27,3 @@ void AddOwnerDialog::reject()
 {
     QDialog::reject();
 }
-

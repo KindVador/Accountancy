@@ -1,15 +1,14 @@
 #include "importdatadialog.hpp"
-#include "ui_importdatadialog.h"
-#include "../core/model.hpp"
 #include "../core/importconfig.hpp"
+#include "../core/model.hpp"
+#include "ui_importdatadialog.h"
 
 #include <QFileDialog>
 
 constexpr const int ObjectRole = Qt::UserRole + 1;
 
-ImportDataDialog::ImportDataDialog(QWidget *parent) :
-    QDialog(parent),
-    ui(new Ui::ImportDataDialog)
+ImportDataDialog::ImportDataDialog(QWidget* parent) : QDialog(parent),
+                                                      ui(new Ui::ImportDataDialog)
 {
     ui->setupUi(this);
 
@@ -24,7 +23,7 @@ ImportDataDialog::ImportDataDialog(QWidget *parent) :
 
     connect(ui->addFileButton, &QPushButton::clicked, this, &ImportDataDialog::addFiles);
     connect(ui->removeFileButton, &QPushButton::clicked, this, &ImportDataDialog::removeSelectedFiles);
-    connect(ui->ownerComboBox, &QComboBox::currentTextChanged, this, [this](const QString &text) { Model::instance()->setOwnerFilter(text);});
+    connect(ui->ownerComboBox, &QComboBox::currentTextChanged, this, [this](const QString& text) { Model::instance()->setOwnerFilter(text); });
 }
 
 ImportDataDialog::~ImportDataDialog()
@@ -50,14 +49,14 @@ void ImportDataDialog::addFiles()
 void ImportDataDialog::removeSelectedFiles()
 {
     // remove selected items from the list
-    for (QListWidgetItem *item: ui->filesListWidget->selectedItems())
+    for (QListWidgetItem* item: ui->filesListWidget->selectedItems())
         ui->filesListWidget->takeItem(ui->filesListWidget->indexFromItem(item).row());
 }
 
 void ImportDataDialog::accept()
 {
     // get selected Account
-    auto* account = ui->accountComboBox->currentData(ObjectRole).value<Account *>();
+    auto* account = ui->accountComboBox->currentData(ObjectRole).value<Account*>();
     if (account == nullptr)
         return;
 
@@ -65,12 +64,12 @@ void ImportDataDialog::accept()
     auto financialInstitution = account->getInstitution();
 
     // Get selected import configuration to use for reading data
-    auto* config = ui->importConfigComboBox->currentData(ObjectRole).value<ImportConfig *>();
+    auto* config = ui->importConfigComboBox->currentData(ObjectRole).value<ImportConfig*>();
 
     // read transactions from files
-    QList<Transaction *> transactions;
+    QList<Transaction*> transactions;
     for (int i = 0; i < ui->filesListWidget->count(); ++i) {
-        const QListWidgetItem *item = ui->filesListWidget->item(i);
+        const QListWidgetItem* item = ui->filesListWidget->item(i);
         auto dataFile = QFile(item->text());
         transactions.append(financialInstitution->readTransactionsFromFile(dataFile, *config));
     }

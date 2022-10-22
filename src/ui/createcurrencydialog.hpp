@@ -5,15 +5,18 @@
 
 
 QT_BEGIN_NAMESPACE
-namespace Ui { class CreateCurrencyDialog; }
+namespace Ui
+{
+    class CreateCurrencyDialog;
+}
 QT_END_NAMESPACE
 
 class CreateCurrencyDialog : public QDialog
 {
-Q_OBJECT
+    Q_OBJECT
 
 public:
-    explicit CreateCurrencyDialog(QWidget *parent = nullptr);
+    explicit CreateCurrencyDialog(QWidget* parent = nullptr);
 
     ~CreateCurrencyDialog() override;
 
@@ -22,7 +25,7 @@ public slots:
     void reject() override;
 
 private:
-    Ui::CreateCurrencyDialog *ui;
+    Ui::CreateCurrencyDialog* ui;
 };
 
-#endif //ACCOUNTANCY_CREATECURRENCYDIALOG_HPP
+#endif//ACCOUNTANCY_CREATECURRENCYDIALOG_HPP

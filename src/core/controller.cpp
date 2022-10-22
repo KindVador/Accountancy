@@ -6,9 +6,9 @@
 
 constexpr const int ObjectRole = Qt::UserRole + 1;
 
-Controller *Controller::_singleton = nullptr;
+Controller* Controller::_singleton = nullptr;
 
-Controller::Controller(): _model(Model::instance()), _mainWindow(new MainWindow)
+Controller::Controller() : _model(Model::instance()), _mainWindow(new MainWindow)
 {
     // connect with MainWindow
     if (_mainWindow != nullptr) {
@@ -24,7 +24,7 @@ Controller::Controller(): _model(Model::instance()), _mainWindow(new MainWindow)
 
 Controller::~Controller() = default;
 
-void Controller::addOwner(Owner *owner)
+void Controller::addOwner(Owner* owner)
 {
     if (_model == nullptr)
         return;
@@ -40,7 +40,7 @@ void Controller::showMainWindow()
     _mainWindow->show();
 }
 
-Owner *Controller::addOwner(const QString &name, float warningBalance, const QString &comment, bool isHidden)
+Owner* Controller::addOwner(const QString& name, float warningBalance, const QString& comment, bool isHidden)
 {
     if (_model == nullptr)
         return nullptr;
@@ -53,9 +53,9 @@ Owner *Controller::addOwner(const QString &name, float warningBalance, const QSt
     return nullptr;
 }
 
-Account *Controller::addAccount(const FinancialInstitution *institution, AccountType type, Currency *currency,
-                                const QList<const Owner*> &owners, float initialBalance, float warningBalance,
-                                const QString &accountNumber, const QString &comment, bool isIncludedInTotal,
+Account* Controller::addAccount(const FinancialInstitution* institution, AccountType type, Currency* currency,
+                                const QList<const Owner*>& owners, float initialBalance, float warningBalance,
+                                const QString& accountNumber, const QString& comment, bool isIncludedInTotal,
                                 bool isHidden)
 {
     if (_model == nullptr)
@@ -66,14 +66,14 @@ Account *Controller::addAccount(const FinancialInstitution *institution, Account
                                                  accountNumber, comment, isIncludedInTotal, isHidden);
 }
 
-void Controller::onSelectedOwner(const QModelIndex &index)
+void Controller::onSelectedOwner(const QModelIndex& index)
 {
     if (!index.isValid() || _model == nullptr)
         return;
 
-    OwnerModel *model = _model->getOwnerModel();
+    OwnerModel* model = _model->getOwnerModel();
     auto ownerName = model->data(index, Qt::DisplayRole).value<QString>();
-    QUuid ownerUid = model->data(index, ObjectRole).value<Owner *>()->getUid();
+    QUuid ownerUid = model->data(index, ObjectRole).value<Owner*>()->getUid();
     qDebug() << "Controller::onSelectedOwner" << index.isValid() << ownerName << ownerUid;
 
     // Apply filtering on Account's model
@@ -81,9 +81,9 @@ void Controller::onSelectedOwner(const QModelIndex &index)
     _model->getAccountFilter()->invalidate();
 }
 
-void Controller::onSelectedAccount(const QModelIndex &index)
+void Controller::onSelectedAccount(const QModelIndex& index)
 {
-    AccountModel *model = _model->getAccountModel();
+    AccountModel* model = _model->getAccountModel();
     auto accountName = model->data(index, Qt::DisplayRole).value<QString>();
     qDebug() << "Controller::onSelectedAccount" << index.isValid() << accountName;
 }
@@ -94,7 +94,7 @@ void Controller::clearOwnerSelection()
     _model->getAccountFilter()->invalidate();
 }
 
-Controller *Controller::instance()
+Controller* Controller::instance()
 {
     if (_singleton == nullptr)
         _singleton = new Controller();
@@ -102,7 +102,7 @@ Controller *Controller::instance()
     return _singleton;
 }
 
-void Controller::addTransactionToAccount(Transaction *transaction, Account *account)
+void Controller::addTransactionToAccount(Transaction* transaction, Account* account)
 {
     if (transaction == nullptr || account == nullptr)
         return;
@@ -110,7 +110,7 @@ void Controller::addTransactionToAccount(Transaction *transaction, Account *acco
     account->addTransaction(transaction);
 }
 
-void Controller::addFinancialInstitution(FinancialInstitution *institution)
+void Controller::addFinancialInstitution(FinancialInstitution* institution)
 {
     if (_model == nullptr)
         return;
@@ -118,24 +118,24 @@ void Controller::addFinancialInstitution(FinancialInstitution *institution)
     _model->getFinancialInstitutionModel()->addFinancialInstitution(institution);
 }
 
-FinancialInstitution *Controller::addFinancialInstitution(const QString &name)
+FinancialInstitution* Controller::addFinancialInstitution(const QString& name)
 {
     return _model->getFinancialInstitutionModel()->addFinancialInstitution(name);
 }
 
-const QString &Controller::getCurrentFilePath() const
+const QString& Controller::getCurrentFilePath() const
 {
     return _currentFilePath;
 }
 
-void Controller::setCurrentFilePath(const QString &currentFilePath)
+void Controller::setCurrentFilePath(const QString& currentFilePath)
 {
     _currentFilePath = currentFilePath;
     // add file in the window title
     _mainWindow->setWindowTitle(QString("Accountancy - %1").arg(_currentFilePath));
 }
 
-bool Controller::saveToFile(const QString &filePath)
+bool Controller::saveToFile(const QString& filePath)
 {
     setCurrentFilePath(filePath);
     QFile saveFile(filePath);
@@ -156,7 +156,7 @@ bool Controller::saveToFile(const QString &filePath)
     return true;
 }
 
-bool Controller::loadFile(const QString &filePath)
+bool Controller::loadFile(const QString& filePath)
 {
     Instrumentor::Get().BeginSession("Session1");
     {
@@ -182,7 +182,7 @@ bool Controller::loadFile(const QString &filePath)
     return true;
 }
 
-bool Controller::createNewFile(const QString &filePath)
+bool Controller::createNewFile(const QString& filePath)
 {
     // check if a model has unsaved modifications
     if (_model != nullptr && _model->isDirty()) {
@@ -212,7 +212,7 @@ bool Controller::createNewFile(const QString &filePath)
     return true;
 }
 
-void Controller::addCurrency(Currency *currency)
+void Controller::addCurrency(Currency* currency)
 {
     if (_model == nullptr)
         return;
@@ -220,7 +220,7 @@ void Controller::addCurrency(Currency *currency)
     _model->getCurrencyModel()->addCurrency(currency);
 }
 
-Currency *Controller::addCurrency(const QString &name, const QString &symbol)
+Currency* Controller::addCurrency(const QString& name, const QString& symbol)
 {
     return _model->getCurrencyModel()->addCurrency(name, symbol);
 }

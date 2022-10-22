@@ -1,21 +1,24 @@
 #ifndef ACCOUNTANCY_ADDACCOUNTDIALOG_HPP
 #define ACCOUNTANCY_ADDACCOUNTDIALOG_HPP
 
-#include <QDialog>
 #include "../core/account.hpp"
+#include <QDialog>
 
 
 QT_BEGIN_NAMESPACE
-namespace Ui { class AddAccountDialog; }
+namespace Ui
+{
+    class AddAccountDialog;
+}
 QT_END_NAMESPACE
 
 class AddAccountDialog : public QDialog
 {
 
-Q_OBJECT
+    Q_OBJECT
 
 public:
-    explicit AddAccountDialog(QWidget *parent = nullptr);
+    explicit AddAccountDialog(QWidget* parent = nullptr);
     ~AddAccountDialog() override;
 
 private:
@@ -26,7 +29,7 @@ public slots:
     void reject() override;
 
 private:
-    Ui::AddAccountDialog *ui;
+    Ui::AddAccountDialog* ui;
 };
 
-#endif //ACCOUNTANCY_ADDACCOUNTDIALOG_HPP
+#endif//ACCOUNTANCY_ADDACCOUNTDIALOG_HPP

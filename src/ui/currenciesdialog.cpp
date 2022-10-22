@@ -1,10 +1,9 @@
 #include "currenciesdialog.hpp"
-#include "ui_CurrenciesDialog.h"
-#include "createcurrencydialog.hpp"
 #include "../core/controller.hpp"
+#include "createcurrencydialog.hpp"
+#include "ui_CurrenciesDialog.h"
 
-CurrenciesDialog::CurrenciesDialog(QWidget *parent, CurrencyModel *model) :
-        QDialog(parent), ui(new Ui::CurrenciesDialog), _model(model)
+CurrenciesDialog::CurrenciesDialog(QWidget* parent, CurrencyModel* model) : QDialog(parent), ui(new Ui::CurrenciesDialog), _model(model)
 {
     ui->setupUi(this);
 
@@ -14,7 +13,6 @@ CurrenciesDialog::CurrenciesDialog(QWidget *parent, CurrencyModel *model) :
     // connect buttons
     connect(ui->addPushButton, &QPushButton::clicked, this, &CurrenciesDialog::onAddCurrencyAction);
     connect(ui->removePushButton, &QPushButton::clicked, this, &CurrenciesDialog::onRemoveCurrencyAction);
-
 }
 
 CurrenciesDialog::~CurrenciesDialog()
@@ -41,7 +39,7 @@ void CurrenciesDialog::onAddCurrencyAction()
 void CurrenciesDialog::onRemoveCurrencyAction()
 {
     QList<QModelIndex> selectedIndexes = ui->tableView->selectionModel()->selectedIndexes();
-    for (QModelIndex selectedIndex : selectedIndexes) {
+    for (QModelIndex selectedIndex: selectedIndexes) {
         QUuid uid = _model->data(selectedIndex, Qt::UserRole).toUuid();
         Controller::instance()->removeCurrency(uid);
     }

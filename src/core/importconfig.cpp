@@ -6,7 +6,7 @@ ImportConfig::ImportConfig()
     _uid = QUuid::createUuid();
 }
 
-void ImportConfig::read(const QJsonObject &json)
+void ImportConfig::read(const QJsonObject& json)
 {
     if (json.contains("uid") && json["uid"].isString())
         _uid = QUuid(json["uid"].toString());
@@ -43,7 +43,7 @@ void ImportConfig::read(const QJsonObject &json)
     }
 }
 
-void ImportConfig::write(QJsonObject &json) const
+void ImportConfig::write(QJsonObject& json) const
 {
     json["uid"] = _uid.toString();
     json["hasTime"] = _hasTime;
@@ -74,22 +74,22 @@ void ImportConfig::setHasTime(bool state)
     _hasTime = state;
 }
 
-const QChar &ImportConfig::getSeparatorChar() const
+const QChar& ImportConfig::getSeparatorChar() const
 {
     return _separatorChar;
 }
 
-void ImportConfig::setSeparatorChar(const QChar &separator)
+void ImportConfig::setSeparatorChar(const QChar& separator)
 {
     _separatorChar = separator;
 }
 
-const QChar &ImportConfig::getDecimalChar() const
+const QChar& ImportConfig::getDecimalChar() const
 {
     return _decimalChar;
 }
 
-void ImportConfig::setDecimalChar(const QChar &decimal)
+void ImportConfig::setDecimalChar(const QChar& decimal)
 {
     _decimalChar = decimal;
 }
@@ -114,47 +114,47 @@ void ImportConfig::setNbLinesToSkipEnd(int nbLines)
     _nbLinesToSkipEnd = nbLines;
 }
 
-const QString &ImportConfig::getDateFormat() const
+const QString& ImportConfig::getDateFormat() const
 {
     return _dateFormat;
 }
 
-void ImportConfig::setDateFormat(const QString &format)
+void ImportConfig::setDateFormat(const QString& format)
 {
     _dateFormat = format;
 }
 
-const QString &ImportConfig::getTimeFormat() const
+const QString& ImportConfig::getTimeFormat() const
 {
     return _timeFormat;
 }
 
-void ImportConfig::setTimeFormat(const QString &format)
+void ImportConfig::setTimeFormat(const QString& format)
 {
     _timeFormat = format;
 }
 
-const QString &ImportConfig::getName() const
+const QString& ImportConfig::getName() const
 {
     return _name;
 }
 
-void ImportConfig::setName(const QString &newName)
+void ImportConfig::setName(const QString& newName)
 {
     _name = newName;
 }
 
-int ImportConfig::getColumnPosition(const QString &columnName) const
+int ImportConfig::getColumnPosition(const QString& columnName) const
 {
-    return  _columns[columnName];
+    return _columns[columnName];
 }
 
-void ImportConfig::addColumn(const QString &columnName, int position)
+void ImportConfig::addColumn(const QString& columnName, int position)
 {
     _columns.insert(columnName, position);
 }
 
-void ImportConfig::removeColumn(const QString &columnName)
+void ImportConfig::removeColumn(const QString& columnName)
 {
     if (_columns.contains(columnName))
         _columns.remove(columnName);
@@ -175,7 +175,7 @@ void ImportConfig::setUid(QUuid id)
     _uid = id;
 }
 
-ImportConfig *ImportConfig::fromJson(const QJsonObject &json)
+ImportConfig* ImportConfig::fromJson(const QJsonObject& json)
 {
     if (json.isEmpty())
         return nullptr;

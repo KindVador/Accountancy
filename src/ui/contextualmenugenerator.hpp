@@ -6,14 +6,14 @@
 class ContextualMenuGenerator
 {
 public:
-    static ContextualMenuGenerator *instance();
-    static QMenu *ownerSectionMenu(const QObject *receiver);
+    static ContextualMenuGenerator* instance();
+    static QMenu* ownerSectionMenu(const QObject* receiver);
 
 private:
-    QList<QAction *> _actions;
+    QList<QAction*> _actions;
 
     ContextualMenuGenerator() = default;
 };
 
 
-#endif //ACCOUNTANCY_CONTEXTUALMENUGENERATOR_HPP
+#endif//ACCOUNTANCY_CONTEXTUALMENUGENERATOR_HPP

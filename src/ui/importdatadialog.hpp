@@ -6,8 +6,9 @@
 #include <QDialog>
 #include <QFile>
 
-namespace Ui {
-class ImportDataDialog;
+namespace Ui
+{
+    class ImportDataDialog;
 }
 
 class ImportDataDialog : public QDialog
@@ -15,7 +16,7 @@ class ImportDataDialog : public QDialog
     Q_OBJECT
 
 public:
-    explicit ImportDataDialog(QWidget *parent = nullptr);
+    explicit ImportDataDialog(QWidget* parent = nullptr);
     ~ImportDataDialog() override;
 
 private slots:
@@ -25,7 +26,7 @@ private slots:
     void reject() override;
 
 private:
-    Ui::ImportDataDialog *ui;
+    Ui::ImportDataDialog* ui;
 };
 
-#endif // IMPORTDATADIALOG_HPP
+#endif// IMPORTDATADIALOG_HPP

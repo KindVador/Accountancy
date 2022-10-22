@@ -1,16 +1,16 @@
 #include "financialinstitution.hpp"
 #include "importconfig.hpp"
 
-#include <utility>
-#include <QTextStream>
 #include <QDebug>
+#include <QTextStream>
+#include <utility>
 
 FinancialInstitution::FinancialInstitution()
 {
     _uid = QUuid::createUuid();
 }
 
-FinancialInstitution::FinancialInstitution(QString name): _name(std::move(name))
+FinancialInstitution::FinancialInstitution(QString name) : _name(std::move(name))
 {
     _uid = QUuid::createUuid();
 }
@@ -25,23 +25,23 @@ void FinancialInstitution::setUid(QUuid uid)
     _uid = uid;
 }
 
-const QString &FinancialInstitution::getName() const
+const QString& FinancialInstitution::getName() const
 {
     return _name;
 }
 
-void FinancialInstitution::setName(const QString &name)
+void FinancialInstitution::setName(const QString& name)
 {
     _name = name;
 }
 
-QList<Transaction *> FinancialInstitution::readTransactionsFromFile(QFile &dataFile, const ImportConfig &config) const
+QList<Transaction*> FinancialInstitution::readTransactionsFromFile(QFile& dataFile, const ImportConfig& config) const
 {
     if (!dataFile.open(QIODevice::ReadOnly | QIODevice::Text))
         return {};
 
     QLocale locale = QLocale::system();
-    QList<Transaction *> transactions;
+    QList<Transaction*> transactions;
     QVector<QString> rawLines;
     QTextStream inStream(&dataFile);
     // Reads the data up to the end of file
@@ -58,7 +58,7 @@ QList<Transaction *> FinancialInstitution::readTransactionsFromFile(QFile &dataF
         if (fields.count() < config.nbFields())
             continue;
 
-        auto *transaction = new Transaction();
+        auto* transaction = new Transaction();
         transaction->setName(fields[config.getColumnPosition("Name")]);
         transaction->setComment(fields[config.getColumnPosition("Comment")]);
         QDate date = locale.toDate(fields[config.getColumnPosition("Date")], config.getDateFormat());
@@ -68,7 +68,7 @@ QList<Transaction *> FinancialInstitution::readTransactionsFromFile(QFile &dataF
         QTime time;
         if (config.hasTime()) {
             QString timeString = fields[config.getColumnPosition("Time")];
-            const QString &timeFormat = config.getTimeFormat();
+            const QString& timeFormat = config.getTimeFormat();
             if ((timeString.length() > timeFormat.length()) && timeString.length() > 28)
                 timeString = timeString.mid(17, 12);
             time = QTime::fromString(timeString, timeFormat);
@@ -86,7 +86,7 @@ QList<Transaction *> FinancialInstitution::readTransactionsFromFile(QFile &dataF
     return transactions;
 }
 
-void FinancialInstitution::read(const QJsonObject &json)
+void FinancialInstitution::read(const QJsonObject& json)
 {
     if (json.contains("uid") && json["uid"].isString())
         _uid = QUuid(json["uid"].toString());
@@ -95,13 +95,13 @@ void FinancialInstitution::read(const QJsonObject &json)
         _name = json["name"].toString();
 }
 
-void FinancialInstitution::write(QJsonObject &json) const
+void FinancialInstitution::write(QJsonObject& json) const
 {
     json["uid"] = _uid.toString();
     json["name"] = _name;
 }
 
-FinancialInstitution *FinancialInstitution::fromJson(const QJsonObject &json)
+FinancialInstitution* FinancialInstitution::fromJson(const QJsonObject& json)
 {
     if (json.isEmpty())
         return nullptr;

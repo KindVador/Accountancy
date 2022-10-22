@@ -1,8 +1,8 @@
 #ifndef LOANACCOUNT_H
 #define LOANACCOUNT_H
 
-#include <QString>
 #include <QList>
+#include <QString>
 #include <QUuid>
 
 #include "currency.hpp"
@@ -12,7 +12,7 @@ class LoanAccount
 {
 public:
     LoanAccount();
-    LoanAccount(Currency *currency, const Owner *owner, float initialBalance, QString accountNumber,
+    LoanAccount(Currency* currency, const Owner* owner, float initialBalance, QString accountNumber,
                 QString comment, bool isHidden);
     ~LoanAccount() = default;
 
@@ -28,4 +28,4 @@ private:
 
 Q_DECLARE_METATYPE(LoanAccount*)
 
-#endif // LOANACCOUNT_H
+#endif// LOANACCOUNT_H

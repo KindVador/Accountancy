@@ -2,21 +2,21 @@
 
 #include "../../src/core/financialinstitution.hpp"
 
-TEST_CASE( "FinancialInstitution defaultConstructor", "[core]" )
+TEST_CASE("FinancialInstitution defaultConstructor", "[core]")
 {
     FinancialInstitution fi{};
     CHECK(!fi.getUid().isNull());
     CHECK(fi.getName() == QString());
 }
 
-TEST_CASE( "FinancialInstitution initConstructor", "[core]" )
+TEST_CASE("FinancialInstitution initConstructor", "[core]")
 {
     auto fi = FinancialInstitution("Institution1");
     CHECK(!fi.getUid().isNull());
     CHECK(fi.getName() == "Institution1");
 }
 
-TEST_CASE( "FinancialInstitution writeJson", "[core]" )
+TEST_CASE("FinancialInstitution writeJson", "[core]")
 {
     auto fi = FinancialInstitution("Institution1");
     QJsonObject jsonData;
@@ -25,7 +25,7 @@ TEST_CASE( "FinancialInstitution writeJson", "[core]" )
     CHECK((jsonData.contains("name") && jsonData["name"] == "Institution1"));
 }
 
-TEST_CASE( "FinancialInstitution readJson", "[core]" )
+TEST_CASE("FinancialInstitution readJson", "[core]")
 {
     auto fi0 = FinancialInstitution("Institution1");
     QJsonObject jsonData;

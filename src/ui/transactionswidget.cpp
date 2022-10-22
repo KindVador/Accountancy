@@ -4,8 +4,7 @@
 #include "ui_TransactionsWidget.h"
 
 
-TransactionsWidget::TransactionsWidget(QWidget *parent) :
-        QWidget(parent), ui(new Ui::TransactionsWidget)
+TransactionsWidget::TransactionsWidget(QWidget* parent) : QWidget(parent), ui(new Ui::TransactionsWidget)
 {
     ui->setupUi(this);
 
@@ -25,7 +24,7 @@ TransactionsWidget::~TransactionsWidget()
 }
 
 
-void TransactionsWidget::setModel(TransactionModel *model)
+void TransactionsWidget::setModel(TransactionModel* model)
 {
     if (ui == nullptr)
         return;
@@ -35,7 +34,7 @@ void TransactionsWidget::setModel(TransactionModel *model)
     ui->tableView->sortByColumn(0, Qt::SortOrder::DescendingOrder);
 }
 
-void TransactionsWidget::setTitle(const QString &text)
+void TransactionsWidget::setTitle(const QString& text)
 {
     if (ui == nullptr)
         return;

@@ -1,13 +1,13 @@
-#include <catch2/catch.hpp>
-#include <QJsonArray>
-#include <QMap>
 #include <QFile>
+#include <QJsonArray>
 #include <QJsonDocument>
+#include <QMap>
+#include <catch2/catch.hpp>
 
 #include "importconfig.hpp"
 
 
-TEST_CASE( "ImportConfig Default Constructor", "[core]" )
+TEST_CASE("ImportConfig Default Constructor", "[core]")
 {
     ImportConfig config;
     CHECK(!config.hasTime());
@@ -20,7 +20,7 @@ TEST_CASE( "ImportConfig Default Constructor", "[core]" )
     CHECK(config.getName().isEmpty());
 }
 
-TEST_CASE( "ImportConfig Setter and Getter", "[core]" )
+TEST_CASE("ImportConfig Setter and Getter", "[core]")
 {
     ImportConfig config;
     config.setHasTime(true);
@@ -48,7 +48,7 @@ TEST_CASE( "ImportConfig Setter and Getter", "[core]" )
     CHECK(config.getName() == "CaisseEpargne");
 }
 
-TEST_CASE( "ImportConfig WRITE to JSON", "[core]" )
+TEST_CASE("ImportConfig WRITE to JSON", "[core]")
 {
     // create an Object to save in JSON format
     ImportConfig config;
@@ -99,7 +99,7 @@ TEST_CASE( "ImportConfig WRITE to JSON", "[core]" )
     CHECK(mapObject["C3"].toInt() == 3);
 }
 
-TEST_CASE( "ImportConfig READ from JSON", "[core]" )
+TEST_CASE("ImportConfig READ from JSON", "[core]")
 {
     // create an Object to save in JSON format
     ImportConfig config;

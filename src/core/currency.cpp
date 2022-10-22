@@ -7,7 +7,7 @@ Currency::Currency()
     _uid = QUuid::createUuid();
 }
 
-Currency::Currency(QString name, QString symbol): _name(std::move(name)), _symbol(std::move(symbol))
+Currency::Currency(QString name, QString symbol) : _name(std::move(name)), _symbol(std::move(symbol))
 {
     _uid = QUuid::createUuid();
 }
@@ -17,7 +17,7 @@ QString Currency::getName() const
     return _name;
 }
 
-void Currency::setName(const QString &value)
+void Currency::setName(const QString& value)
 {
     _name = value;
 }
@@ -37,7 +37,7 @@ QUuid Currency::getUid() const
     return _uid;
 }
 
-void Currency::read(const QJsonObject &json)
+void Currency::read(const QJsonObject& json)
 {
     if (json.contains("uid") && json["uid"].isString())
         _uid = QUuid(json["uid"].toString());
@@ -49,7 +49,7 @@ void Currency::read(const QJsonObject &json)
         _symbol = json["symbol"].toString();
 }
 
-void Currency::write(QJsonObject &json) const
+void Currency::write(QJsonObject& json) const
 {
     json["uid"] = _uid.toString();
     json["name"] = _name;
@@ -61,7 +61,7 @@ void Currency::setUid(QUuid uid)
     _uid = uid;
 }
 
-Currency *Currency::fromJson(const QJsonObject &json)
+Currency* Currency::fromJson(const QJsonObject& json)
 {
     if (json.isEmpty())
         return nullptr;
