@@ -2,7 +2,7 @@
 
 #include "../../src/core/transaction.hpp"
 
-TEST_CASE( "Transaction defaultConstructor", "[core]" )
+TEST_CASE("Transaction defaultConstructor", "[core]")
 {
     Transaction t{};
     CHECK(t.getName() == QString());
@@ -12,7 +12,7 @@ TEST_CASE( "Transaction defaultConstructor", "[core]" )
     CHECK(t.getDateTime() == QDateTime());
 }
 
-TEST_CASE( "Transaction initConstructor", "[core]" )
+TEST_CASE("Transaction initConstructor", "[core]")
 {
     Transaction t(QString("Name1"), QString("Comment1"), TransactionStatus::Created, QDateTime(QDate(2021, 12, 25), QTime(8, 15, 59)), -14.99);
     CHECK(!t.getUid().isNull());
@@ -23,7 +23,7 @@ TEST_CASE( "Transaction initConstructor", "[core]" )
     CHECK(t.getAmount() == -14.99);
 }
 
-TEST_CASE( "Transaction writeJson", "[core]" )
+TEST_CASE("Transaction writeJson", "[core]")
 {
     Transaction t(QString("Name1"), QString("Comment1"), TransactionStatus::Created, QDateTime(QDate(2021, 12, 25), QTime(8, 15, 59)), -14.99);
     QJsonObject jsonData;
@@ -38,7 +38,7 @@ TEST_CASE( "Transaction writeJson", "[core]" )
     CHECK(jsonData["amount"].toDouble() == -14.99);
 }
 
-TEST_CASE( "Transaction readJson", "[core]" )
+TEST_CASE("Transaction readJson", "[core]")
 {
     Transaction t0(QString("Name1"), QString("Comment1"), TransactionStatus::Created, QDateTime(QDate(2021, 12, 25), QTime(8, 15, 59)), -14.99);
     QJsonObject jsonData;

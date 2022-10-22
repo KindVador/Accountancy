@@ -1,17 +1,17 @@
 #include "contextualmenugenerator.hpp"
 #include "../core/controller.hpp"
 
-ContextualMenuGenerator *ContextualMenuGenerator::instance()
+ContextualMenuGenerator* ContextualMenuGenerator::instance()
 {
     static ContextualMenuGenerator instance;
     return &instance;
 }
 
-QMenu *ContextualMenuGenerator::ownerSectionMenu(const QObject *receiver)
+QMenu* ContextualMenuGenerator::ownerSectionMenu(const QObject* receiver)
 {
     qDebug() << "ContextualMenuGenerator::ownerSectionMenu";
-    auto *contextMenu = new QMenu;
-    contextMenu->addAction("Reset selection", receiver, []() { Controller::instance()->clearOwnerSelection(); } );
+    auto* contextMenu = new QMenu;
+    contextMenu->addAction("Reset selection", receiver, []() { Controller::instance()->clearOwnerSelection(); });
 
     return contextMenu;
 }

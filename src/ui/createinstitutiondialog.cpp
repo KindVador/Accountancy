@@ -1,10 +1,9 @@
 #include "createinstitutiondialog.hpp"
-#include "ui_CreateInstitutionDialog.h"
 #include "../core/controller.hpp"
+#include "ui_CreateInstitutionDialog.h"
 
 
-CreateInstitutionDialog::CreateInstitutionDialog(QWidget *parent) :
-        QDialog(parent), ui(new Ui::CreateInstitutionDialog)
+CreateInstitutionDialog::CreateInstitutionDialog(QWidget* parent) : QDialog(parent), ui(new Ui::CreateInstitutionDialog)
 {
     ui->setupUi(this);
 }
@@ -27,4 +26,3 @@ void CreateInstitutionDialog::reject()
 {
     QDialog::reject();
 }
-

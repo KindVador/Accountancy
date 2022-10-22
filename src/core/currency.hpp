@@ -1,8 +1,8 @@
 #ifndef CURRENCY_H
 #define CURRENCY_H
 
-#include <QString>
 #include <QJsonObject>
+#include <QString>
 #include <QUuid>
 
 class Currency
@@ -12,11 +12,11 @@ public:
     explicit Currency(QString name, QString symbol);
     ~Currency() = default;
 
-    static Currency *fromJson(const QJsonObject &json);
+    static Currency* fromJson(const QJsonObject& json);
 
     // Getter & Setter
     [[nodiscard]] QString getName() const;
-    void setName(const QString &value);
+    void setName(const QString& value);
     [[nodiscard]] QString getSymbol() const;
     void setSymbol(QString value);
     [[nodiscard]] QUuid getUid() const;
@@ -26,8 +26,8 @@ public:
     [[nodiscard]] QString getDisplayedName() const;
 
     // Serialization
-    void read(const QJsonObject &json);
-    void write(QJsonObject &json) const;
+    void read(const QJsonObject& json);
+    void write(QJsonObject& json) const;
 
 private:
     QUuid _uid;
@@ -37,4 +37,4 @@ private:
 
 Q_DECLARE_METATYPE(Currency*)
 
-#endif // CURRENCY_H
+#endif// CURRENCY_H

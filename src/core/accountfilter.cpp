@@ -2,15 +2,15 @@
 
 constexpr const int ObjectRole = Qt::UserRole + 1;
 
-AccountFilter::AccountFilter(QObject *parent) : QSortFilterProxyModel(parent)
+AccountFilter::AccountFilter(QObject* parent) : QSortFilterProxyModel(parent)
 {
     qWarning() << "AccountFilter::AccountFilter";
 }
 
-bool AccountFilter::filterAcceptsRow(int sourceRow, const QModelIndex &sourceParent) const
+bool AccountFilter::filterAcceptsRow(int sourceRow, const QModelIndex& sourceParent) const
 {
     const QModelIndex modelRequestIdx = sourceModel()->index(sourceRow, 0, sourceParent);
-    const Account *account = sourceModel()->data(modelRequestIdx, ObjectRole).value<Account*>();
+    const Account* account = sourceModel()->data(modelRequestIdx, ObjectRole).value<Account*>();
 
     if (account == nullptr || _activeOwnerUid.isNull())
         return true;

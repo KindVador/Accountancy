@@ -1,20 +1,23 @@
 #ifndef ACCOUNTANCY_ADDOWNERDIALOG_HPP
 #define ACCOUNTANCY_ADDOWNERDIALOG_HPP
 
-#include <QDialog>
 #include "../core/owner.hpp"
+#include <QDialog>
 
 
 QT_BEGIN_NAMESPACE
-namespace Ui { class AddOwnerDialog; }
+namespace Ui
+{
+    class AddOwnerDialog;
+}
 QT_END_NAMESPACE
 
 class AddOwnerDialog : public QDialog
 {
-Q_OBJECT
+    Q_OBJECT
 
 public:
-    explicit AddOwnerDialog(QWidget *parent = nullptr);
+    explicit AddOwnerDialog(QWidget* parent = nullptr);
     ~AddOwnerDialog() override;
 
 public slots:
@@ -22,8 +25,8 @@ public slots:
     void reject() override;
 
 private:
-    Ui::AddOwnerDialog *ui;
+    Ui::AddOwnerDialog* ui;
 };
 
 
-#endif //ACCOUNTANCY_ADDOWNERDIALOG_HPP
+#endif//ACCOUNTANCY_ADDOWNERDIALOG_HPP

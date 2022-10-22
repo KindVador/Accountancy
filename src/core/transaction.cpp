@@ -7,21 +7,20 @@ Transaction::Transaction()
     _uid = QUuid::createUuid();
 }
 
-Transaction::Transaction(QString &name, QString &comment, TransactionStatus status, QDateTime &datetime, double amount):
-        _name(name), _comment(comment), _status(status), _dateTime(datetime), _amount(amount)
+Transaction::Transaction(QString& name, QString& comment, TransactionStatus status, QDateTime& datetime, double amount)
+    : _name(name), _comment(comment), _status(status), _dateTime(datetime), _amount(amount)
 {
     _uid = QUuid::createUuid();
 }
 
-Transaction::Transaction(QString name, QString comment, TransactionStatus status, QDateTime datetime, double amount):
-        _name(std::move(name)), _comment(std::move(comment)), _status(status), _dateTime(datetime), _amount(amount)
+Transaction::Transaction(QString name, QString comment, TransactionStatus status, QDateTime datetime, double amount) : _name(std::move(name)), _comment(std::move(comment)), _status(status), _dateTime(datetime), _amount(amount)
 {
     _uid = QUuid::createUuid();
 }
 
 // Copy constructor
-Transaction::Transaction(const Transaction &origin):
-        _name(origin._name), _comment(origin._comment), _status(origin._status), _dateTime(origin._dateTime), _amount(origin._amount)
+Transaction::Transaction(const Transaction& origin) : _name(origin._name), _comment(origin._comment), _status(origin._status), _dateTime(origin._dateTime),
+                                                      _amount(origin._amount)
 {
     _uid = QUuid::fromString(origin._uid.toString());
     _accountFrom = origin._accountFrom;
@@ -29,9 +28,8 @@ Transaction::Transaction(const Transaction &origin):
 }
 
 // Move constructor
-Transaction::Transaction(Transaction &&origin) noexcept:
-        _name(std::move(origin._name)), _comment(std::move(origin._comment)),
-        _status(origin._status), _dateTime(origin._dateTime), _amount(origin._amount)
+Transaction::Transaction(Transaction&& origin) noexcept : _name(std::move(origin._name)), _comment(std::move(origin._comment)),
+                                                          _status(origin._status), _dateTime(origin._dateTime), _amount(origin._amount)
 {
     _uid = QUuid::fromString(origin._uid.toString());
     _accountFrom = origin._accountFrom;
@@ -43,7 +41,7 @@ Transaction::Transaction(Transaction &&origin) noexcept:
 }
 
 // Copy-Assignment operator
-Transaction &Transaction::operator=(const Transaction &rhs)
+Transaction& Transaction::operator=(const Transaction& rhs)
 {
     _uid = QUuid::fromString(rhs._uid.toString());
     _name = rhs._name;
@@ -58,7 +56,7 @@ Transaction &Transaction::operator=(const Transaction &rhs)
 }
 
 // Move-Assignment operator
-Transaction &Transaction::operator=(Transaction &&rhs) noexcept
+Transaction& Transaction::operator=(Transaction&& rhs) noexcept
 {
     // test for self-assignment
     if (this != &rhs) {
@@ -84,22 +82,22 @@ void Transaction::printToConsole() const
     qDebug() << "Transaction:" << _uid << " " << _name << " " << _comment;
 }
 
-const QString &Transaction::getName() const
+const QString& Transaction::getName() const
 {
     return _name;
 }
 
-void Transaction::setName(const QString &name)
+void Transaction::setName(const QString& name)
 {
     _name = name;
 }
 
-const QString &Transaction::getComment() const
+const QString& Transaction::getComment() const
 {
     return _comment;
 }
 
-void Transaction::setComment(const QString &comment)
+void Transaction::setComment(const QString& comment)
 {
     _comment = comment;
 }
@@ -114,12 +112,12 @@ void Transaction::setStatus(TransactionStatus ts)
     _status = ts;
 }
 
-const QDateTime & Transaction::getDateTime() const
+const QDateTime& Transaction::getDateTime() const
 {
     return _dateTime;
 }
 
-void Transaction::setDateTime(const QDateTime &datetime)
+void Transaction::setDateTime(const QDateTime& datetime)
 {
     _dateTime = datetime;
 }
@@ -134,7 +132,7 @@ void Transaction::setAmount(double amount)
     _amount = amount;
 }
 
-void Transaction::read(const QJsonObject &json)
+void Transaction::read(const QJsonObject& json)
 {
     if (json.contains("uid") && json["uid"].isString())
         _uid = QUuid(json["uid"].toString());
@@ -156,10 +154,9 @@ void Transaction::read(const QJsonObject &json)
 
     if (json.contains("current_balance") && json["current_balance"].isDouble())
         _current_balance = json["current_balance"].toDouble();
-
 }
 
-void Transaction::write(QJsonObject &json) const
+void Transaction::write(QJsonObject& json) const
 {
     json["uid"] = _uid.toString();
     json["name"] = _name;
@@ -185,8 +182,7 @@ void Transaction::setCurrentBalance(double currentBalance)
     _current_balance = currentBalance;
 }
 
-inline
-void swap(Transaction &lhs, Transaction &rhs)
+inline void swap(Transaction& lhs, Transaction& rhs)
 {
     // swap Functions should call swap, NOT std::swap in order to call swap function if defined in specific type.
     using std::swap;
@@ -197,18 +193,18 @@ void swap(Transaction &lhs, Transaction &rhs)
     swap(lhs._dateTime, rhs._dateTime);
     swap(lhs._amount, rhs._amount);
     swap(lhs._current_balance, rhs._current_balance);
-    swap(lhs._accountFrom, rhs._accountFrom);   // swap the pointers, not the objects
-    swap(lhs._accountTo, rhs._accountTo);       // swap the pointers, not the objects
+    swap(lhs._accountFrom, rhs._accountFrom);// swap the pointers, not the objects
+    swap(lhs._accountTo, rhs._accountTo);    // swap the pointers, not the objects
 }
 
-Transaction Transaction::fromJson(const QJsonObject &json)
+Transaction Transaction::fromJson(const QJsonObject& json)
 {
     Transaction t;
     t.read(json);
     return t;
 }
 
-bool Transaction::operator<(const Transaction &rhs) const
+bool Transaction::operator<(const Transaction& rhs) const
 {
     if (_dateTime == rhs._dateTime)
         return _name < rhs._name;
@@ -216,24 +212,22 @@ bool Transaction::operator<(const Transaction &rhs) const
         return _dateTime < rhs._dateTime;
 }
 
-bool Transaction::operator>(const Transaction &rhs) const
+bool Transaction::operator>(const Transaction& rhs) const
 {
     return rhs < *this;
 }
 
-bool Transaction::operator<=(const Transaction &rhs) const
+bool Transaction::operator<=(const Transaction& rhs) const
 {
     return !(rhs < *this);
 }
 
-bool Transaction::operator>=(const Transaction &rhs) const
+bool Transaction::operator>=(const Transaction& rhs) const
 {
     return !(*this < rhs);
 }
 
-bool operator==(const Transaction &lhs, const Transaction &rhs)
+bool operator==(const Transaction& lhs, const Transaction& rhs)
 {
-    return  lhs._name == rhs._name
-            && lhs._dateTime == rhs._dateTime
-            && lhs._amount == rhs._amount;
+    return lhs._name == rhs._name && lhs._dateTime == rhs._dateTime && lhs._amount == rhs._amount;
 }

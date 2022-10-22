@@ -14,10 +14,10 @@ public:
     ~ImportConfigModel() override = default;
 
     // QAbstractListModel interface
-    [[nodiscard]] int rowCount(const QModelIndex &parent) const override;
-    [[nodiscard]] QVariant data(const QModelIndex &index, int role) const override;
+    [[nodiscard]] int rowCount(const QModelIndex& parent) const override;
+    [[nodiscard]] QVariant data(const QModelIndex& index, int role) const override;
 
-    void addImportConfig(ImportConfig *config);
+    void addImportConfig(ImportConfig* config);
     void removeImportConfig(const QModelIndex& index);
 
     [[nodiscard]] const QList<ImportConfig*>& importConfigs() const;
@@ -25,7 +25,7 @@ public:
     void reset();
 
 private:
-    QList<ImportConfig *> _importConfigs;
+    QList<ImportConfig*> _importConfigs;
 };
 
-#endif //ACCOUNTANCY_IMPORTCONFIGMODEL_HPP
+#endif//ACCOUNTANCY_IMPORTCONFIGMODEL_HPP

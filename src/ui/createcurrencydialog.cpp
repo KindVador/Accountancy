@@ -1,10 +1,9 @@
 #include "createcurrencydialog.hpp"
-#include "ui_CreateCurrencyDialog.h"
 #include "../core/controller.hpp"
+#include "ui_CreateCurrencyDialog.h"
 
 
-CreateCurrencyDialog::CreateCurrencyDialog(QWidget *parent) :
-        QDialog(parent), ui(new Ui::CreateCurrencyDialog)
+CreateCurrencyDialog::CreateCurrencyDialog(QWidget* parent) : QDialog(parent), ui(new Ui::CreateCurrencyDialog)
 {
     ui->setupUi(this);
 }
@@ -28,4 +27,3 @@ void CreateCurrencyDialog::reject()
 {
     QDialog::reject();
 }
-

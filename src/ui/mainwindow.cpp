@@ -1,24 +1,24 @@
 #include "mainwindow.hpp"
-#include "ui_mainwindow.h"
-#include "contextualmenugenerator.hpp"
-#include "importdatadialog.hpp"
-#include "transactionswidget.hpp"
 #include "../core/controller.hpp"
-#include "addownerdialog.hpp"
 #include "addaccountdialog.hpp"
+#include "addownerdialog.hpp"
+#include "contextualmenugenerator.hpp"
 #include "currenciesdialog.hpp"
+#include "importdatadialog.hpp"
 #include "institutionsdialog.hpp"
+#include "transactionswidget.hpp"
+#include "ui_mainwindow.h"
 
+#include <QAction>
+#include <QDebug>
+#include <QFileDialog>
+#include <QMdiSubWindow>
 #include <QMessageBox>
 #include <QString>
-#include <QDebug>
-#include <QMdiSubWindow>
-#include <QAction>
-#include <QFileDialog>
 
 constexpr const int ObjectRole = Qt::UserRole + 1;
 
-MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWindow)
+MainWindow::MainWindow(QWidget* parent) : QMainWindow(parent), ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
 
@@ -43,8 +43,8 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWi
 
     // Main Dock Widget
     ui->ownersView->setContextMenuPolicy(Qt::CustomContextMenu);
-    connect(ui->ownersView, &QListView::clicked, this, [this](const QModelIndex &index) { emit selectedOwnerChanged(index); });
-    connect(ui->accountsView, &QListView::clicked, this, [this](const QModelIndex &index) { emit selectedAccountChanged(index); });
+    connect(ui->ownersView, &QListView::clicked, this, [this](const QModelIndex& index) { emit selectedOwnerChanged(index); });
+    connect(ui->accountsView, &QListView::clicked, this, [this](const QModelIndex& index) { emit selectedAccountChanged(index); });
     connect(ui->accountsView, &QListView::doubleClicked, this, &MainWindow::onAccountDoubleClicked);
     connect(ui->ownersView, &QListView::customContextMenuRequested, this, &MainWindow::contextualOwnerMenuRequested);
     connect(ui->addOwnerButton, &QPushButton::clicked, this, &MainWindow::onAddOwnerAction);
@@ -61,7 +61,7 @@ MainWindow::~MainWindow()
 
 void MainWindow::showCredits()
 {
-    QString text(tr("Icônes faites par Pixel perfect de www.flaticon.com"));  // In english, Icons made by Pixel perfect from www.flaticon.com
+    QString text(tr("Icônes faites par Pixel perfect de www.flaticon.com"));// In english, Icons made by Pixel perfect from www.flaticon.com
     QMessageBox::information(this, "Credits", text);
 }
 
@@ -70,16 +70,15 @@ void MainWindow::onActionImport()
     ImportDataDialog dialog = ImportDataDialog(this);
     int res = dialog.exec();
     if (res == QDialog::Accepted) {
-
     }
 }
 
-Model *MainWindow::getModel() const
+Model* MainWindow::getModel() const
 {
     return _model;
 }
 
-void MainWindow::setModel(Model *model)
+void MainWindow::setModel(Model* model)
 {
     qWarning() << "MainWindow::setModel";
     _model = model;
@@ -91,7 +90,7 @@ void MainWindow::setModel(Model *model)
     ui->accountsView->setModel(_model->getAccountFilter());
 }
 
-void MainWindow::contextualOwnerMenuRequested(const QPoint &pos)
+void MainWindow::contextualOwnerMenuRequested(const QPoint& pos)
 {
     std::unique_ptr<QMenu> contextMenu;
     contextMenu.reset(ContextualMenuGenerator::ownerSectionMenu(this));
@@ -108,10 +107,10 @@ void MainWindow::onActionMainDock(bool checked)
         ui->mainDockWidget->show();
 }
 
-void MainWindow::onAccountDoubleClicked(const QModelIndex &index)
+void MainWindow::onAccountDoubleClicked(const QModelIndex& index)
 {
     // get selected account
-    auto *selectedAccount = _model->getAccountModel()->data(index, ObjectRole).value<Account *>();
+    auto* selectedAccount = _model->getAccountModel()->data(index, ObjectRole).value<Account*>();
     if (selectedAccount == nullptr)
         return;
 
@@ -134,14 +133,14 @@ void MainWindow::onOpenAction()
                                                     "Accountancy files (*.acty)");
 
     // update current file variable
-    Controller *controller = Controller::instance();
+    Controller* controller = Controller::instance();
     if (controller->loadFile(fileName))
         updateEditionInterface(true);
 }
 
 void MainWindow::onSaveAction()
 {
-    Controller *controller = Controller::instance();
+    Controller* controller = Controller::instance();
     controller->saveToFile(controller->getCurrentFilePath());
 }
 
@@ -154,7 +153,7 @@ void MainWindow::onSaveAsAction()
                                                     "Accountancy files (*.acty)");
 
     // update current file variable
-    Controller *controller = Controller::instance();
+    Controller* controller = Controller::instance();
     controller->saveToFile(fileName);
 }
 
@@ -167,7 +166,7 @@ void MainWindow::onCreateAction()
                                                     "Accountancy files (*.acty)");
 
     // update current file variable
-    Controller *controller = Controller::instance();
+    Controller* controller = Controller::instance();
     if (controller->createNewFile(fileName))
         updateEditionInterface(true);
 }
@@ -191,9 +190,9 @@ void MainWindow::updateEditionInterface(bool enable)
 
 void MainWindow::onRemoveOwnerAction()
 {
-    OwnerModel *ownerModel = _model->getOwnerModel();
+    OwnerModel* ownerModel = _model->getOwnerModel();
     QList<QModelIndex> selIndexes = ui->ownersView->selectionModel()->selectedIndexes();
-    for (const QModelIndex &selIndex : qAsConst(selIndexes))
+    for (const QModelIndex& selIndex: qAsConst(selIndexes))
         ownerModel->removeOwner(selIndex);
 }
 
@@ -205,9 +204,9 @@ void MainWindow::onAddAccountAction()
 
 void MainWindow::onRemoveAccountAction()
 {
-    AccountModel *accountModel = _model->getAccountModel();
+    AccountModel* accountModel = _model->getAccountModel();
     QList<QModelIndex> selIndexes = ui->accountsView->selectionModel()->selectedIndexes();
-    for (const QModelIndex &selIndex : qAsConst(selIndexes))
+    for (const QModelIndex& selIndex: qAsConst(selIndexes))
         accountModel->removeAccount(selIndex);
 }
 

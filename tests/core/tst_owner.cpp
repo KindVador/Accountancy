@@ -2,7 +2,7 @@
 
 #include "../../src/core/owner.hpp"
 
-TEST_CASE( "Owner defaultConstructor", "[core]" )
+TEST_CASE("Owner defaultConstructor", "[core]")
 {
     Owner o{};
     CHECK(o.getName() == QString());
@@ -12,7 +12,7 @@ TEST_CASE( "Owner defaultConstructor", "[core]" )
     CHECK(!o.getUid().isNull());
 }
 
-TEST_CASE( "Owner initConstructor", "[core]" )
+TEST_CASE("Owner initConstructor", "[core]")
 {
     Owner o{"Name1", 150.0, "Comment1", false};
     CHECK(o.getName() == "Name1");
@@ -22,7 +22,7 @@ TEST_CASE( "Owner initConstructor", "[core]" )
     CHECK(!o.getUid().isNull());
 }
 
-TEST_CASE( "Owner writeJson", "[core]" )
+TEST_CASE("Owner writeJson", "[core]")
 {
     Owner o{"Name1", 150.0, "Comment1", false};
     QJsonObject jsonData;
@@ -35,7 +35,7 @@ TEST_CASE( "Owner writeJson", "[core]" )
     CHECK((jsonData.contains("is_hidden") && !jsonData["is_hidden"].toBool()));
 }
 
-TEST_CASE( "Owner readJson", "[core]" )
+TEST_CASE("Owner readJson", "[core]")
 {
     Owner o0{"Name1", 150.0, "Comment1", false};
     QJsonObject jsonData;

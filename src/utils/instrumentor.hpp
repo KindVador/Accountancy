@@ -16,22 +16,20 @@
 // You will probably want to macro-fy this, to switch on/off easily and use things like __FUNCSIG__ for the profile name.
 //
 
-#include <string>
-#include <chrono>
 #include <algorithm>
+#include <chrono>
 #include <fstream>
+#include <string>
 
 #include <thread>
 
-struct ProfileResult
-{
+struct ProfileResult {
     std::string Name;
     long long Start, End;
     uint32_t ThreadID;
 };
 
-struct InstrumentationSession
-{
+struct InstrumentationSession {
     std::string Name;
 };
 
@@ -41,9 +39,10 @@ private:
     InstrumentationSession* m_CurrentSession;
     std::ofstream m_OutputStream;
     int m_ProfileCount;
+
 public:
     Instrumentor()
-            : m_CurrentSession(nullptr), m_ProfileCount(0)
+        : m_CurrentSession(nullptr), m_ProfileCount(0)
     {
     }
 
@@ -51,7 +50,7 @@ public:
     {
         m_OutputStream.open(filepath);
         WriteHeader();
-        m_CurrentSession = new InstrumentationSession{ name };
+        m_CurrentSession = new InstrumentationSession{name};
     }
 
     void EndSession()
@@ -107,7 +106,7 @@ class InstrumentationTimer
 {
 public:
     InstrumentationTimer(const char* name)
-            : m_Name(name), m_Stopped(false)
+        : m_Name(name), m_Stopped(false)
     {
         m_StartTimepoint = std::chrono::high_resolution_clock::now();
     }
@@ -126,14 +125,15 @@ public:
         long long end = std::chrono::time_point_cast<std::chrono::microseconds>(endTimepoint).time_since_epoch().count();
 
         uint32_t threadID = std::hash<std::thread::id>{}(std::this_thread::get_id());
-        Instrumentor::Get().WriteProfile({ m_Name, start, end, threadID });
+        Instrumentor::Get().WriteProfile({m_Name, start, end, threadID});
 
         m_Stopped = true;
     }
+
 private:
     const char* m_Name;
     std::chrono::time_point<std::chrono::high_resolution_clock> m_StartTimepoint;
     bool m_Stopped;
 };
 
-#endif //ACCOUNTANCY_INSTRUMENTOR_HPP
+#endif//ACCOUNTANCY_INSTRUMENTOR_HPP

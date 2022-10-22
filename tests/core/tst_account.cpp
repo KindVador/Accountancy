@@ -3,7 +3,7 @@
 #include "../../src/core/account.hpp"
 #include "../../src/core/financialinstitution.hpp"
 
-TEST_CASE( "Account defaultConstructor", "[core]" )
+TEST_CASE("Account defaultConstructor", "[core]")
 {
     Account a{};
     CHECK(!a.getUid().isNull());
@@ -14,11 +14,11 @@ TEST_CASE( "Account defaultConstructor", "[core]" )
     CHECK(a.getWarningBalance() == 0.0);
 }
 
-TEST_CASE( "Account writeJson", "[core]" )
+TEST_CASE("Account writeJson", "[core]")
 {
-    auto *fi = new FinancialInstitution("Institution1");
-    auto *currency = new Currency("Euro", "€");
-    auto *owner = new Owner("Owner1", 150.0, "Comment1", false);
+    auto* fi = new FinancialInstitution("Institution1");
+    auto* currency = new Currency("Euro", "€");
+    auto* owner = new Owner("Owner1", 150.0, "Comment1", false);
     Account a{fi, AccountType::Cash, currency, {owner}, 147.85, 100.0, "123456789AX", "CommentAccount1", true, false};
     QJsonObject jsonData;
     a.write(jsonData);
@@ -27,7 +27,7 @@ TEST_CASE( "Account writeJson", "[core]" )
     CHECK((jsonData.contains("currency") && !jsonData["currency"].isNull()));
     CHECK((jsonData.contains("owners") && !jsonData["owners"].isNull()));
     CHECK(jsonData.contains("initialBalance"));
-    CHECK(abs(jsonData["initialBalance"].toDouble()- 147.85) < 0.0001);
+    CHECK(abs(jsonData["initialBalance"].toDouble() - 147.85) < 0.0001);
     CHECK(jsonData.contains("warningBalance"));
     CHECK(jsonData["warningBalance"].toDouble() == 100.00);
     CHECK(jsonData.contains("accountNumber"));
@@ -46,12 +46,12 @@ TEST_CASE( "Account writeJson", "[core]" )
     delete owner;
 }
 
-TEST_CASE( "Account readJson", "[core]" )
+TEST_CASE("Account readJson", "[core]")
 {
     // write data to Json object
-    auto *fi = new FinancialInstitution("Institution1");
-    auto *currency = new Currency("Euro", "€");
-    auto *owner = new Owner("Owner1", 150.0, "Comment1", false);
+    auto* fi = new FinancialInstitution("Institution1");
+    auto* currency = new Currency("Euro", "€");
+    auto* owner = new Owner("Owner1", 150.0, "Comment1", false);
     Account a0{fi, AccountType::Cash, currency, {owner}, 147.85, 100.0, "123456789AX", "CommentAccount1", true, false};
     a0.setUid(QUuid("67C8770B-44F1-410A-AB9A-F9B5446F13EE"));
     QJsonObject jsonData;

@@ -1,8 +1,8 @@
 #ifndef OWNER_H
 #define OWNER_H
 
-#include <QString>
 #include <QMetaType>
+#include <QString>
 #include <QUuid>
 
 #include "currency.hpp"
@@ -11,27 +11,27 @@ class Owner
 {
 public:
     Owner();
-    Owner(QString &name, double warningBalance, QString &comment, bool isHidden);
+    Owner(QString& name, double warningBalance, QString& comment, bool isHidden);
     Owner(QString name, double warningBalance, QString comment, bool isHidden);
     ~Owner() = default;
 
-    static Owner *fromJson(const QJsonObject &json);
+    static Owner* fromJson(const QJsonObject& json);
 
     // Getter & Setter
     [[nodiscard]] QString getName() const;
-    void setName(const QString &value);
+    void setName(const QString& value);
     [[nodiscard]] float getWarningBalance() const;
     void setWarningBalance(float value);
     [[nodiscard]] QString getComment() const;
-    void setComment(const QString &value);
+    void setComment(const QString& value);
     [[nodiscard]] bool getIsHidden() const;
     void setIsHidden(bool value);
     [[nodiscard]] QUuid getUid() const;
     void setUid(QUuid uid);
 
     // Serialization
-    void read(const QJsonObject &json);
-    void write(QJsonObject &json) const;
+    void read(const QJsonObject& json);
+    void write(QJsonObject& json) const;
 
 private:
     QUuid _uid;
@@ -43,4 +43,4 @@ private:
 
 Q_DECLARE_METATYPE(Owner*)
 
-#endif // OWNER_H
+#endif// OWNER_H

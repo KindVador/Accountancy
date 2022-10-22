@@ -7,8 +7,8 @@
 class ScopedTimer
 {
 public:
-    explicit ScopedTimer(const char *name)
-    : m_Name(name), m_Stopped(false)
+    explicit ScopedTimer(const char* name)
+        : m_Name(name), m_Stopped(false)
     {
         m_StartTimePoint = std::chrono::high_resolution_clock::now();
     }
@@ -41,4 +41,4 @@ private:
     bool m_Stopped;
 };
 
-#endif //ACCOUNTANCY_SCOPEDTIMER_HPP
+#endif//ACCOUNTANCY_SCOPEDTIMER_HPP

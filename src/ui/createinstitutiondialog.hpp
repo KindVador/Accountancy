@@ -9,15 +9,18 @@
 
 
 QT_BEGIN_NAMESPACE
-namespace Ui { class CreateInstitutionDialog; }
+namespace Ui
+{
+    class CreateInstitutionDialog;
+}
 QT_END_NAMESPACE
 
 class CreateInstitutionDialog : public QDialog
 {
-Q_OBJECT
+    Q_OBJECT
 
 public:
-    explicit CreateInstitutionDialog(QWidget *parent = nullptr);
+    explicit CreateInstitutionDialog(QWidget* parent = nullptr);
 
     ~CreateInstitutionDialog() override;
 
@@ -26,8 +29,8 @@ public slots:
     void reject() override;
 
 private:
-    Ui::CreateInstitutionDialog *ui;
+    Ui::CreateInstitutionDialog* ui;
 };
 
 
-#endif //ACCOUNTANCY_CREATEINSTITUTIONDIALOG_HPP
+#endif//ACCOUNTANCY_CREATEINSTITUTIONDIALOG_HPP

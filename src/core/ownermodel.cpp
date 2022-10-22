@@ -2,7 +2,7 @@
 
 constexpr const int ObjectRole = Qt::UserRole + 1;
 
-void OwnerModel::addOwner(Owner *owner)
+void OwnerModel::addOwner(Owner* owner)
 {
     if (owner == nullptr)
         return;
@@ -12,16 +12,16 @@ void OwnerModel::addOwner(Owner *owner)
     endResetModel();
 }
 
-Owner *OwnerModel::addOwner(const QString &name, float warningBalance, const QString &comment, bool isHidden)
+Owner* OwnerModel::addOwner(const QString& name, float warningBalance, const QString& comment, bool isHidden)
 {
-    auto *newOwner = new Owner(name, warningBalance, comment, isHidden);
+    auto* newOwner = new Owner(name, warningBalance, comment, isHidden);
     addOwner(newOwner);
     return newOwner;
 }
 
-Owner *OwnerModel::getOwner(const QString &name) const
+Owner* OwnerModel::getOwner(const QString& name) const
 {
-    auto ownerIt = std::find_if(_owners.begin(), _owners.end(), [&name](Owner *owner) { return owner->getName() == name; });
+    auto ownerIt = std::find_if(_owners.begin(), _owners.end(), [&name](Owner* owner) { return owner->getName() == name; });
     // case NOT FOUND
     if (ownerIt == _owners.end())
         return nullptr;
@@ -29,12 +29,12 @@ Owner *OwnerModel::getOwner(const QString &name) const
     return *ownerIt;
 }
 
-int OwnerModel::rowCount(const QModelIndex &parent) const
+int OwnerModel::rowCount(const QModelIndex& parent) const
 {
-    return (int)_owners.count();
+    return (int) _owners.count();
 }
 
-QVariant OwnerModel::data(const QModelIndex &index, int role) const
+QVariant OwnerModel::data(const QModelIndex& index, int role) const
 {
     if (!index.isValid() || index.row() >= _owners.count() || index.row() < 0)
         return {};
@@ -64,7 +64,7 @@ void OwnerModel::reset()
     endResetModel();
 }
 
-void OwnerModel::removeOwner(const QModelIndex &index)
+void OwnerModel::removeOwner(const QModelIndex& index)
 {
     beginResetModel();
     delete _owners.at(index.row());
@@ -72,9 +72,9 @@ void OwnerModel::removeOwner(const QModelIndex &index)
     endResetModel();
 }
 
-Owner *OwnerModel::getOwner(QUuid uid) const
+Owner* OwnerModel::getOwner(QUuid uid) const
 {
-    auto ownerIt = std::find_if(_owners.begin(), _owners.end(), [&uid](Owner *owner) { return owner->getUid() == uid; });
+    auto ownerIt = std::find_if(_owners.begin(), _owners.end(), [&uid](Owner* owner) { return owner->getUid() == uid; });
     // case NOT FOUND
     if (ownerIt == _owners.end())
         return nullptr;

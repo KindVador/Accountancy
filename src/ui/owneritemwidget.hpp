@@ -3,8 +3,9 @@
 
 #include <QWidget>
 
-namespace Ui {
-class OwnerItemWidget;
+namespace Ui
+{
+    class OwnerItemWidget;
 }
 
 class OwnerItemWidget : public QWidget
@@ -12,11 +13,11 @@ class OwnerItemWidget : public QWidget
     Q_OBJECT
 
 public:
-    explicit OwnerItemWidget(QWidget *parent = nullptr);
+    explicit OwnerItemWidget(QWidget* parent = nullptr);
     ~OwnerItemWidget();
 
 private:
-    Ui::OwnerItemWidget *ui;
+    Ui::OwnerItemWidget* ui;
 };
 
-#endif // OWNERITEMWIDGET_HPP
+#endif// OWNERITEMWIDGET_HPP

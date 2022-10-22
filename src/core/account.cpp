@@ -9,12 +9,11 @@ Account::Account()
     _uid = QUuid::createUuid();
 }
 
-Account::Account(const FinancialInstitution *institution, AccountType type, Currency *currency,
-                 const QList<const Owner*> &owners, float initialBalance, float warningBalance, QString accountNumber,
-                 QString comment, bool isIncludedInTotal, bool isHidden) :
-                 _institution(institution), _currency(currency), _owners(owners), _initialBalance(initialBalance),
-                 _warningBalance(warningBalance), _accountNumber(std::move(accountNumber)),
-                 _comment(std::move(comment)), _isIncludedInTotal(isIncludedInTotal), _isHidden(isHidden), _type(type)
+Account::Account(const FinancialInstitution* institution, AccountType type, Currency* currency,
+                 const QList<const Owner*>& owners, float initialBalance, float warningBalance, QString accountNumber,
+                 QString comment, bool isIncludedInTotal, bool isHidden) : _institution(institution), _currency(currency), _owners(owners), _initialBalance(initialBalance),
+                                                                           _warningBalance(warningBalance), _accountNumber(std::move(accountNumber)),
+                                                                           _comment(std::move(comment)), _isIncludedInTotal(isIncludedInTotal), _isHidden(isHidden), _type(type)
 {
     _uid = QUuid::createUuid();
 }
@@ -40,7 +39,7 @@ void Account::setUid(QUuid uid)
     _uid = uid;
 }
 
-QList<const Owner *> &Account::getOwners()
+QList<const Owner*>& Account::getOwners()
 {
     return _owners;
 }
@@ -51,7 +50,7 @@ QList<QUuid> Account::getOwnersUid() const
         return {};
 
     QList<QUuid> ids;
-    for (const Owner *owner : qAsConst(_owners)) {
+    for (const Owner* owner: qAsConst(_owners)) {
         if (owner != nullptr)
             ids.append(owner->getUid());
     }
@@ -59,7 +58,7 @@ QList<QUuid> Account::getOwnersUid() const
     return ids;
 }
 
-void Account::addTransaction(Transaction *transaction)
+void Account::addTransaction(Transaction* transaction)
 {
     // check if transaction already exist in account
     if (transaction == nullptr || isTransactionRegistered(transaction)) {
@@ -70,7 +69,7 @@ void Account::addTransaction(Transaction *transaction)
     _transactions.append(transaction);
 }
 
-void Account::removeTransaction(Transaction *transaction)
+void Account::removeTransaction(Transaction* transaction)
 {
     if (transaction == nullptr)
         return;
@@ -78,37 +77,37 @@ void Account::removeTransaction(Transaction *transaction)
     _transactions.removeOne(transaction);
 }
 
-const FinancialInstitution *Account::getInstitution() const
+const FinancialInstitution* Account::getInstitution() const
 {
     return _institution;
 }
 
-void Account::setInstitution(const FinancialInstitution *institution)
+void Account::setInstitution(const FinancialInstitution* institution)
 {
     _institution = institution;
 }
 
 int Account::count() const
 {
-    return (int)_transactions.count();
+    return (int) _transactions.count();
 }
 
-Transaction *Account::transactionAt(int pos) const
+Transaction* Account::transactionAt(int pos) const
 {
     return _transactions.at(pos);
 }
 
-const Currency *Account::getCurrency() const
+const Currency* Account::getCurrency() const
 {
     return _currency;
 }
 
-void Account::setCurrency(const Currency *currency)
+void Account::setCurrency(const Currency* currency)
 {
     _currency = currency;
 }
 
-void Account::read(const QJsonObject &json)
+void Account::read(const QJsonObject& json)
 {
     if (json.contains("uid") && json["uid"].isString())
         _uid = QUuid(json["uid"].toString());
@@ -120,14 +119,14 @@ void Account::read(const QJsonObject &json)
     }
 
     if (json.contains("currency")) {
-        auto  c = new Currency;
+        auto c = new Currency;
         c->setUid(QUuid(json["currency"].toString()));
         setCurrency(c);
     }
 
     if (json.contains("owners") && json["owners"].isArray()) {
         QJsonArray ownersArray = json["owners"].toArray();
-        for (QJsonValue owner : ownersArray) {
+        for (QJsonValue owner: ownersArray) {
             auto ownerPtr = new Owner;
             ownerPtr->setUid(QUuid(owner.toString()));
             _owners.append(ownerPtr);
@@ -157,7 +156,7 @@ void Account::read(const QJsonObject &json)
 
     if (json.contains("transactions") && json["transactions"].isArray()) {
         QJsonArray transactionsArray = json["transactions"].toArray();
-        for (QJsonValue transaction : transactionsArray) {
+        for (QJsonValue transaction: transactionsArray) {
             auto transactionPtr = new Transaction;
             transactionPtr->read(transaction.toObject());
             _transactions.append(transactionPtr);
@@ -165,7 +164,7 @@ void Account::read(const QJsonObject &json)
     }
 }
 
-void Account::write(QJsonObject &json) const
+void Account::write(QJsonObject& json) const
 {
     json["uid"] = _uid.toString();
 
@@ -176,7 +175,7 @@ void Account::write(QJsonObject &json) const
         json["currency"] = _currency->getUid().toString();
 
     QJsonArray ownersArray;
-    for (const Owner *owner : _owners)
+    for (const Owner* owner: _owners)
         ownersArray.append(owner->getUid().toString());
     json["owners"] = ownersArray;
 
@@ -189,7 +188,7 @@ void Account::write(QJsonObject &json) const
     json["type"] = ACCOUNT_TYPE_2_STRING[_type];
 
     QJsonArray transactionsArray;
-    for (const Transaction *transaction : _transactions) {
+    for (const Transaction* transaction: _transactions) {
         QJsonObject transactionObject;
         transaction->write(transactionObject);
         transactionsArray.append(transactionObject);
@@ -217,22 +216,22 @@ void Account::setWarningBalance(double warningBalance)
     _warningBalance = warningBalance;
 }
 
-const QString &Account::getComment() const
+const QString& Account::getComment() const
 {
     return _comment;
 }
 
-void Account::setComment(const QString &comment)
+void Account::setComment(const QString& comment)
 {
     _comment = comment;
 }
 
-const QString &Account::getAccountNumber() const
+const QString& Account::getAccountNumber() const
 {
     return _accountNumber;
 }
 
-void Account::setAccountNumber(const QString &accountNumber)
+void Account::setAccountNumber(const QString& accountNumber)
 {
     _accountNumber = accountNumber;
 }
@@ -267,7 +266,7 @@ void Account::setType(AccountType type)
     _type = type;
 }
 
-Account *Account::fromJson(const QJsonObject &json)
+Account* Account::fromJson(const QJsonObject& json)
 {
     if (json.isEmpty())
         return nullptr;
@@ -277,7 +276,7 @@ Account *Account::fromJson(const QJsonObject &json)
     return account;
 }
 
-void Account::addOwner(const Owner *owner)
+void Account::addOwner(const Owner* owner)
 {
     _owners.append(owner);
 }
@@ -285,32 +284,31 @@ void Account::addOwner(const Owner *owner)
 void Account::updateTransactionsBalance()
 {
     // sort transactions by date
-    std::sort(_transactions.begin(), _transactions.end(), [](Transaction *t1, Transaction *t2) -> bool {return
-            t1->getDateTime() <
-                                                                                                               t2->getDateTime();});
+    std::sort(_transactions.begin(), _transactions.end(), [](Transaction* t1, Transaction* t2) -> bool { return t1->getDateTime() <
+                                                                                                                t2->getDateTime(); });
 
     // update current balance for each transactions
     double previousBalance = _initialBalance;
-    for (Transaction *transaction : _transactions) {
+    for (Transaction* transaction: _transactions) {
         transaction->setCurrentBalance(previousBalance + transaction->getAmount());
         previousBalance = transaction->getCurrentBalance();
     }
 }
 
-void Account::addTransactions(const QList<Transaction*> &transactions)
+void Account::addTransactions(const QList<Transaction*>& transactions)
 {
     // add transactions to the selected count
-    for (Transaction *t : transactions)
+    for (Transaction* t: transactions)
         addTransaction(t);
 
     // update Current Balance for each Transaction
     updateTransactionsBalance();
 }
 
-bool Account::isTransactionRegistered(const Transaction *transaction) const
+bool Account::isTransactionRegistered(const Transaction* transaction) const
 {
     if (transaction == nullptr)
         return false;
 
-    return std::any_of(_transactions.cbegin(), _transactions.cend(), [&transaction] (const Transaction *t) {return *transaction == *t;});
+    return std::any_of(_transactions.cbegin(), _transactions.cend(), [&transaction](const Transaction* t) { return *transaction == *t; });
 }

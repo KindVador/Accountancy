@@ -1,11 +1,10 @@
 #include "addaccountdialog.hpp"
-#include "ui_AddAccountDialog.h"
 #include "../core/controller.hpp"
+#include "ui_AddAccountDialog.h"
 
 constexpr const int ObjectRole = Qt::UserRole + 1;
 
-AddAccountDialog::AddAccountDialog(QWidget *parent) :
-        QDialog(parent), ui(new Ui::AddAccountDialog)
+AddAccountDialog::AddAccountDialog(QWidget* parent) : QDialog(parent), ui(new Ui::AddAccountDialog)
 {
     ui->setupUi(this);
 
@@ -39,14 +38,14 @@ void AddAccountDialog::reject()
 
 void AddAccountDialog::accept()
 {
-    Controller *controller = Controller::instance();
+    Controller* controller = Controller::instance();
     QString accountNumber = ui->numberLineEdit->text();
-    auto institution = ui->institutionComboBox->currentData(ObjectRole).value<FinancialInstitution *>();
+    auto institution = ui->institutionComboBox->currentData(ObjectRole).value<FinancialInstitution*>();
     AccountType type = STRING_2_ACCOUNT_TYPE[ui->typeComboBox->currentText()];
     auto currency = ui->currencyComboBox->currentData(ObjectRole).value<Currency*>();
-    QList<const Owner *> owners = getSelectedOwners();
-    auto initialBalance = (float)ui->initialBalanceDoubleSpinBox->value();
-    auto warningBalance = (float)ui->warningBalanceDoubleSpinBox->value();
+    QList<const Owner*> owners = getSelectedOwners();
+    auto initialBalance = (float) ui->initialBalanceDoubleSpinBox->value();
+    auto warningBalance = (float) ui->warningBalanceDoubleSpinBox->value();
     QString comment = ui->commentsTextEdit->toPlainText();
     bool isIncludedInTotal = ui->includeInTotalCheckBox->checkState();
     bool isHidden = ui->hideCheckBox->checkState();
@@ -55,14 +54,14 @@ void AddAccountDialog::accept()
     QDialog::accept();
 }
 
-QList<const Owner *> AddAccountDialog::getSelectedOwners() const
+QList<const Owner*> AddAccountDialog::getSelectedOwners() const
 {
-    QList<const Owner *> selectedOwners;
+    QList<const Owner*> selectedOwners;
     auto ownerModel = dynamic_cast<OwnerModel*>(ui->ownersListView->model());
     if (ownerModel == nullptr)
         return selectedOwners;
     QList<QModelIndex> selectedIndexes = ui->ownersListView->selectionModel()->selectedIndexes();
-    for (const QModelIndex &selectedIndex : selectedIndexes)
+    for (const QModelIndex& selectedIndex: selectedIndexes)
         selectedOwners.append(ownerModel->data(selectedIndex, ObjectRole).value<Owner*>());
 
     return selectedOwners;

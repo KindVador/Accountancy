@@ -5,9 +5,9 @@
 
 #include <QApplication>
 
-int main (int argc, char* argv[])
+int main(int argc, char* argv[])
 {
-    QApplication app(argc, argv);               // We can pass as argument "-platform offscreen" if needed
-    int result = Catch::Session().run(argc, argv); // We can pass as argument "--break" if needed
+    QApplication app(argc, argv);                 // We can pass as argument "-platform offscreen" if needed
+    int result = Catch::Session().run(argc, argv);// We can pass as argument "--break" if needed
     return result;
 }

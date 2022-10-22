@@ -13,12 +13,12 @@ public:
     ~FinancialInstitutionModel() override = default;
 
     // QAbstractListModel interface
-    [[nodiscard]] int rowCount(const QModelIndex &parent) const override;
-    [[nodiscard]] QVariant data(const QModelIndex &index, int role) const override;
+    [[nodiscard]] int rowCount(const QModelIndex& parent) const override;
+    [[nodiscard]] QVariant data(const QModelIndex& index, int role) const override;
 
-    void addFinancialInstitution(FinancialInstitution *institution);
-    FinancialInstitution *addFinancialInstitution(const QString &name);
-    void removeFinancialInstitution(FinancialInstitution *institution);
+    void addFinancialInstitution(FinancialInstitution* institution);
+    FinancialInstitution* addFinancialInstitution(const QString& name);
+    void removeFinancialInstitution(FinancialInstitution* institution);
     void removeFinancialInstitution(QUuid uid);
 
     [[nodiscard]] FinancialInstitution* getFinancialInstitution(QUuid uid) const;
@@ -26,7 +26,7 @@ public:
     void reset();
 
 private:
-    QList<FinancialInstitution *> _institutions;
+    QList<FinancialInstitution*> _institutions;
 };
 
-#endif //ACCOUNTANCY_FINANCIALINSTITUTIONMODEL_HPP
+#endif//ACCOUNTANCY_FINANCIALINSTITUTIONMODEL_HPP
