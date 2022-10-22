@@ -30,6 +30,13 @@ set(TEST_SRC
 add_executable(TestsAccountancy ${TEST_SRC})
 target_link_libraries(TestsAccountancy PRIVATE Catch2::Catch2 Qt6::Core Qt6::Widgets AccountancyCore)
 
+# copy tests data in the same folder than tests binary
+add_custom_command(
+        TARGET TestsAccountancy POST_BUILD
+        COMMAND ${CMAKE_COMMAND} -E copy_directory
+        ${CMAKE_SOURCE_DIR}/tests/data
+        ${CMAKE_CURRENT_BINARY_DIR}/data)
+
 include(CTest)
 include(../external_libs/Catch2/contrib/Catch.cmake)
 catch_discover_tests(TestsAccountancy)

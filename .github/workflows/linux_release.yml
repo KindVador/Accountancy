@@ -33,18 +33,11 @@ jobs:
           host:             linux
           target:           desktop
           dir:              ${{ runner.temp }}
-          arch:             win64_msvc2019_64
           install-deps:     true
           archives:         qtbase qtsvg
           cache:            false
-          cache-key-prefix: install-qt-action
-          setup-python:     true
-          tools:            tools_ifw tools_qtcreator,qt.tools.qtcreator
+          setup-python:     false
           set-env:          true
-          tools-only:       false
-          aqtversion:       ==2.1.*
-          py7zrversion:     ==0.19.*
-          extra:            --external 7z
 
       - name: Update PATH
         run: |
