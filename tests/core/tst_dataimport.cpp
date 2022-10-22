@@ -1,13 +1,16 @@
-#include <catch2/catch.hpp>
-
 #include "../../src/core/financialinstitution.hpp"
 #include "importconfig.hpp"
+#include <QFileInfo>
+#include <catch2/catch.hpp>
+#include <iostream>
 
 TEST_CASE("DataImport CaisseEpargne old format", "[core]")
 {
     FinancialInstitution fi("CaisseEpargne");
 
-    auto dataFile = QFile("data/caisse_epargne/old_format.csv");
+    QFileInfo fileInfo("data/caisse_epargne/old_format.csv");
+    auto dataFile = QFile(fileInfo.absoluteFilePath());
+    std::cout << "dataFile: " << fileInfo.absoluteFilePath().toStdString() << std::endl;
     ImportConfig config;
     config.setName("CaisseEpargne old format");
     config.setSeparatorChar(';');
@@ -34,7 +37,6 @@ TEST_CASE("DataImport CaisseEpargne old format", "[core]")
     CHECK(firstTransaction->getName() == "CB E.LECLERC WEB   FACT 080520");
     CHECK(firstTransaction->getAmount() == -37.13);
     CHECK(firstTransaction->getComment() == "CB E.LECLERC WEB   FACT 080520 ");
-    qDebug() << firstTransaction->getDateTime();
     CHECK(firstTransaction->getDateTime() == QDateTime(QDate(2020, 05, 11), QTime(8, 50, 06, 800)));
 
     // check attributes of last transaction
@@ -42,7 +44,6 @@ TEST_CASE("DataImport CaisseEpargne old format", "[core]")
     CHECK(lastTransaction->getName() == "*REMISE OPT INTERNATIONALE F1");
     CHECK(lastTransaction->getAmount() == 0.4);
     CHECK(lastTransaction->getComment() == "*REMISE OPT INTERNATIONALE F1 ");
-    qDebug() << lastTransaction->getDateTime();
     CHECK(lastTransaction->getDateTime() == QDateTime(QDate(2020, 03, 13), QTime(18, 52, 31, 234)));
 }
 
