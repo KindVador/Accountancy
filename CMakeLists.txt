@@ -14,6 +14,13 @@ set(CMAKE_AUTORCC ON)
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
 
 find_package(Qt6 COMPONENTS Widgets Sql REQUIRED)
+if (${Qt6Widgets_FOUND})
+    message("Qt6 FOUND")
+    get_target_property(QtCore_location Qt6::Core LOCATION)
+    message("QtCore_location is: ${QtCore_location}")
+else ()
+    message("ERROR: Qt6 NOT FOUND")
+endif ()
 
 add_subdirectory(src/core "${CMAKE_CURRENT_BINARY_DIR}/build_core")
 add_subdirectory(src/ui "${CMAKE_CURRENT_BINARY_DIR}/build_ui")
