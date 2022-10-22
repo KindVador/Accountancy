@@ -22,11 +22,11 @@ QVariant TransactionModel::data(const QModelIndex &index, int role) const
         return {};
 
     Transaction *t = _account->transactionAt(index.row());
+    if (t == nullptr)
+        return {};
+    
     const Currency *currency = _account->getCurrency();
     if (role == Qt::DisplayRole) {
-        if (t == nullptr)
-            return {};
-
         switch (index.column()) {
             case 0:
                 return t->getDateTime().toString("dd/MM/yyyy");
@@ -49,6 +49,23 @@ QVariant TransactionModel::data(const QModelIndex &index, int role) const
             return QColorConstants::DarkRed;
         else
             return QColorConstants::DarkGreen;
+    } else if (role == Qt::UserRole) {
+        switch (index.column()) {
+            case 0:
+                return t->getDateTime();
+            case 1:
+                return t->getName();
+            case 2:
+                return t->getAmount();
+            case 3:
+                return t->getCurrentBalance();
+            case 4:
+                return TRANSACTION_STATUS_2_STRING[t->getStatus()];
+            case 5:
+                return t->getComment();
+            default:
+                return {};
+        }
     }
     return {};
 }

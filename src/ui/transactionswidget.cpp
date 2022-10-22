@@ -8,9 +8,15 @@ TransactionsWidget::TransactionsWidget(QWidget *parent) :
         QWidget(parent), ui(new Ui::TransactionsWidget)
 {
     ui->setupUi(this);
+
+    // change Qt::ItemDataRole used to sort table
+    _proxyModel->setSortRole(Qt::UserRole);
+
+    // init tableView
     ui->tableView->setAlternatingRowColors(true);
-    ui->tableView->setSortingEnabled(true);
     ui->tableView->horizontalHeader()->setSectionResizeMode(QHeaderView::ResizeToContents);
+    ui->tableView->sortByColumn(0, Qt::SortOrder::DescendingOrder);
+    ui->tableView->setSortingEnabled(true);
 }
 
 TransactionsWidget::~TransactionsWidget()
@@ -26,6 +32,7 @@ void TransactionsWidget::setModel(TransactionModel *model)
 
     _proxyModel->setSourceModel(model);
     ui->tableView->setModel(_proxyModel.get());
+    ui->tableView->sortByColumn(0, Qt::SortOrder::DescendingOrder);
 }
 
 void TransactionsWidget::setTitle(const QString &text)
