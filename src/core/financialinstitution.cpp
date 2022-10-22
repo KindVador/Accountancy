@@ -3,7 +3,6 @@
 
 #include <QDebug>
 #include <QTextStream>
-#include <iostream>
 #include <utility>
 
 FinancialInstitution::FinancialInstitution()
@@ -42,8 +41,6 @@ QList<Transaction*> FinancialInstitution::readTransactionsFromFile(QFile& dataFi
         return {};
 
     QLocale locale = QLocale::system();
-    std::cout << "country: " << locale.country() << " numberOptions: " << locale.numberOptions() << std::endl;
-    std::cout << "config.getDecimalChar(): " << config.getDecimalChar().toLatin1() << " locale.decimalPoint(): " << locale.decimalPoint().toStdString() << std::endl;
     bool replaceDecimalCharacter = config.getDecimalChar() != locale.decimalPoint();
 
     QList<Transaction*> transactions;
