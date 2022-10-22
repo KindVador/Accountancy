@@ -3,6 +3,7 @@
 
 #include <QDebug>
 #include <QTextStream>
+#include <iostream>
 #include <utility>
 
 FinancialInstitution::FinancialInstitution()
@@ -53,6 +54,7 @@ QList<Transaction*> FinancialInstitution::readTransactionsFromFile(QFile& dataFi
     rawLines = rawLines.mid(firstLineToImport, nbLinesToImport);
 
     for (int i = 0; i < rawLines.count(); ++i) {
+        std::cout << rawLines[i].toStdString() << std::endl;
         QStringList fields = rawLines[i].split(config.getSeparatorChar());
 
         if (fields.count() < config.nbFields())
