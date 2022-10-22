@@ -68,6 +68,3 @@ compile_commands.json
 
 # Generated documentation
 /documentation
-
-# external libraries
-/lib
