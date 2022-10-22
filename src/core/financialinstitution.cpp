@@ -42,6 +42,10 @@ QList<Transaction*> FinancialInstitution::readTransactionsFromFile(QFile& dataFi
         return {};
 
     QLocale locale = QLocale::system();
+    std::cout << "country: " << locale.country() << " numberOptions: " << locale.numberOptions() << std::endl;
+    std::cout << "config.getDecimalChar(): " << config.getDecimalChar().toLatin1() << " locale.decimalPoint(): " << locale.decimalPoint().toStdString() << std::endl;
+    bool replaceDecimalCharacter = config.getDecimalChar() != locale.decimalPoint();
+
     QList<Transaction*> transactions;
     QVector<QString> rawLines;
     QTextStream inStream(&dataFile);
@@ -54,7 +58,6 @@ QList<Transaction*> FinancialInstitution::readTransactionsFromFile(QFile& dataFi
     rawLines = rawLines.mid(firstLineToImport, nbLinesToImport);
 
     for (int i = 0; i < rawLines.count(); ++i) {
-        std::cout << rawLines[i].toStdString() << std::endl;
         QStringList fields = rawLines[i].split(config.getSeparatorChar());
 
         if (fields.count() < config.nbFields())
@@ -76,10 +79,17 @@ QList<Transaction*> FinancialInstitution::readTransactionsFromFile(QFile& dataFi
             time = QTime::fromString(timeString, timeFormat);
         }
         transaction->setDateTime(QDateTime(date, time));
+
+        QString amountValue;
         if (!fields[config.getColumnPosition("DebitAmount")].isEmpty())
-            transaction->setAmount(locale.toDouble(fields[config.getColumnPosition("DebitAmount")]));
+            amountValue = fields[config.getColumnPosition("DebitAmount")];
         else
-            transaction->setAmount(locale.toDouble(fields[config.getColumnPosition("CreditAmount")]));
+            amountValue = fields[config.getColumnPosition("CreditAmount")];
+
+        if (replaceDecimalCharacter)
+            amountValue.replace(config.getDecimalChar(), locale.decimalPoint());
+
+        transaction->setAmount(locale.toDouble(amountValue));
 
         transactions.append(transaction);
     }
