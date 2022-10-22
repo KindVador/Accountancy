@@ -7,7 +7,7 @@ TEST_CASE("DataImport CaisseEpargne old format", "[core]")
 {
     FinancialInstitution fi("CaisseEpargne");
 
-    auto dataFile = QFile("../../data/caisse_epargne/old_format.csv");
+    auto dataFile = QFile("../../tests/data/caisse_epargne/old_format.csv");
     ImportConfig config;
     config.setName("CaisseEpargne old format");
     config.setSeparatorChar(';');
@@ -50,7 +50,7 @@ TEST_CASE("DataImport CaisseEpargne new format", "[core]")
 {
     FinancialInstitution fi("CaisseEpargne");
 
-    auto dataFile = QFile("../../data/caisse_epargne/new_format.csv");
+    auto dataFile = QFile("../../tests/data/caisse_epargne/new_format.csv");
     ImportConfig config;
     config.setName("CaisseEpargne new format");
     config.setSeparatorChar(';');
@@ -89,7 +89,7 @@ TEST_CASE("DataImport CaisseEpargne new format with French Date format", "[core]
 {
     FinancialInstitution fi("CaisseEpargne");
 
-    auto dataFile = QFile("../../data/caisse_epargne/new_format_date2.csv");
+    auto dataFile = QFile("../../tests/data/caisse_epargne/new_format_date2.csv");
     ImportConfig config;
     config.setName("CaisseEpargne new format french date format");
     config.setSeparatorChar(';');
@@ -128,7 +128,7 @@ TEST_CASE("DataImport HelloBank", "[core]")
 {
     FinancialInstitution fi("Hello Bank!");
 
-    auto dataFile = QFile("../../data/hello_bank/HB_03_10_2022.csv");
+    auto dataFile = QFile("../../tests/data/hello_bank/HB_03_10_2022.csv");
     ImportConfig config;
     config.setName("HelloBank CSV");
     config.setSeparatorChar(';');

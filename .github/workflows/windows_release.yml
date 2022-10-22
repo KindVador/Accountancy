@@ -16,7 +16,7 @@ env:
   SOURCE_DIR:        ${{ github.workspace }}
   QT_VERSION:        6.3.0
   QT_ARCHITECTURE:   win64_msvc2019_64
-  QT_LIB_PATH:       win64_msvc2019_64
+  QT_LIB_PATH:       msvc2019_64
 
 jobs:
   build:
@@ -51,22 +51,9 @@ jobs:
           py7zrversion:     ==0.19.*
           extra:            --external 7z
 
-#      - name: Set Qt path and refresh env
-#        run: |
-#          echo "${{ github.workspace }}/Qt/${{ env.QT_VERSION }}/${{ env.QT_LIB_PATH }}/bin" | Out-File -FilePath $env:GITHUB_PATH -Encoding utf8 -Append
-#          refreshenv
-
-      - name: Echo PATH BEFORE
-        run: |
-          echo "$PATH"
-
       - name: Update PATH
         run: |
           echo "${{ runner.temp }}/Qt/${{ env.QT_VERSION }}/${{ env.QT_LIB_PATH }}/bin" >> $GITHUB_PATH
-
-      - name: Echo PATH AFTER
-        run: |
-          echo "$PATH"
 
       - name: Configure CMake
         # Configure CMake in a 'build' subdirectory. `CMAKE_BUILD_TYPE` is only required if you are using a single-configuration generator such as make.
@@ -78,7 +65,7 @@ jobs:
         run: cmake --build ${{ github.workspace }}/build --config ${{ env.BUILD_TYPE }}
 
       - name: Test
-        working-directory: ${{ github.workspace }}/build
+        working-directory: ${{github.workspace}}/build/build_tests
         # Execute tests defined by the CMake configuration.
         # See https://cmake.org/cmake/help/latest/manual/ctest.1.html for more detail
         run: ctest -C ${{ env.BUILD_TYPE }}
