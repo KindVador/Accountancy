@@ -1,6 +1,6 @@
 #include "addownerdialog.hpp"
 #include "../core/controller.hpp"
-#include "ui_addOwnerDialog.h"
+#include "ui_addownerdialog.h"
 
 
 AddOwnerDialog::AddOwnerDialog(QWidget* parent) : QDialog(parent), ui(new Ui::AddOwnerDialog)

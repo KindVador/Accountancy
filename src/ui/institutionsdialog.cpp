@@ -1,7 +1,7 @@
 #include "institutionsdialog.hpp"
 #include "../core/controller.hpp"
 #include "createinstitutiondialog.hpp"
-#include "ui_InstitutionsDialog.h"
+#include "ui_institutionsdialog.h"
 
 InstitutionsDialog::InstitutionsDialog(QWidget* parent, FinancialInstitutionModel* model) : QDialog(parent),
                                                                                             ui(new Ui::InstitutionsDialog),

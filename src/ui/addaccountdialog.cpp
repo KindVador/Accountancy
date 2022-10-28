@@ -1,6 +1,6 @@
 #include "addaccountdialog.hpp"
 #include "../core/controller.hpp"
-#include "ui_AddAccountDialog.h"
+#include "ui_addaccountdialog.h"
 
 constexpr const int ObjectRole = Qt::UserRole + 1;
 

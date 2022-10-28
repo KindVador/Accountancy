@@ -1,6 +1,6 @@
 #include "createinstitutiondialog.hpp"
 #include "../core/controller.hpp"
-#include "ui_CreateInstitutionDialog.h"
+#include "ui_createinstitutiondialog.h"
 
 
 CreateInstitutionDialog::CreateInstitutionDialog(QWidget* parent) : QDialog(parent), ui(new Ui::CreateInstitutionDialog)
