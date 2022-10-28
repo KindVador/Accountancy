@@ -17,5 +17,11 @@
         <file>resources/icons/folder_icon_24.png</file>
         <file>resources/icons/folder_icon_32.png</file>
         <file>resources/icons/folder_icon_48.png</file>
+        <file>resources/icons/download.svg</file>
+        <file>resources/icons/redo.svg</file>
+        <file>resources/icons/save.svg</file>
+        <file>resources/icons/save-all.svg</file>
+        <file>resources/icons/trash.svg</file>
+        <file>resources/icons/undo.svg</file>
     </qresource>
 </RCC>
