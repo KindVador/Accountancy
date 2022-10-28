@@ -33,7 +33,8 @@ set(UI_SOURCES mainwindow.ui
 
 if(${CMAKE_SYSTEM_NAME} MATCHES "Linux")
     qt_wrap_ui(SOURCES ${UI_SOURCES})
-    add_library(${NAME} ${SOURCES})
+    include_directories(BEFORE ${CMAKE_CURRENT_BINARY_DIR})
+    add_library(AccountancyUi ${SOURCES})
 else()
     add_library(${NAME} ${SOURCES} ${UI_SOURCES})
 endif()
