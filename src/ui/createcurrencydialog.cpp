@@ -1,6 +1,6 @@
 #include "createcurrencydialog.hpp"
 #include "../core/controller.hpp"
-#include "ui_CreateCurrencyDialog.h"
+#include "ui_createcurrencydialog.h"
 
 
 CreateCurrencyDialog::CreateCurrencyDialog(QWidget* parent) : QDialog(parent), ui(new Ui::CreateCurrencyDialog)

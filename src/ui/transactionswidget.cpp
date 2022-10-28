@@ -1,7 +1,7 @@
 // You may need to build the project (run Qt uic code generator) to get "ui_TransactionsWidget.h" resolved
 
 #include "transactionswidget.hpp"
-#include "ui_TransactionsWidget.h"
+#include "ui_transactionswidget.h"
 
 
 TransactionsWidget::TransactionsWidget(QWidget* parent) : QWidget(parent), ui(new Ui::TransactionsWidget)

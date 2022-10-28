@@ -1,7 +1,7 @@
 #include "currenciesdialog.hpp"
 #include "../core/controller.hpp"
 #include "createcurrencydialog.hpp"
-#include "ui_CurrenciesDialog.h"
+#include "ui_currenciesdialog.h"
 
 CurrenciesDialog::CurrenciesDialog(QWidget* parent, CurrencyModel* model) : QDialog(parent), ui(new Ui::CurrenciesDialog), _model(model)
 {
