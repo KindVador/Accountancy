@@ -1,7 +1,7 @@
 // You may need to build the project (run Qt uic code generator) to get "ui_SelectCategoryDialog.h" resolved
 
 #include "selectcategorydialog.hpp"
-#include "ui_SelectCategoryDialog.h"
+#include "ui_selectcategorydialog.h"
 
 SelectCategoryDialog::SelectCategoryDialog(QWidget* parent, CategoryModel* model) : QDialog(parent), ui(new Ui::SelectCategoryDialog), _model(model)
 {
