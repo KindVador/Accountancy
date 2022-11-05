@@ -13,6 +13,7 @@ public:
 
     // QAbstractItemModel
     [[nodiscard]] QVariant headerData(int section, Qt::Orientation orientation, int role) const override;
+    bool removeRows(int row, int count, const QModelIndex& parent) override;
 
     // QAbstractTableModel
     [[nodiscard]] int rowCount(const QModelIndex& parent) const override;

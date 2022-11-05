@@ -94,6 +94,11 @@ int Account::count() const
 
 Transaction* Account::transactionAt(int pos) const
 {
+    if (pos < 0 || pos > _transactions.count() - 1) {
+        qCritical() << "Invalid transaction position, received " << pos << " instead of value between [0:" << _transactions.count() - 1 << "]";
+        return nullptr;
+    }
+
     return _transactions.at(pos);
 }
 

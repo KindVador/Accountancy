@@ -88,3 +88,21 @@ void TransactionModel::reset()
     _account = nullptr;
     endResetModel();
 }
+
+bool TransactionModel::removeRows(int row, int count, const QModelIndex& parent)
+{
+    if (_account == nullptr)
+        return false;
+
+    beginRemoveRows(parent, row, row + count - 1);
+    for (int i = row; i < row + count; ++i) {
+        Transaction* transaction = _account->transactionAt(i);
+        if (transaction == nullptr)
+            continue;
+
+        qDebug() << "Remove Transaction " << row << " : " << transaction->getName();
+        _account->removeTransaction(transaction);
+    }
+    endRemoveRows();
+    return true;
+}
