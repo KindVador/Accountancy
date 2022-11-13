@@ -83,8 +83,7 @@ bool Account::remoceTransaction(const QUuid& uid)
 {
     if (uid.isNull())
         return false;
-
-    qDebug() << "removeTransaction: " << uid;
+    
     auto res = std::find_if(_transactions.cbegin(), _transactions.cend(), [this, &uid](const Transaction* t) {
         return t != nullptr && t->getUid() == uid;
     });
