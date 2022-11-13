@@ -82,7 +82,7 @@ public:
     [[nodiscard]] QList<const Owner*>& getOwners();
     bool addTransaction(Transaction* transaction);
     bool removeTransaction(Transaction* transaction);
-    bool remoceTransaction(const QUuid& uid);
+    bool removeTransaction(const QUuid& uid);
     bool addTransactions(const QList<Transaction*>& transactions);
     [[nodiscard]] int count() const;
     [[nodiscard]] Transaction* transactionAt(int pos) const;

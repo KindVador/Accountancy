@@ -79,11 +79,11 @@ bool Account::removeTransaction(Transaction* transaction)
     return _transactions.removeOne(transaction);
 }
 
-bool Account::remoceTransaction(const QUuid& uid)
+bool Account::removeTransaction(const QUuid& uid)
 {
     if (uid.isNull())
         return false;
-    
+
     auto res = std::find_if(_transactions.cbegin(), _transactions.cend(), [this, &uid](const Transaction* t) {
         return t != nullptr && t->getUid() == uid;
     });

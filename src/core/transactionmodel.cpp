@@ -115,7 +115,7 @@ bool TransactionModel::removeTransaction(QUuid transactionUid)
 {
     bool res = false;
     beginResetModel();
-    res = _account->remoceTransaction(transactionUid);
+    res = _account->removeTransaction(transactionUid);
     endResetModel();
     return res;
 }
