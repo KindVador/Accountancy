@@ -20,6 +20,7 @@ public:
     [[nodiscard]] int columnCount(const QModelIndex& parent) const override;
     [[nodiscard]] QVariant data(const QModelIndex& index, int role) const override;
 
+    bool removeTransaction(QUuid transactionUid);
     void reset();
 
 private:

@@ -9,6 +9,9 @@
 #include <QUuid>
 #include <QVector>
 
+constexpr const int ObjectRole = Qt::UserRole + 1;
+constexpr const int UIDRole = Qt::UserRole + 2;
+
 TransactionsWidget::TransactionsWidget(QWidget* parent) : QWidget(parent), ui(new Ui::TransactionsWidget)
 {
     ui->setupUi(this);
@@ -59,13 +62,19 @@ void TransactionsWidget::customMenuRequested(QPoint pos)
     static const QIcon deleteIcon = QPixmap(":/icns/black/resources/icons/trash.svg");
 
     QList<QModelIndex> selectedIndexes = ui->tableView->selectionModel()->selectedIndexes();
-    std::transform(selectedIndexes.cbegin(), selectedIndexes.cend(), selectedIndexes.begin(), [this](const QModelIndex& index) { return _proxyModel->mapToSource(index); });
+    std::transform(selectedIndexes.cbegin(), selectedIndexes.cend(), selectedIndexes.begin(), [this](const QModelIndex& index) {
+        return _proxyModel->mapToSource(index);
+    });
+
+    // Sort indexes to keep valid indexes during deletion (we start by the higher index to avoid shifting indexes in transactions list stored in Account)
+    std::sort(selectedIndexes.begin(), selectedIndexes.end(), [](const QModelIndex& a, const QModelIndex& b) {
+        return a.row() > b.row();
+    });
 
     auto* menu = new QMenu(this);
     menu->addAction(deleteIcon, "Delete Transaction(s)", this, [model, selectedIndexes]() {
-        for (const QModelIndex index: selectedIndexes) {
-            model->removeRows(index.row(), 1, QModelIndex());
-        }
+        for (const QModelIndex& index: selectedIndexes)
+            model->removeTransaction(model->data(index, UIDRole).toUuid());
     });
     menu->popup(ui->tableView->viewport()->mapToGlobal(pos));
 }
