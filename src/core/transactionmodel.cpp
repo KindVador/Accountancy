@@ -4,6 +4,9 @@
 
 QList<QString> TransactionModel::headerLabels = {"Date", "Name", "Amount", "Balance", "Status", "Comment"};
 
+constexpr const int ObjectRole = Qt::UserRole + 1;
+constexpr const int UIDRole = Qt::UserRole + 2;
+
 TransactionModel::TransactionModel(Account* account) : _account(account)
 {
 }
@@ -66,6 +69,8 @@ QVariant TransactionModel::data(const QModelIndex& index, int role) const
             default:
                 return {};
         }
+    } else if (role == UIDRole) {
+        return t->getUid();
     }
     return {};
 }
@@ -87,4 +92,30 @@ void TransactionModel::reset()
     beginResetModel();
     _account = nullptr;
     endResetModel();
+}
+
+bool TransactionModel::removeRows(int row, int count, const QModelIndex& parent)
+{
+    if (_account == nullptr)
+        return false;
+
+    beginRemoveRows(parent, row, row + count - 1);
+    for (int i = row; i < row + count; ++i) {
+        Transaction* transaction = _account->transactionAt(i);
+        if (transaction == nullptr)
+            continue;
+
+        _account->removeTransaction(transaction);
+    }
+    endRemoveRows();
+    return true;
+}
+
+bool TransactionModel::removeTransaction(QUuid transactionUid)
+{
+    bool res = false;
+    beginResetModel();
+    res = _account->removeTransaction(transactionUid);
+    endResetModel();
+    return res;
 }

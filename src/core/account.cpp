@@ -2,6 +2,7 @@
 #include "financialinstitution.hpp"
 
 #include <QJsonArray>
+#include <algorithm>
 
 // Constructors
 Account::Account()
@@ -58,23 +59,39 @@ QList<QUuid> Account::getOwnersUid() const
     return ids;
 }
 
-void Account::addTransaction(Transaction* transaction)
+bool Account::addTransaction(Transaction* transaction)
 {
     // check if transaction already exist in account
     if (transaction == nullptr || isTransactionRegistered(transaction)) {
         qWarning() << "Null Transaction or Transaction already registered in this account";
-        return;
+        return false;
     }
 
     _transactions.append(transaction);
+    return true;
 }
 
-void Account::removeTransaction(Transaction* transaction)
+bool Account::removeTransaction(Transaction* transaction)
 {
     if (transaction == nullptr)
-        return;
+        return false;
 
-    _transactions.removeOne(transaction);
+    return _transactions.removeOne(transaction);
+}
+
+bool Account::removeTransaction(const QUuid& uid)
+{
+    if (uid.isNull())
+        return false;
+
+    auto res = std::find_if(_transactions.cbegin(), _transactions.cend(), [this, &uid](const Transaction* t) {
+        return t != nullptr && t->getUid() == uid;
+    });
+
+    if (res != _transactions.cend())
+        return removeTransaction(*res);
+
+    return false;
 }
 
 const FinancialInstitution* Account::getInstitution() const
@@ -94,6 +111,11 @@ int Account::count() const
 
 Transaction* Account::transactionAt(int pos) const
 {
+    if (pos < 0 || pos > _transactions.count() - 1) {
+        qCritical() << "Invalid transaction position, received " << pos << " instead of value between [0:" << _transactions.count() - 1 << "]";
+        return nullptr;
+    }
+
     return _transactions.at(pos);
 }
 
@@ -295,14 +317,17 @@ void Account::updateTransactionsBalance()
     }
 }
 
-void Account::addTransactions(const QList<Transaction*>& transactions)
+bool Account::addTransactions(const QList<Transaction*>& transactions)
 {
+    bool res = true;
     // add transactions to the selected count
     for (Transaction* t: transactions)
-        addTransaction(t);
+        res &= addTransaction(t);
 
     // update Current Balance for each Transaction
     updateTransactionsBalance();
+
+    return res;
 }
 
 bool Account::isTransactionRegistered(const Transaction* transaction) const

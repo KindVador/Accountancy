@@ -80,9 +80,10 @@ public:
     [[nodiscard]] QString getDisplayedName() const;
     [[nodiscard]] QList<QUuid> getOwnersUid() const;
     [[nodiscard]] QList<const Owner*>& getOwners();
-    void addTransaction(Transaction* transaction);
-    void removeTransaction(Transaction* transaction);
-    void addTransactions(const QList<Transaction*>& transactions);
+    bool addTransaction(Transaction* transaction);
+    bool removeTransaction(Transaction* transaction);
+    bool removeTransaction(const QUuid& uid);
+    bool addTransactions(const QList<Transaction*>& transactions);
     [[nodiscard]] int count() const;
     [[nodiscard]] Transaction* transactionAt(int pos) const;
     void addOwner(const Owner* owner);

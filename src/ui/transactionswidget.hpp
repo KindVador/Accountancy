@@ -30,6 +30,9 @@ public:
     void setModel(TransactionModel* model);
     void setTitle(const QString& text);
 
+public slots:
+    void customMenuRequested(QPoint pos);
+
 private:
     Ui::TransactionsWidget* ui;
     std::unique_ptr<QSortFilterProxyModel> _proxyModel = std::make_unique<QSortFilterProxyModel>();
