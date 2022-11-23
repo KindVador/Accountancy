@@ -9,6 +9,7 @@
 #include <QUuid>
 
 class Account;
+class Category;
 
 enum class TransactionStatus : int
 {
@@ -92,6 +93,7 @@ private:
     double _current_balance = 0.0;
     Account* _accountFrom = nullptr;
     Account* _accountTo = nullptr;
+    const Category* _category = nullptr;
 };
 
 Q_DECLARE_METATYPE(Transaction*)

@@ -15,7 +15,9 @@ set(HEADER_FILES
         model.hpp
         controller.hpp
         importconfig.hpp
-        importconfigmodel.hpp)
+        importconfigmodel.hpp
+        category.hpp
+        subcategory.hpp)
 
 set(SOURCE_FILES
         account.cpp
@@ -33,7 +35,9 @@ set(SOURCE_FILES
         model.cpp
         controller.cpp
         importconfig.cpp
-        importconfigmodel.cpp)
+        importconfigmodel.cpp
+        category.cpp
+        subcategory.cpp)
 
 add_library(AccountancyCore ${HEADER_FILES} ${SOURCE_FILES})
 
