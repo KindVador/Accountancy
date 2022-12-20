@@ -20,3 +20,13 @@ QVector<const SubCategory*> Category::subCategories() const
 {
     return _subCategories;
 }
+
+void Category::read(const QJsonObject& json)
+{
+    // TODO implement Category::read(const QJsonObject& json)
+}
+
+void Category::write(QJsonObject& json) const
+{
+    // TODO implement Category::write(QJsonObject& json)
+}

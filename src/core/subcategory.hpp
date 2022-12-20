@@ -3,6 +3,7 @@
 
 #include <QObject>
 
+#include "Interfaces/iserializable.hpp"
 #include "category.hpp"
 
 class SubCategory : public Category
@@ -17,7 +18,11 @@ public:
     void setName(const QString& name);
 
     [[nodiscard]] const Category* getParent() const;
-    void setParent1(const Category* parent);
+    void setParent(const Category* parent);
+
+    // Serialization
+    void read(const QJsonObject& json) override;
+    void write(QJsonObject& json) const override;
 
 private:
     QString _name;

@@ -16,3 +16,11 @@ LoanAccount::LoanAccount(Currency* currency, const Owner* owner, float initialBa
 
     _uid = QUuid::createUuid();
 }
+
+void LoanAccount::read(const QJsonObject& json)
+{
+}
+
+void LoanAccount::write(QJsonObject& json) const
+{
+}

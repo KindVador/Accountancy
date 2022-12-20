@@ -5,12 +5,14 @@
 #include <QString>
 #include <QUuid>
 
-class Currency
+#include "Interfaces/iserializable.hpp"
+
+class Currency : public ISerializable
 {
 public:
     Currency();
     explicit Currency(QString name, QString symbol);
-    ~Currency() = default;
+    ~Currency() override = default;
 
     static Currency* fromJson(const QJsonObject& json);
 
@@ -26,8 +28,8 @@ public:
     [[nodiscard]] QString getDisplayedName() const;
 
     // Serialization
-    void read(const QJsonObject& json);
-    void write(QJsonObject& json) const;
+    void read(const QJsonObject& json) override;
+    void write(QJsonObject& json) const override;
 
 private:
     QUuid _uid;

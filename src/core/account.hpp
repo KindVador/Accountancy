@@ -6,6 +6,7 @@
 #include <QString>
 #include <QUuid>
 
+#include "Interfaces/iserializable.hpp"
 #include "currency.hpp"
 #include "owner.hpp"
 
@@ -41,7 +42,7 @@ static QHash<QString, AccountType> STRING_2_ACCOUNT_TYPE{
         {"Loan", AccountType::Loan},
         {"Investment", AccountType::Investment}};
 
-class Account
+class Account : public ISerializable
 {
     Q_DISABLE_COPY(Account)
 
@@ -50,7 +51,7 @@ public:
     Account(const FinancialInstitution* _institution, AccountType type, Currency* currency, const QList<const Owner*>& owners,
             float initialBalance, float warningBalance, QString accountNumber, QString comment,
             bool isIncludedInTotal, bool isHidden);
-    ~Account();
+    ~Account() override;
 
     static Account* fromJson(const QJsonObject& json);
 
@@ -90,8 +91,8 @@ public:
     void updateTransactionsBalance();
 
     // Serialization
-    void read(const QJsonObject& json);
-    void write(QJsonObject& json) const;
+    void read(const QJsonObject& json) override;
+    void write(QJsonObject& json) const override;
 
 private:
     bool isTransactionRegistered(const Transaction* transaction) const;

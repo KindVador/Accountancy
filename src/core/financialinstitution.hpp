@@ -5,10 +5,11 @@
 #include <QString>
 #include <QUuid>
 
-#include "datafileinterface.hpp"
+#include "Interfaces/idatafileinterface.hpp"
+#include "Interfaces/iserializable.hpp"
 #include "transaction.hpp"
 
-class FinancialInstitution : public DataFileInterface
+class FinancialInstitution : public IDataFileInterface, public ISerializable
 {
 public:
     FinancialInstitution();
@@ -23,12 +24,12 @@ public:
     [[nodiscard]] const QString& getName() const;
     void setName(const QString& name);
 
-    // DataFileInterface
+    // IDataFileInterface
     [[nodiscard]] QList<Transaction*> readTransactionsFromFile(QFile& dataFile, const ImportConfig& config) const override;
 
     // Serialization
-    void read(const QJsonObject& json);
-    void write(QJsonObject& json) const;
+    void read(const QJsonObject& json) override;
+    void write(QJsonObject& json) const override;
 
 private:
     QUuid _uid;

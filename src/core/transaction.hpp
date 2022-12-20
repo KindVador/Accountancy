@@ -8,6 +8,8 @@
 #include <QString>
 #include <QUuid>
 
+#include "Interfaces/iserializable.hpp"
+
 class Account;
 class Category;
 
@@ -37,13 +39,13 @@ static QHash<QString, TransactionStatus> STRING_2_TRANSACTION_STATUS{
         {"Locked", TransactionStatus::Locked},
         {"Cancelled", TransactionStatus::Cancelled}};
 
-class Transaction
+class Transaction : public ISerializable
 {
 public:
     Transaction();
     explicit Transaction(QString& name, QString& comment, TransactionStatus status, QDateTime& datetime, double amount);
     explicit Transaction(QString name, QString comment, TransactionStatus status, QDateTime datetime, double amount);
-    ~Transaction() = default;
+    ~Transaction() override = default;
     static Transaction fromJson(const QJsonObject& json);
     // Copy constructor
     Transaction(const Transaction& origin);
@@ -77,8 +79,8 @@ public:
     void setCurrentBalance(double currentBalance);
 
     // Serialization
-    void read(const QJsonObject& json);
-    void write(QJsonObject& json) const;
+    void read(const QJsonObject& json) override;
+    void write(QJsonObject& json) const override;
 
     // public API
     void printToConsole() const;

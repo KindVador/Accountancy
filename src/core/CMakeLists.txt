@@ -1,4 +1,6 @@
 set(HEADER_FILES
+        Interfaces/iserializable.hpp
+        Interfaces/idatafileinterface.hpp
         account.hpp
         currency.hpp
         loanaccount.hpp
@@ -10,7 +12,6 @@ set(HEADER_FILES
         accountfilter.hpp
         financialinstitutionmodel.hpp
         transactionmodel.hpp
-        datafileinterface.hpp
         financialinstitution.hpp
         model.hpp
         controller.hpp
