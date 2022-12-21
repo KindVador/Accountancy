@@ -19,10 +19,12 @@ add_subdirectory(../external_libs/Catch2 "${CMAKE_CURRENT_BINARY_DIR}/catch2")
 set(TEST_SRC
         main.cpp
         core/tst_account.cpp
+        core/tst_category.cpp
         core/tst_currency.cpp
         core/tst_dataimport.cpp
         core/tst_financialinstitution.cpp
         core/tst_owner.cpp
+        core/tst_subcategory.cpp
         core/tst_transaction.cpp
         core/tst_import_config.cpp
         )

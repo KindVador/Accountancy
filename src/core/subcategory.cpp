@@ -1,31 +1,26 @@
 #include "subcategory.hpp"
 
-const QString& SubCategory::getName() const
-{
-    return _name;
-}
+#include <QJsonObject>
 
-void SubCategory::setName(const QString& name)
+QUuid SubCategory::getParent() const
 {
-    _name = name;
+    return _parentUid;
 }
-const Category* SubCategory::getParent() const
+void SubCategory::setParent(const QUuid& parent)
 {
-    return _parent;
-}
-void SubCategory::setParent(const Category* parent)
-{
-    _parent = parent;
+    _parentUid = parent;
 }
 
 void SubCategory::read(const QJsonObject& json)
 {
     Category::read(json);
-    // TODO implement SubCategory::read(const QJsonObject& json)
+
+    if (json.contains("parentUid") && json["parentUid"].isString())
+        _parentUid = QUuid(json["parentUid"].toString());
 }
 
 void SubCategory::write(QJsonObject& json) const
 {
     Category::write(json);
-    // TODO implement SubCategory::write(QJsonObject& json)
+    json["parentUid"] = _parentUid.toString();
 }
