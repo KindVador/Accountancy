@@ -67,8 +67,13 @@ TEST_CASE("Category writeJson", "[core]")
 TEST_CASE("Category readJson", "[core]")
 {
     Category c{"Category1"};
+    SubCategory sc{"SubCategory1", &c};
+    c.addSubCategory(&sc);
     QJsonObject jsonData;
     c.write(jsonData);
     CHECK((jsonData.contains("uid") && !jsonData["uid"].isNull()));
     CHECK((jsonData.contains("name") && jsonData["name"] == "Category1"));
+    CHECK(!c.subCategories().isEmpty());
+    const SubCategory* sc1 = c.subCategories().at(0);
+    CHECK(sc1->getName() == "SubCategory1");
 }
