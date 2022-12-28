@@ -13,6 +13,7 @@ class Category : public ISerializable
 
 public:
     Category();
+    explicit Category(QString name);
     ~Category() override = default;
 
     // Getter & Setter

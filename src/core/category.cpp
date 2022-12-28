@@ -9,6 +9,11 @@ Category::Category()
     _uid = QUuid::createUuid();
 }
 
+Category::Category(QString name) : _name(std::move(name))
+{
+    _uid = QUuid::createUuid();
+}
+
 void Category::addSubCategory(const SubCategory* subCategory)
 {
     return _subCategories.append(subCategory);

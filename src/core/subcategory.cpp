@@ -2,10 +2,19 @@
 
 #include <QJsonObject>
 
+SubCategory::SubCategory(QString name, const Category* parent)
+{
+    _uid = QUuid::createUuid();
+    _name = std::move(name);
+    if (parent != nullptr)
+        setParent(parent->getUid());
+}
+
 QUuid SubCategory::getParent() const
 {
     return _parentUid;
 }
+
 void SubCategory::setParent(const QUuid& parent)
 {
     _parentUid = parent;

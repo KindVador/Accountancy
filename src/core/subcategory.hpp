@@ -9,6 +9,7 @@ class SubCategory : public Category
 
 public:
     SubCategory() = default;
+    explicit SubCategory(QString name, const Category* parent);
     ~SubCategory() override = default;
 
     [[nodiscard]] QUuid getParent() const;
