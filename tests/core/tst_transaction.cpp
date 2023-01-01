@@ -1,5 +1,6 @@
 #include <catch2/catch.hpp>
 
+#include "../../src/core/category.hpp"
 #include "../../src/core/transaction.hpp"
 
 TEST_CASE("Transaction defaultConstructor", "[core]")
@@ -51,4 +52,23 @@ TEST_CASE("Transaction readJson", "[core]")
     CHECK(t1.getStatus() == TransactionStatus::Created);
     CHECK(t1.getDateTime() == QDateTime(QDate(2021, 12, 25), QTime(8, 15, 59)));
     CHECK(t1.getAmount() == -14.99);
+}
+
+TEST_CASE("Transaction get/set category", "[core]")
+{
+    Transaction t(QString("Name1"), QString("Comment1"), TransactionStatus::Created, QDateTime(QDate(2021, 12, 25), QTime(8, 15, 59)), -14.99);
+    Category c = Category("Category1");
+    CHECK(t.getCategory() == nullptr);
+    t.setCategory(&c);
+    CHECK(t.getCategory() != nullptr);
+    CHECK(t.getCategory()->getUid() == c.getUid());
+    CHECK(t.getCategory()->getName() == "Category1");
+}
+
+TEST_CASE("Transaction printToConsole", "[core]")
+{
+    Transaction t(QString("Name1"), QString("Comment1"), TransactionStatus::Created, QDateTime(QDate(2021, 12, 25), QTime(8, 15, 59)), -14.99);
+    Category c = Category("Category1");
+    t.setCategory(&c);
+    t.printToConsole();
 }

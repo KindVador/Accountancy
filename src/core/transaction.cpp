@@ -1,4 +1,5 @@
 #include "transaction.hpp"
+#include "category.hpp"
 #include <QDebug>
 #include <utility>
 
@@ -7,13 +8,8 @@ Transaction::Transaction()
     _uid = QUuid::createUuid();
 }
 
-Transaction::Transaction(QString& name, QString& comment, TransactionStatus status, QDateTime& datetime, double amount)
-    : _name(name), _comment(comment), _status(status), _dateTime(datetime), _amount(amount)
-{
-    _uid = QUuid::createUuid();
-}
-
-Transaction::Transaction(QString name, QString comment, TransactionStatus status, QDateTime datetime, double amount) : _name(std::move(name)), _comment(std::move(comment)), _status(status), _dateTime(datetime), _amount(amount)
+Transaction::Transaction(QString name, QString comment, TransactionStatus status, QDateTime datetime, double amount)
+    : _name(std::move(name)), _comment(std::move(comment)), _status(status), _dateTime(std::move(datetime)), _amount(amount)
 {
     _uid = QUuid::createUuid();
 }
@@ -25,6 +21,7 @@ Transaction::Transaction(const Transaction& origin) : _name(origin._name), _comm
     _uid = QUuid::fromString(origin._uid.toString());
     _accountFrom = origin._accountFrom;
     _accountTo = origin._accountTo;
+    _category = origin._category;
 }
 
 // Move constructor
@@ -34,10 +31,12 @@ Transaction::Transaction(Transaction&& origin) noexcept : _name(std::move(origin
     _uid = QUuid::fromString(origin._uid.toString());
     _accountFrom = origin._accountFrom;
     _accountTo = origin._accountTo;
+    _category = origin._category;
 
     // leave origin object in a state in which it is safe to run the destructor
     origin._accountFrom = nullptr;
     origin._accountTo = nullptr;
+    origin._category = nullptr;
 }
 
 // Copy-Assignment operator
@@ -52,6 +51,7 @@ Transaction& Transaction::operator=(const Transaction& rhs)
     _current_balance = rhs._current_balance;
     _accountFrom = rhs._accountFrom;
     _accountTo = rhs._accountTo;
+    _category = rhs._category;
     return *this;
 }
 
@@ -69,10 +69,12 @@ Transaction& Transaction::operator=(Transaction&& rhs) noexcept
         _current_balance = rhs._current_balance;
         _accountFrom = rhs._accountFrom;
         _accountTo = rhs._accountTo;
+        _category = rhs._category;
 
         // leave rhs object in a destructible state
         rhs._accountFrom = nullptr;
         rhs._accountTo = nullptr;
+        rhs._category = nullptr;
     }
     return *this;
 }
@@ -165,6 +167,8 @@ void Transaction::write(QJsonObject& json) const
     json["datetime"] = _dateTime.toString(Qt::ISODateWithMs);
     json["amount"] = _amount;
     json["current_balance"] = _current_balance;
+    if (_category)
+        json["category"] = _category->getUid().toString();
 }
 
 QUuid Transaction::getUid() const
@@ -195,6 +199,7 @@ inline void swap(Transaction& lhs, Transaction& rhs)
     swap(lhs._current_balance, rhs._current_balance);
     swap(lhs._accountFrom, rhs._accountFrom);// swap the pointers, not the objects
     swap(lhs._accountTo, rhs._accountTo);    // swap the pointers, not the objects
+    swap(lhs._category, rhs._category);      // swap the pointers, not the objects
 }
 
 Transaction Transaction::fromJson(const QJsonObject& json)
@@ -229,5 +234,33 @@ bool Transaction::operator>=(const Transaction& rhs) const
 
 bool operator==(const Transaction& lhs, const Transaction& rhs)
 {
-    return lhs._name == rhs._name && lhs._dateTime == rhs._dateTime && lhs._amount == rhs._amount;
+    if (lhs._name != rhs._name)
+        return false;
+
+    if (lhs._dateTime != rhs._dateTime)
+        return false;
+
+    if (lhs._amount != rhs._amount)
+        return false;
+
+    if (lhs._comment != rhs._comment)
+        return false;
+
+    if (lhs._status != rhs._status)
+        return false;
+
+    if (lhs._category != rhs._category)
+        return false;
+
+    return true;
+}
+
+const Category* Transaction::getCategory() const
+{
+    return _category;
+}
+
+void Transaction::setCategory(const Category* category)
+{
+    _category = category;
 }

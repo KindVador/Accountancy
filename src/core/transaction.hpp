@@ -43,7 +43,6 @@ class Transaction : public ISerializable
 {
 public:
     Transaction();
-    explicit Transaction(QString& name, QString& comment, TransactionStatus status, QDateTime& datetime, double amount);
     explicit Transaction(QString name, QString comment, TransactionStatus status, QDateTime datetime, double amount);
     ~Transaction() override = default;
     static Transaction fromJson(const QJsonObject& json);
@@ -77,6 +76,8 @@ public:
     void setAmount(double amount);
     [[nodiscard]] double getCurrentBalance() const;
     void setCurrentBalance(double currentBalance);
+    [[nodiscard]] const Category* getCategory() const;
+    void setCategory(const Category* category);
 
     // Serialization
     void read(const QJsonObject& json) override;
@@ -93,8 +94,8 @@ private:
     QDateTime _dateTime;
     double _amount = 0.0;
     double _current_balance = 0.0;
-    Account* _accountFrom = nullptr;
-    Account* _accountTo = nullptr;
+    const Account* _accountFrom = nullptr;
+    const Account* _accountTo = nullptr;
     const Category* _category = nullptr;
 };
 
