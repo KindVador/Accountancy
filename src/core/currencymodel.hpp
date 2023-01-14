@@ -21,8 +21,7 @@ public:
 
     void addCurrency(Currency* currency);
     Currency* addCurrency(const QString& name, const QString& symbol);
-    Currency* addCurrency(QString&& name, QString&& symbol);
-    void removeCurrency(Currency* currency);
+    void removeCurrency(const Currency* currency);
     void removeCurrency(QUuid uid);
     [[nodiscard]] Currency* getCurrency(const QString& name) const;
     [[nodiscard]] Currency* getCurrency(QUuid uid) const;

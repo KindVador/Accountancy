@@ -16,7 +16,7 @@ Model* Model::instance()
 }
 
 Model::Model() : _ownerModel(new OwnerModel), _currencyModel(new CurrencyModel), _accountModel(new AccountModel),
-                 _accountFilteredModel(new AccountFilter), _institutionsModel(new FinancialInstitutionModel),
+                 _institutionsModel(new FinancialInstitutionModel), _accountFilteredModel(new AccountFilter),
                  _importConfigModel(new ImportConfigModel)
 {
     // set source model for AccountFilter
@@ -55,7 +55,11 @@ CurrencyModel* Model::getCurrencyModel()
 
 float Model::balanceForOwner(const Owner* owner)
 {
-    return 0;
+    if (owner == nullptr)
+        return 0;
+
+    // TODO: implement this method to compute the Total balance of a Owner
+    return -1;
 }
 
 AccountModel* Model::getAccountModel() const
@@ -89,7 +93,7 @@ void Model::setOwnerFilter(const QString& ownerName)
         return;
 
     qWarning() << "Model::setOwnerFilter" << ownerName;
-    Owner* owner = _ownerModel->getOwner(ownerName);
+    const Owner* owner = _ownerModel->getOwner(ownerName);
     _accountFilteredModel->setActiveOwnerUid(owner->getUid());
 }
 
@@ -112,7 +116,7 @@ void Model::write(QJsonObject& json) const
     if (_currencyModel != nullptr) {
         QJsonArray currencies;
         for (int i = 0; i < _currencyModel->rowCount(QModelIndex()); ++i) {
-            auto* currency = _currencyModel->data(_currencyModel->index(i, 0), ObjectRole).value<Currency*>();
+            const Currency* currency = _currencyModel->data(_currencyModel->index(i, 0), ObjectRole).value<Currency*>();
             QJsonObject currencyJson;
             currency->write(currencyJson);
             currencies.append(currencyJson);
@@ -124,7 +128,7 @@ void Model::write(QJsonObject& json) const
     if (_ownerModel != nullptr) {
         QJsonArray owners;
         for (int i = 0; i < _ownerModel->rowCount(QModelIndex()); ++i) {
-            auto* owner = _ownerModel->data(_ownerModel->index(i, 0), ObjectRole).value<Owner*>();
+            const Owner* owner = _ownerModel->data(_ownerModel->index(i, 0), ObjectRole).value<Owner*>();
             QJsonObject ownerJson;
             owner->write(ownerJson);
             owners.append(ownerJson);
@@ -136,7 +140,7 @@ void Model::write(QJsonObject& json) const
     if (_institutionsModel != nullptr) {
         QJsonArray institutions;
         for (int i = 0; i < _institutionsModel->rowCount(QModelIndex()); ++i) {
-            auto* institution = _institutionsModel->data(_institutionsModel->index(i, 0), ObjectRole).value<FinancialInstitution*>();
+            const FinancialInstitution* institution = _institutionsModel->data(_institutionsModel->index(i, 0), ObjectRole).value<FinancialInstitution*>();
             QJsonObject institutionJson;
             institution->write(institutionJson);
             institutions.append(institutionJson);
@@ -148,7 +152,7 @@ void Model::write(QJsonObject& json) const
     if (_accountModel != nullptr) {
         QJsonArray accounts;
         for (int i = 0; i < _accountModel->rowCount(QModelIndex()); ++i) {
-            auto* account = _accountModel->data(_accountModel->index(i, 0), ObjectRole).value<Account*>();
+            const Account* account = _accountModel->data(_accountModel->index(i, 0), ObjectRole).value<Account*>();
             QJsonObject accountJson;
             account->write(accountJson);
             accounts.append(accountJson);
@@ -160,7 +164,7 @@ void Model::write(QJsonObject& json) const
     if (_importConfigModel != nullptr) {
         QJsonArray importConfigs;
         for (int i = 0; i < _importConfigModel->rowCount(QModelIndex()); ++i) {
-            auto* importConfig = _importConfigModel->data(_importConfigModel->index(i, 0), ObjectRole).value<ImportConfig*>();
+            const ImportConfig* importConfig = _importConfigModel->data(_importConfigModel->index(i, 0), ObjectRole).value<ImportConfig*>();
             QJsonObject importConfigJson;
             importConfig->write(importConfigJson);
             importConfigs.append(importConfigJson);

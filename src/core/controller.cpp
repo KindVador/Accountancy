@@ -40,20 +40,19 @@ void Controller::showMainWindow()
     _mainWindow->show();
 }
 
-Owner* Controller::addOwner(const QString& name, float warningBalance, const QString& comment, bool isHidden)
+Owner* Controller::addOwner(const QString& name, double warningBalance, const QString& comment, bool isHidden)
 {
     if (_model == nullptr)
         return nullptr;
 
     // model update
-    auto ownersModel = _model->getOwnerModel();
-    if (ownersModel != nullptr)
+    if (auto ownersModel = _model->getOwnerModel(); ownersModel != nullptr)
         return ownersModel->addOwner(name, warningBalance, comment, isHidden);
 
     return nullptr;
 }
 
-Account* Controller::addAccount(const FinancialInstitution* institution, AccountType type, Currency* currency,
+Account* Controller::addAccount(const FinancialInstitution* institution, AccountType type, const Currency* currency,
                                 const QList<const Owner*>& owners, float initialBalance, float warningBalance,
                                 const QString& accountNumber, const QString& comment, bool isIncludedInTotal,
                                 bool isHidden)
@@ -71,7 +70,7 @@ void Controller::onSelectedOwner(const QModelIndex& index)
     if (!index.isValid() || _model == nullptr)
         return;
 
-    OwnerModel* model = _model->getOwnerModel();
+    const OwnerModel* model = _model->getOwnerModel();
     auto ownerName = model->data(index, Qt::DisplayRole).value<QString>();
     QUuid ownerUid = model->data(index, ObjectRole).value<Owner*>()->getUid();
     qDebug() << "Controller::onSelectedOwner" << index.isValid() << ownerName << ownerUid;
@@ -83,7 +82,7 @@ void Controller::onSelectedOwner(const QModelIndex& index)
 
 void Controller::onSelectedAccount(const QModelIndex& index)
 {
-    AccountModel* model = _model->getAccountModel();
+    const AccountModel* model = _model->getAccountModel();
     auto accountName = model->data(index, Qt::DisplayRole).value<QString>();
     qDebug() << "Controller::onSelectedAccount" << index.isValid() << accountName;
 }
@@ -102,7 +101,7 @@ Controller* Controller::instance()
     return _singleton;
 }
 
-void Controller::addTransactionToAccount(Transaction* transaction, Account* account)
+void Controller::addTransactionToAccount(Transaction* transaction, Account* account) const
 {
     if (transaction == nullptr || account == nullptr)
         return;
@@ -184,8 +183,12 @@ bool Controller::loadFile(const QString& filePath)
 
 bool Controller::createNewFile(const QString& filePath)
 {
+    // check that mode is not null
+    if (_model == nullptr)
+        return false;
+
     // check if a model has unsaved modifications
-    if (_model != nullptr && _model->isDirty()) {
+    if (_model->isDirty()) {
         // ask user if he wants to save modifications
         int res = QMessageBox::question(nullptr,
                                         "Save modifications",

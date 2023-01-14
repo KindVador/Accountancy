@@ -12,8 +12,7 @@ class Owner : public ISerializable
 {
 public:
     Owner();
-    Owner(QString& name, double warningBalance, QString& comment, bool isHidden);
-    Owner(QString name, double warningBalance, QString comment, bool isHidden);
+    Owner(const QString& name, double warningBalance, const QString& comment, bool isHidden);
     ~Owner() override = default;
 
     static Owner* fromJson(const QJsonObject& json);

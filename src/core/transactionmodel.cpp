@@ -24,7 +24,7 @@ QVariant TransactionModel::data(const QModelIndex& index, int role) const
     if (!index.isValid() || _account == nullptr)
         return {};
 
-    Transaction* t = _account->transactionAt(index.row());
+    const Transaction* t = _account->transactionAt(index.row());
     if (t == nullptr)
         return {};
 

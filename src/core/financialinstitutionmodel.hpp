@@ -18,7 +18,7 @@ public:
 
     void addFinancialInstitution(FinancialInstitution* institution);
     FinancialInstitution* addFinancialInstitution(const QString& name);
-    void removeFinancialInstitution(FinancialInstitution* institution);
+    void removeFinancialInstitution(const FinancialInstitution* institution);
     void removeFinancialInstitution(QUuid uid);
 
     [[nodiscard]] FinancialInstitution* getFinancialInstitution(QUuid uid) const;

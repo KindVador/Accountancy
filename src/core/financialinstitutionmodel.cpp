@@ -62,7 +62,7 @@ void FinancialInstitutionModel::removeFinancialInstitution(QUuid uid)
     endResetModel();
 }
 
-void FinancialInstitutionModel::removeFinancialInstitution(FinancialInstitution* institution)
+void FinancialInstitutionModel::removeFinancialInstitution(const FinancialInstitution* institution)
 {
     beginResetModel();
     auto res = std::find_if(_institutions.cbegin(), _institutions.cend(), [&institution](const FinancialInstitution* other) { return institution == other; });

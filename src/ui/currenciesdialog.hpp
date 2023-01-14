@@ -25,7 +25,7 @@ public slots:
 
 private slots:
     void onAddCurrencyAction();
-    void onRemoveCurrencyAction();
+    void onRemoveCurrencyAction() const;
 
 private:
     Ui::CurrenciesDialog* ui;

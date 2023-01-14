@@ -34,11 +34,11 @@ signals:
 private slots:
     void onCreateAction();
     void onOpenAction();
-    void onSaveAction();
+    void onSaveAction() const;
     void onSaveAsAction();
     void showCredits();
     void onActionImport();
-    void contextualOwnerMenuRequested(const QPoint& pos);
+    void contextualOwnerMenuRequested(const QPoint& pos) const;
     void onActionMainDock(bool checked);
     void onAccountDoubleClicked(const QModelIndex& index);
     void onAddOwnerAction();

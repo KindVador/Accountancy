@@ -37,7 +37,7 @@ void AccountModel::addAccount(Account* account)
     _accounts.append(account);
 }
 
-Account* AccountModel::addAccount(const FinancialInstitution* institution, AccountType type, Currency* currency,
+Account* AccountModel::addAccount(const FinancialInstitution* institution, AccountType type, const Currency* currency,
                                   const QList<const Owner*>& owners, float initialBalance, float warningBalance,
                                   const QString& accountNumber, const QString& comment, bool isIncludedInTotal,
                                   bool isHidden)

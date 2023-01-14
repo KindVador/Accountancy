@@ -26,7 +26,7 @@ bool Category::removeSubCategory(const SubCategory* subCategory)
 
 bool Category::removeSubCategoryByName(const QString& name)
 {
-    return _subCategories.removeIf([&name](const SubCategory* sc) -> bool { return sc != nullptr && sc->getName() == name; });
+    return _subCategories.removeIf([&name](const SubCategory* sc) { return sc != nullptr && sc->getName() == name; });
 }
 
 QVector<const SubCategory*> Category::subCategories() const

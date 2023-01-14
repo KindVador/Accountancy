@@ -21,7 +21,7 @@ public:
     [[nodiscard]] QVariant data(const QModelIndex& index, int role) const override;
 
     void addOwner(Owner* owner);
-    Owner* addOwner(const QString& name, float warningBalance, const QString& comment, bool isHidden);
+    Owner* addOwner(const QString& name, double warningBalance, const QString& comment, bool isHidden);
     void removeOwner(const QModelIndex& index);
     [[nodiscard]] Owner* getOwner(const QString& name) const;
     [[nodiscard]] Owner* getOwner(QUuid uid) const;

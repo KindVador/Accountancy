@@ -23,7 +23,7 @@ ImportDataDialog::ImportDataDialog(QWidget* parent) : QDialog(parent),
 
     connect(ui->addFileButton, &QPushButton::clicked, this, &ImportDataDialog::addFiles);
     connect(ui->removeFileButton, &QPushButton::clicked, this, &ImportDataDialog::removeSelectedFiles);
-    connect(ui->ownerComboBox, &QComboBox::currentTextChanged, this, [this](const QString& text) { Model::instance()->setOwnerFilter(text); });
+    connect(ui->ownerComboBox, &QComboBox::currentTextChanged, this, [](const QString& text) { Model::instance()->setOwnerFilter(text); });
 }
 
 ImportDataDialog::~ImportDataDialog()
@@ -49,7 +49,7 @@ void ImportDataDialog::addFiles()
 void ImportDataDialog::removeSelectedFiles()
 {
     // remove selected items from the list
-    for (QListWidgetItem* item: ui->filesListWidget->selectedItems())
+    for (const QListWidgetItem* item: ui->filesListWidget->selectedItems())
         ui->filesListWidget->takeItem(ui->filesListWidget->indexFromItem(item).row());
 }
 
@@ -64,7 +64,7 @@ void ImportDataDialog::accept()
     auto financialInstitution = account->getInstitution();
 
     // Get selected import configuration to use for reading data
-    auto* config = ui->importConfigComboBox->currentData(ObjectRole).value<ImportConfig*>();
+    const ImportConfig* config = ui->importConfigComboBox->currentData(ObjectRole).value<ImportConfig*>();
 
     // read transactions from files
     QList<Transaction*> transactions;

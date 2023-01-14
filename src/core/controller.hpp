@@ -35,15 +35,15 @@ public:
 
     // OWNERS
     void addOwner(Owner* owner);
-    Owner* addOwner(const QString& name, float warningBalance, const QString& comment, bool isHidden);
+    Owner* addOwner(const QString& name, double warningBalance, const QString& comment, bool isHidden);
 
     // ACCOUNTS
-    Account* addAccount(const FinancialInstitution* institution, AccountType type, Currency* currency,
+    Account* addAccount(const FinancialInstitution* institution, AccountType type, const Currency* currency,
                         const QList<const Owner*>& owners, float initialBalance, float warningBalance,
                         const QString& accountNumber, const QString& comment, bool isIncludedInTotal, bool isHidden);
 
     // TRANSACTIONS
-    void addTransactionToAccount(Transaction* transaction, Account* account);
+    void addTransactionToAccount(Transaction* transaction, Account* account) const;
 
     // CREATE, LOAD or SAVE MODEL TO FILE
     bool createNewFile(const QString& filePath);

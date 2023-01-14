@@ -24,7 +24,7 @@ enum class AccountType : int
     Investment
 };
 
-static QHash<AccountType, QString> ACCOUNT_TYPE_2_STRING{
+static const QHash<AccountType, QString> ACCOUNT_TYPE_2_STRING{
         {AccountType::Checking, "Checking"},
         {AccountType::CreditCard, "CreditCard"},
         {AccountType::Savings, "Savings"},
@@ -33,7 +33,7 @@ static QHash<AccountType, QString> ACCOUNT_TYPE_2_STRING{
         {AccountType::Loan, "Loan"},
         {AccountType::Investment, "Investment"}};
 
-static QHash<QString, AccountType> STRING_2_ACCOUNT_TYPE{
+static const QHash<QString, AccountType> STRING_2_ACCOUNT_TYPE{
         {"Checking", AccountType::Checking},
         {"CreditCard", AccountType::CreditCard},
         {"Savings", AccountType::Savings},
@@ -48,7 +48,7 @@ class Account : public ISerializable
 
 public:
     Account();
-    Account(const FinancialInstitution* _institution, AccountType type, Currency* currency, const QList<const Owner*>& owners,
+    Account(const FinancialInstitution* _institution, AccountType type, const Currency* currency, const QList<const Owner*>& owners,
             float initialBalance, float warningBalance, QString accountNumber, QString comment,
             bool isIncludedInTotal, bool isHidden);
     ~Account() override;
@@ -95,9 +95,6 @@ public:
     void write(QJsonObject& json) const override;
 
 private:
-    bool isTransactionRegistered(const Transaction* transaction) const;
-
-private:
     QUuid _uid;
     const FinancialInstitution* _institution = nullptr;
     const Currency* _currency = nullptr;
@@ -110,6 +107,8 @@ private:
     bool _isHidden = false;
     AccountType _type = AccountType::Checking;
     QList<Transaction*> _transactions;
+
+    bool isTransactionRegistered(const Transaction* transaction) const;
 };
 
 Q_DECLARE_METATYPE(Account*)

@@ -23,7 +23,7 @@ enum class TransactionStatus : int
     Cancelled
 };
 
-static QHash<TransactionStatus, QString> TRANSACTION_STATUS_2_STRING{
+static const QHash<TransactionStatus, QString> TRANSACTION_STATUS_2_STRING{
         {TransactionStatus::Planned, "Planned"},
         {TransactionStatus::Created, "Created"},
         {TransactionStatus::Imported, "Imported"},
@@ -31,7 +31,7 @@ static QHash<TransactionStatus, QString> TRANSACTION_STATUS_2_STRING{
         {TransactionStatus::Locked, "Locked"},
         {TransactionStatus::Cancelled, "Cancelled"}};
 
-static QHash<QString, TransactionStatus> STRING_2_TRANSACTION_STATUS{
+static const QHash<QString, TransactionStatus> STRING_2_TRANSACTION_STATUS{
         {"Planned", TransactionStatus::Planned},
         {"Created", TransactionStatus::Created},
         {"Imported", TransactionStatus::Imported},
@@ -51,7 +51,7 @@ public:
     // Move constructor
     Transaction(Transaction&& origin) noexcept;
 
-    friend void swap(Transaction& lhs, Transaction& rhs);
+    friend void swap(Transaction& lhs, Transaction& rhs) noexcept;
 
     // Operators
     Transaction& operator=(const Transaction& rhs);    // Copy-Assignment Operator

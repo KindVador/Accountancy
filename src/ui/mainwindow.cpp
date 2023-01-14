@@ -67,10 +67,8 @@ void MainWindow::showCredits()
 
 void MainWindow::onActionImport()
 {
-    ImportDataDialog dialog = ImportDataDialog(this);
-    int res = dialog.exec();
-    if (res == QDialog::Accepted) {
-    }
+    auto dialog = ImportDataDialog(this);
+    dialog.exec();
 }
 
 Model* MainWindow::getModel() const
@@ -90,8 +88,9 @@ void MainWindow::setModel(Model* model)
     ui->accountsView->setModel(_model->getAccountFilter());
 }
 
-void MainWindow::contextualOwnerMenuRequested(const QPoint& pos)
+void MainWindow::contextualOwnerMenuRequested(const QPoint& pos) const
 {
+    Q_UNUSED(pos)
     std::unique_ptr<QMenu> contextMenu;
     contextMenu.reset(ContextualMenuGenerator::ownerSectionMenu(this));
 
@@ -120,7 +119,7 @@ void MainWindow::onAccountDoubleClicked(const QModelIndex& index)
     // replace central widget by a TransactionsWidget
     auto centralWidget = new TransactionsWidget();
     centralWidget->setTitle(selectedAccount->getDisplayedName());
-    centralWidget->setModel(_model->getTransactionModel(selectedAccount));
+    centralWidget->setModel(Model::getTransactionModel(selectedAccount));
     setCentralWidget(centralWidget);
 }
 
@@ -138,7 +137,7 @@ void MainWindow::onOpenAction()
         updateEditionInterface(true);
 }
 
-void MainWindow::onSaveAction()
+void MainWindow::onSaveAction() const
 {
     Controller* controller = Controller::instance();
     controller->saveToFile(controller->getCurrentFilePath());

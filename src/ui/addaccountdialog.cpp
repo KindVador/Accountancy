@@ -40,9 +40,9 @@ void AddAccountDialog::accept()
 {
     Controller* controller = Controller::instance();
     QString accountNumber = ui->numberLineEdit->text();
-    auto institution = ui->institutionComboBox->currentData(ObjectRole).value<FinancialInstitution*>();
+    const FinancialInstitution* institution = ui->institutionComboBox->currentData(ObjectRole).value<FinancialInstitution*>();
     AccountType type = STRING_2_ACCOUNT_TYPE[ui->typeComboBox->currentText()];
-    auto currency = ui->currencyComboBox->currentData(ObjectRole).value<Currency*>();
+    const Currency* currency = ui->currencyComboBox->currentData(ObjectRole).value<Currency*>();
     QList<const Owner*> owners = getSelectedOwners();
     auto initialBalance = (float) ui->initialBalanceDoubleSpinBox->value();
     auto warningBalance = (float) ui->warningBalanceDoubleSpinBox->value();

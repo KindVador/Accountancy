@@ -5,14 +5,8 @@ Owner::Owner()
     _uid = QUuid::createUuid();
 }
 
-Owner::Owner(QString& name, double warningBalance, QString& comment, bool isHidden)
+Owner::Owner(const QString& name, double warningBalance, const QString& comment, bool isHidden)
     : _name(name), _warningBalance(warningBalance), _comment(comment), _isHidden(isHidden)
-{
-    _uid = QUuid::createUuid();
-}
-
-Owner::Owner(QString name, double warningBalance, QString comment, bool isHidden)
-    : _name(std::move(name)), _warningBalance(warningBalance), _comment(std::move(comment)), _isHidden(isHidden)
 {
     _uid = QUuid::createUuid();
 }
@@ -29,7 +23,7 @@ void Owner::setName(const QString& value)
 
 float Owner::getWarningBalance() const
 {
-    return _warningBalance;
+    return static_cast<float>(_warningBalance);
 }
 
 void Owner::setWarningBalance(float value)

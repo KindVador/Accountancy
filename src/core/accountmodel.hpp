@@ -17,7 +17,7 @@ public:
     [[nodiscard]] QVariant data(const QModelIndex& index, int role) const override;
 
     void addAccount(Account* account);
-    Account* addAccount(const FinancialInstitution* institution, AccountType type, Currency* currency,
+    Account* addAccount(const FinancialInstitution* institution, AccountType type, const Currency* currency,
                         const QList<const Owner*>& owners, float initialBalance, float warningBalance,
                         const QString& accountNumber, const QString& comment, bool isIncludedInTotal, bool isHidden);
     void removeAccount(const QModelIndex& index);

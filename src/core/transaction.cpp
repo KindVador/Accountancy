@@ -186,7 +186,7 @@ void Transaction::setCurrentBalance(double currentBalance)
     _current_balance = currentBalance;
 }
 
-inline void swap(Transaction& lhs, Transaction& rhs)
+inline void swap(Transaction& lhs, Transaction& rhs) noexcept
 {
     // swap Functions should call swap, NOT std::swap in order to call swap function if defined in specific type.
     using std::swap;

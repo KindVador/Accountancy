@@ -54,8 +54,8 @@ QList<Transaction*> FinancialInstitution::readTransactionsFromFile(QFile& dataFi
     int nbLinesToImport = (int) rawLines.count() - (config.getNbLinesToSkipStart() + config.getNbLinesToSkipEnd()) + 1;
     rawLines = rawLines.mid(firstLineToImport, nbLinesToImport);
 
-    for (int i = 0; i < rawLines.count(); ++i) {
-        QStringList fields = rawLines[i].split(config.getSeparatorChar());
+    for (const QString& rawLine: qAsConst(rawLines)) {
+        QStringList fields = rawLine.split(config.getSeparatorChar());
 
         if (fields.count() < config.nbFields())
             continue;

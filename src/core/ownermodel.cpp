@@ -12,7 +12,7 @@ void OwnerModel::addOwner(Owner* owner)
     endResetModel();
 }
 
-Owner* OwnerModel::addOwner(const QString& name, float warningBalance, const QString& comment, bool isHidden)
+Owner* OwnerModel::addOwner(const QString& name, double warningBalance, const QString& comment, bool isHidden)
 {
     auto* newOwner = new Owner(name, warningBalance, comment, isHidden);
     addOwner(newOwner);
@@ -21,7 +21,7 @@ Owner* OwnerModel::addOwner(const QString& name, float warningBalance, const QSt
 
 Owner* OwnerModel::getOwner(const QString& name) const
 {
-    auto ownerIt = std::find_if(_owners.begin(), _owners.end(), [&name](Owner* owner) { return owner->getName() == name; });
+    auto ownerIt = std::find_if(_owners.cbegin(), _owners.cend(), [&name](const Owner* owner) { return owner->getName() == name; });
     // case NOT FOUND
     if (ownerIt == _owners.end())
         return nullptr;
@@ -74,7 +74,7 @@ void OwnerModel::removeOwner(const QModelIndex& index)
 
 Owner* OwnerModel::getOwner(QUuid uid) const
 {
-    auto ownerIt = std::find_if(_owners.begin(), _owners.end(), [&uid](Owner* owner) { return owner->getUid() == uid; });
+    auto ownerIt = std::find_if(_owners.cbegin(), _owners.cend(), [&uid](const Owner* owner) { return owner->getUid() == uid; });
     // case NOT FOUND
     if (ownerIt == _owners.end())
         return nullptr;

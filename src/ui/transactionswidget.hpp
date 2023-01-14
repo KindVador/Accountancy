@@ -13,11 +13,6 @@ namespace Ui
 }
 QT_END_NAMESPACE
 
-namespace Ui
-{
-    class TransactionsWidget;
-}
-
 class TransactionsWidget : public QWidget
 {
 

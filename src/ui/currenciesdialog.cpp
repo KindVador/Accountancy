@@ -32,11 +32,11 @@ void CurrenciesDialog::reject()
 
 void CurrenciesDialog::onAddCurrencyAction()
 {
-    CreateCurrencyDialog dlg = CreateCurrencyDialog(this);
+    auto dlg = CreateCurrencyDialog(this);
     dlg.exec();
 }
 
-void CurrenciesDialog::onRemoveCurrencyAction()
+void CurrenciesDialog::onRemoveCurrencyAction() const
 {
     QList<QModelIndex> selectedIndexes = ui->tableView->selectionModel()->selectedIndexes();
     for (QModelIndex selectedIndex: selectedIndexes) {

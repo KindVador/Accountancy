@@ -24,7 +24,7 @@ public slots:
 
 private slots:
     void onAddInstitutionAction();
-    void onRemoveInstitutionAction();
+    void onRemoveInstitutionAction() const;
 
 private:
     Ui::InstitutionsDialog* ui;

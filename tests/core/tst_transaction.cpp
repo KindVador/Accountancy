@@ -57,7 +57,7 @@ TEST_CASE("Transaction readJson", "[core]")
 TEST_CASE("Transaction get/set category", "[core]")
 {
     Transaction t(QString("Name1"), QString("Comment1"), TransactionStatus::Created, QDateTime(QDate(2021, 12, 25), QTime(8, 15, 59)), -14.99);
-    Category c = Category("Category1");
+    auto c = Category("Category1");
     CHECK(t.getCategory() == nullptr);
     t.setCategory(&c);
     CHECK(t.getCategory() != nullptr);
@@ -68,7 +68,7 @@ TEST_CASE("Transaction get/set category", "[core]")
 TEST_CASE("Transaction printToConsole", "[core]")
 {
     Transaction t(QString("Name1"), QString("Comment1"), TransactionStatus::Created, QDateTime(QDate(2021, 12, 25), QTime(8, 15, 59)), -14.99);
-    Category c = Category("Category1");
+    auto c = Category("Category1");
     t.setCategory(&c);
     t.printToConsole();
 }
