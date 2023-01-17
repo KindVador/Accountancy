@@ -5,52 +5,37 @@ const QString Model::_modelVersion = "0.1";
 
 constexpr const int ObjectRole = Qt::UserRole + 1;
 
-Model* Model::_singleton = nullptr;
+const std::unique_ptr<Model> Model::_singleton = std::make_unique<Model>();
 
 Model* Model::instance()
 {
-    if (_singleton == nullptr)
-        _singleton = new Model();
-
-    return _singleton;
+    return _singleton.get();
 }
 
-Model::Model() : _ownerModel(new OwnerModel), _currencyModel(new CurrencyModel), _accountModel(new AccountModel),
-                 _institutionsModel(new FinancialInstitutionModel), _accountFilteredModel(new AccountFilter),
-                 _importConfigModel(new ImportConfigModel)
+Model::Model()
 {
     // set source model for AccountFilter
-    _accountFilteredModel->setSourceModel(_accountModel);
-}
-
-Model::~Model()
-{
-    delete _ownerModel;
-    delete _currencyModel;
-    delete _accountModel;
-    delete _accountFilteredModel;
-    delete _institutionsModel;
-    delete _importConfigModel;
+    _accountFilteredModel->setSourceModel(_accountModel.get());
 }
 
 OwnerModel* Model::getOwnerModel() const
 {
-    return _ownerModel;
+    return _ownerModel.get();
 }
 
 CurrencyModel* Model::getCurrencyModel() const
 {
-    return _currencyModel;
+    return _currencyModel.get();
 }
 
 OwnerModel* Model::getOwnerModel()
 {
-    return _ownerModel;
+    return _ownerModel.get();
 }
 
 CurrencyModel* Model::getCurrencyModel()
 {
-    return _currencyModel;
+    return _currencyModel.get();
 }
 
 float Model::balanceForOwner(const Owner* owner)
@@ -64,18 +49,18 @@ float Model::balanceForOwner(const Owner* owner)
 
 AccountModel* Model::getAccountModel() const
 {
-    return _accountModel;
+    return _accountModel.get();
 }
 
 AccountModel* Model::getAccountModel()
 {
-    return _accountModel;
+    return _accountModel.get();
 }
 
 AccountFilter* Model::getAccountFilter() const
 {
     qWarning() << "Model::getAccountFilter";
-    return _accountFilteredModel;
+    return _accountFilteredModel.get();
 }
 
 void Model::setOwnerFilter(QUuid OwnerUid)
@@ -99,12 +84,12 @@ void Model::setOwnerFilter(const QString& ownerName)
 
 FinancialInstitutionModel* Model::getFinancialInstitutionModel() const
 {
-    return _institutionsModel;
+    return _institutionsModel.get();
 }
 
 FinancialInstitutionModel* Model::getFinancialInstitutionModel()
 {
-    return _institutionsModel;
+    return _institutionsModel.get();
 }
 
 void Model::write(QJsonObject& json) const
@@ -257,6 +242,12 @@ void Model::reset()
 
     if (_accountFilteredModel != nullptr)
         _accountFilteredModel->invalidate();
+
+    if (_importConfigModel != nullptr)
+        _importConfigModel->reset();
+
+    if (_categoryModel != nullptr)
+        _categoryModel->reset();
 }
 
 TransactionModel* Model::getTransactionModel(Account* selectedAccount)
@@ -266,10 +257,14 @@ TransactionModel* Model::getTransactionModel(Account* selectedAccount)
 
 ImportConfigModel* Model::getImportConfigModel()
 {
-    return _importConfigModel;
+    return _importConfigModel.get();
 }
 
 ImportConfigModel* Model::getImportConfigModel() const
 {
-    return _importConfigModel;
+    return _importConfigModel.get();
+}
+CategoryModel* Model::getCategoryModel()
+{
+    return _categoryModel.get();
 }
