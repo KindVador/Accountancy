@@ -4,6 +4,8 @@
 #include <QMainWindow>
 #include <QString>
 
+#include <memory>
+
 class Model;
 
 QT_BEGIN_NAMESPACE
@@ -50,7 +52,7 @@ private slots:
 
 private:
     Ui::MainWindow* ui = nullptr;
-    Model* _model = nullptr;
+    std::unique_ptr<Model> _model;
 };
 
 #endif// MAINWINDOW_H

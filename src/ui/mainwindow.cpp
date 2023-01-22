@@ -18,7 +18,7 @@
 
 constexpr const int ObjectRole = Qt::UserRole + 1;
 
-MainWindow::MainWindow(QWidget* parent) : QMainWindow(parent), ui(new Ui::MainWindow)
+MainWindow::MainWindow(QWidget* parent) : QMainWindow(parent), ui(new Ui::MainWindow())
 {
     ui->setupUi(this);
 
@@ -58,7 +58,6 @@ MainWindow::~MainWindow()
     delete ui;
 }
 
-
 void MainWindow::showCredits()
 {
     QString text(tr("Icônes faites par Pixel perfect de www.flaticon.com"));// In english, Icons made by Pixel perfect from www.flaticon.com
@@ -73,13 +72,13 @@ void MainWindow::onActionImport()
 
 Model* MainWindow::getModel() const
 {
-    return _model;
+    return _model.get();
 }
 
 void MainWindow::setModel(Model* model)
 {
     qWarning() << "MainWindow::setModel";
-    _model = model;
+    _model.reset(model);
 
     // connect Owner model
     ui->ownersView->setModel(_model->getOwnerModel());
@@ -210,12 +209,12 @@ void MainWindow::onRemoveAccountAction()
 
 void MainWindow::onCurrenciesAction()
 {
-    auto dlg = new CurrenciesDialog(this, _model->getCurrencyModel());
-    dlg->exec();
+    auto dlg = CurrenciesDialog(this, _model->getCurrencyModel());
+    dlg.exec();
 }
 
 void MainWindow::onInstitutionsAction()
 {
-    auto dlg = new InstitutionsDialog(this, _model->getFinancialInstitutionModel());
-    dlg->exec();
+    auto dlg = InstitutionsDialog(this, _model->getFinancialInstitutionModel());
+    dlg.exec();
 }
