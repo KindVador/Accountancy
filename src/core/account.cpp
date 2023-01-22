@@ -134,6 +134,10 @@ void Account::read(const QJsonObject& json)
     if (json.contains("uid") && json["uid"].isString())
         _uid = QUuid(json["uid"].toString());
 
+    // check that uid is valid, otherwise generate a new one
+    if (_uid.isNull())
+        _uid = QUuid::createUuid();
+
     if (json.contains("institution")) {
         auto fi = new FinancialInstitution;
         fi->setUid(QUuid(json["institution"].toString()));
