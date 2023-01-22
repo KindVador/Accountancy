@@ -49,6 +49,12 @@ jobs:
         run: |
           echo "${{ runner.temp }}/Qt/${{ env.QT_VERSION }}/${{ env.QT_LIB_PATH }}/bin" >> $GITHUB_PATH
 
+      - name: Print GITHUB_PATH
+        run: echo "$GITHUB_PATH"
+
+      - name: Print PATH
+        run: echo "$PATH"
+
       - name: Install Shared libraries
         run: sudo apt-get install icu-devtools
 
