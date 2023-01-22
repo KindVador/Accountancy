@@ -49,8 +49,8 @@ jobs:
         run: |
           echo "${{ runner.temp }}/Qt/${{ env.QT_VERSION }}/${{ env.QT_LIB_PATH }}/bin" >> $GITHUB_PATH
 
-#      - name: Install Shared libraries
-#        run: sudo apt-get install -y sudo apt install plocate
+      - name: Install Shared libraries
+        run: sudo apt-get install icu
 
       - name: Configure CMake
         # Configure CMake in a 'build' subdirectory. `CMAKE_BUILD_TYPE` is only required if you are using a single-configuration generator such as make.
