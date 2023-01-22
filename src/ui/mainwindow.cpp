@@ -117,9 +117,8 @@ void MainWindow::onAccountDoubleClicked(const QModelIndex& index)
     delete centralWidget();
 
     // replace central widget by a TransactionsWidget
-    auto centralWidget = new TransactionsWidget();
+    auto centralWidget = new TransactionsWidget(selectedAccount, this);
     centralWidget->setTitle(selectedAccount->getDisplayedName());
-    centralWidget->setModel(Model::getTransactionModel(selectedAccount));
     setCentralWidget(centralWidget);
 }
 

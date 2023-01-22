@@ -19,10 +19,9 @@ class TransactionsWidget : public QWidget
     Q_OBJECT
 
 public:
-    explicit TransactionsWidget(QWidget* parent = nullptr);
+    explicit TransactionsWidget(Account* account, QWidget* parent = nullptr);
     ~TransactionsWidget() override;
 
-    void setModel(TransactionModel* model);
     void setTitle(const QString& text);
 
 public slots:
@@ -31,7 +30,7 @@ public slots:
 private:
     Ui::TransactionsWidget* ui;
     std::unique_ptr<QSortFilterProxyModel> _proxyModel = std::make_unique<QSortFilterProxyModel>();
+    std::unique_ptr<TransactionModel> _transaction_model = std::make_unique<TransactionModel>();
 };
-
 
 #endif//ACCOUNTANCY_TRANSACTIONSWIDGET_HPP

@@ -119,3 +119,15 @@ bool TransactionModel::removeTransaction(QUuid transactionUid)
     endResetModel();
     return res;
 }
+
+Account* TransactionModel::getAccount() const
+{
+    return _account;
+}
+
+void TransactionModel::setAccount(Account* account)
+{
+    beginResetModel();
+    _account = account;
+    endResetModel();
+}

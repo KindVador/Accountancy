@@ -47,8 +47,6 @@ public:
     void setOwnerFilter(const QString& ownerName);
     static float balanceForOwner(const Owner* owner);
 
-    static TransactionModel* getTransactionModel(Account* selectedAccount);
-
     void reset();
     [[nodiscard]] bool isDirty() const;
 

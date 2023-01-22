@@ -12,12 +12,18 @@
 constexpr const int ObjectRole = Qt::UserRole + 1;
 constexpr const int UIDRole = Qt::UserRole + 2;
 
-TransactionsWidget::TransactionsWidget(QWidget* parent) : QWidget(parent), ui(new Ui::TransactionsWidget)
+TransactionsWidget::TransactionsWidget(Account* account, QWidget* parent) : QWidget(parent), ui(new Ui::TransactionsWidget)
 {
     ui->setupUi(this);
 
     // change Qt::ItemDataRole used to sort table
     _proxyModel->setSortRole(Qt::UserRole);
+
+    // init model
+    _transaction_model->setAccount(account);
+    _proxyModel->setSourceModel(_transaction_model.get());
+    ui->tableView->setModel(_proxyModel.get());
+    ui->tableView->sortByColumn(0, Qt::SortOrder::DescendingOrder);
 
     // init tableView
     ui->tableView->setAlternatingRowColors(true);
@@ -31,17 +37,6 @@ TransactionsWidget::TransactionsWidget(QWidget* parent) : QWidget(parent), ui(ne
 TransactionsWidget::~TransactionsWidget()
 {
     delete ui;
-}
-
-
-void TransactionsWidget::setModel(TransactionModel* model)
-{
-    if (ui == nullptr || _proxyModel == nullptr)
-        return;
-
-    _proxyModel->setSourceModel(model);
-    ui->tableView->setModel(_proxyModel.get());
-    ui->tableView->sortByColumn(0, Qt::SortOrder::DescendingOrder);
 }
 
 void TransactionsWidget::setTitle(const QString& text)

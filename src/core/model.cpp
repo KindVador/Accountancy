@@ -250,11 +250,6 @@ void Model::reset()
         _categoryModel->reset();
 }
 
-TransactionModel* Model::getTransactionModel(Account* selectedAccount)
-{
-    return new TransactionModel(selectedAccount);
-}
-
 ImportConfigModel* Model::getImportConfigModel()
 {
     return _importConfigModel.get();
