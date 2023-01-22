@@ -60,7 +60,7 @@ void CurrencyModel::removeCurrency(QUuid uid)
 
 Currency* CurrencyModel::addCurrency(const QString& name, const QString& symbol)
 {
-    auto* newCurrency = new Currency(name, symbol);
+    auto newCurrency = new Currency(name, symbol);
     addCurrency(newCurrency);
     return newCurrency;
 }

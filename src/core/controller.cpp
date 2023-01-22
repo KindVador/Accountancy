@@ -228,12 +228,36 @@ Currency* Controller::addCurrency(const QString& name, const QString& symbol)
     return _model->getCurrencyModel()->addCurrency(name, symbol);
 }
 
-void Controller::removeCurrency(QUuid uid)
+void Controller::removeCurrency(const QUuid& uid)
 {
+    if (_model == nullptr || _model->getCurrencyModel() == nullptr || uid.isNull())
+        return;
+
     _model->getCurrencyModel()->removeCurrency(uid);
 }
 
-void Controller::removeInstitution(QUuid uid)
+void Controller::removeInstitution(const QUuid& uid)
 {
     _model->getFinancialInstitutionModel()->removeFinancialInstitution(uid);
+}
+
+void Controller::addCategory(Category* category)
+{
+    if (_model == nullptr)
+        return;
+
+    _model->getCategoryModel()->addCategory(category);
+}
+
+Category* Controller::addCategory(const QString& name)
+{
+    return _model->getCategoryModel()->addCategory(name);
+}
+
+void Controller::removeCategory(const QUuid& uid)
+{
+    if (_model == nullptr || _model->getCategoryModel() == nullptr || uid.isNull())
+        return;
+
+    _model->getCategoryModel()->removeCategory(uid);
 }

@@ -2,6 +2,7 @@
 #include "../core/controller.hpp"
 #include "addaccountdialog.hpp"
 #include "addownerdialog.hpp"
+#include "categoriesdialog.hpp"
 #include "contextualmenugenerator.hpp"
 #include "currenciesdialog.hpp"
 #include "importdatadialog.hpp"
@@ -34,6 +35,7 @@ MainWindow::MainWindow(QWidget* parent) : QMainWindow(parent), ui(new Ui::MainWi
     // Edit Menu
     connect(ui->actionCurrencies, &QAction::triggered, this, &MainWindow::onCurrenciesAction);
     connect(ui->actionInstitutions, &QAction::triggered, this, &MainWindow::onInstitutionsAction);
+    connect(ui->actionCategories, &QAction::triggered, this, &MainWindow::onCategoriesAction);
 
     // View Menu
     connect(ui->actionMainDock, &QAction::triggered, this, &MainWindow::onActionMainDock);
@@ -216,5 +218,11 @@ void MainWindow::onCurrenciesAction()
 void MainWindow::onInstitutionsAction()
 {
     auto dlg = InstitutionsDialog(this, _model->getFinancialInstitutionModel());
+    dlg.exec();
+}
+
+void MainWindow::onCategoriesAction()
+{
+    auto dlg = CategoriesDialog(this, _model->getCategoryModel());
     dlg.exec();
 }

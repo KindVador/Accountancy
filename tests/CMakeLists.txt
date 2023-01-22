@@ -24,7 +24,6 @@ set(TEST_SRC
         core/tst_dataimport.cpp
         core/tst_financialinstitution.cpp
         core/tst_owner.cpp
-        core/tst_subcategory.cpp
         core/tst_transaction.cpp
         core/tst_import_config.cpp
         )

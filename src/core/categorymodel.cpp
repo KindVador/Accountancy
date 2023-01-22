@@ -40,6 +40,16 @@ void CategoryModel::addCategory(Category* category)
     endResetModel();
 }
 
+Category* CategoryModel::addCategory(const QString& name)
+{
+    if (name.isEmpty())
+        return nullptr;
+
+    auto category = new Category(name);
+    addCategory(category);
+    return category;
+}
+
 void CategoryModel::removeCategory(const Category* category)
 {
     beginResetModel();

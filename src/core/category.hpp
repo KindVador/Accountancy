@@ -6,8 +6,6 @@
 
 #include "Interfaces/iserializable.hpp"
 
-class SubCategory;
-
 class Category : public ISerializable
 {
 
@@ -16,6 +14,8 @@ public:
     explicit Category(QString name);
     ~Category() override = default;
 
+    static Category* fromJson(const QJsonObject& json);
+
     // Getter & Setter
     [[nodiscard]] const QUuid& getUid() const;
     void setUid(const QUuid& uid);
@@ -23,21 +23,19 @@ public:
     void setName(const QString& name);
 
     // Public API for SubCategories
-    void addSubCategory(const SubCategory* subCategory);
-    bool removeSubCategory(const SubCategory* subCategory);
+    void addSubCategory(const Category* subCategory);
+    bool removeSubCategory(const Category* subCategory);
     bool removeSubCategoryByName(const QString& name);
-    [[nodiscard]] QVector<const SubCategory*> subCategories() const;
+    [[nodiscard]] QVector<const Category*> subCategories() const;
 
     // Serialization
     void read(const QJsonObject& json) override;
     void write(QJsonObject& json) const override;
 
-protected:
+private:
     QUuid _uid;
     QString _name;
-
-private:
-    QList<const SubCategory*> _subCategories;
+    QList<const Category*> _subCategories;
 };
 
 #endif//ACCOUNTANCY_CATEGORY_HPP

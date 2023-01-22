@@ -23,15 +23,20 @@ public:
 
     void showMainWindow();
 
+    // CATEGORIES
+    void addCategory(Category* category);
+    Category* addCategory(const QString& name);
+    void removeCategory(const QUuid& uid);
+
     // CURRENCIES
     void addCurrency(Currency* currency);
     Currency* addCurrency(const QString& name, const QString& symbol);
-    void removeCurrency(QUuid uid);
+    void removeCurrency(const QUuid& uid);
 
     // FINANCIAL INSTITUTIONS
     void addFinancialInstitution(FinancialInstitution* institution);
     FinancialInstitution* addFinancialInstitution(const QString& name);
-    void removeInstitution(QUuid uid);
+    void removeInstitution(const QUuid& uid);
 
     // OWNERS
     void addOwner(Owner* owner);

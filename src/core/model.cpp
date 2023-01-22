@@ -97,6 +97,18 @@ void Model::write(QJsonObject& json) const
     // Model version
     json["model_version"] = _modelVersion;
 
+    // Categories
+    if (_categoryModel != nullptr) {
+        QJsonArray categories;
+        for (int i = 0; i < _categoryModel->rowCount(QModelIndex()); ++i) {
+            const Category* category = _categoryModel->data(_categoryModel->index(i, 0), ObjectRole).value<Category*>();
+            QJsonObject categoryJson;
+            category->write(categoryJson);
+            categories.append(categoryJson);
+        }
+        json["categories"] = categories;
+    }
+
     // Currencies
     if (_currencyModel != nullptr) {
         QJsonArray currencies;
@@ -171,6 +183,13 @@ void Model::read(const QJsonObject& json)
         QJsonArray ownersJsonArray = json["owners"].toArray();
         for (const QJsonValueRef& owner: qAsConst(ownersJsonArray))
             _ownerModel->addOwner(Owner::fromJson(owner.toObject()));
+    }
+
+    // Categories
+    if (json.contains("categories") && json["categories"].isArray()) {
+        QJsonArray categoriesJsonArray = json["categories"].toArray();
+        for (const QJsonValueRef& category: qAsConst(categoriesJsonArray))
+            _categoryModel->addCategory(Category::fromJson(category.toObject()));
     }
 
     // Currencies
