@@ -181,35 +181,35 @@ void Model::read(const QJsonObject& json)
     // Owners
     if (json.contains("owners") && json["owners"].isArray()) {
         QJsonArray ownersJsonArray = json["owners"].toArray();
-        for (const QJsonValueRef& owner: qAsConst(ownersJsonArray))
+        for (const QJsonValueConstRef& owner: qAsConst(ownersJsonArray))
             _ownerModel->addOwner(Owner::fromJson(owner.toObject()));
     }
 
     // Categories
     if (json.contains("categories") && json["categories"].isArray()) {
         QJsonArray categoriesJsonArray = json["categories"].toArray();
-        for (const QJsonValueRef& category: qAsConst(categoriesJsonArray))
+        for (const QJsonValueConstRef& category: qAsConst(categoriesJsonArray))
             _categoryModel->addCategory(Category::fromJson(category.toObject()));
     }
 
     // Currencies
     if (json.contains("currencies") && json["currencies"].isArray()) {
         QJsonArray currenciesJsonArray = json["currencies"].toArray();
-        for (const QJsonValueRef& currency: qAsConst(currenciesJsonArray))
+        for (const QJsonValueConstRef& currency: qAsConst(currenciesJsonArray))
             _currencyModel->addCurrency(Currency::fromJson(currency.toObject()));
     }
 
     // Financial Institutions
     if (json.contains("institutions") && json["institutions"].isArray()) {
         QJsonArray institutionsJsonArray = json["institutions"].toArray();
-        for (const QJsonValueRef& institution: qAsConst(institutionsJsonArray))
+        for (const QJsonValueConstRef& institution: qAsConst(institutionsJsonArray))
             _institutionsModel->addFinancialInstitution(FinancialInstitution::fromJson(institution.toObject()));
     }
 
     // Accounts
     if (json.contains("accounts") && json["accounts"].isArray()) {
         QJsonArray accountsJsonArray = json["accounts"].toArray();
-        for (const QJsonValueRef& account: qAsConst(accountsJsonArray))
+        for (const QJsonValueConstRef& account: qAsConst(accountsJsonArray))
             _accountModel->addAccount(Account::fromJson(account.toObject()));
     }
     // link model objects to each account
@@ -230,7 +230,7 @@ void Model::read(const QJsonObject& json)
     // Import Configs
     if (json.contains("importConfigurations") && json["importConfigurations"].isArray()) {
         QJsonArray importConfigsJsonArray = json["importConfigurations"].toArray();
-        for (const QJsonValueRef& importConfig: qAsConst(importConfigsJsonArray))
+        for (const QJsonValueConstRef& importConfig: qAsConst(importConfigsJsonArray))
             _importConfigModel->addImportConfig(ImportConfig::fromJson(importConfig.toObject()));
     }
 }
