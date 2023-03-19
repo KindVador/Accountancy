@@ -1,5 +1,5 @@
 #include "institutionsdialog.hpp"
-#include "../core/controller.hpp"
+#include "controller/controller.hpp"
 #include "createinstitutiondialog.hpp"
 #include "ui_institutionsdialog.h"
 

@@ -1,7 +1,7 @@
 #ifndef ACCOUNTANCY_ADDACCOUNTDIALOG_HPP
 #define ACCOUNTANCY_ADDACCOUNTDIALOG_HPP
 
-#include "../core/account.hpp"
+#include "core/account.hpp"
 #include <QDialog>
 
 

@@ -23,6 +23,8 @@ else ()
 endif ()
 
 add_subdirectory(src/core "${CMAKE_CURRENT_BINARY_DIR}/build_core")
+add_subdirectory(src/controller "${CMAKE_CURRENT_BINARY_DIR}/build_controller")
+add_subdirectory(src/model "${CMAKE_CURRENT_BINARY_DIR}/build_model")
 add_subdirectory(src/ui "${CMAKE_CURRENT_BINARY_DIR}/build_ui")
 add_subdirectory(src/utils "${CMAKE_CURRENT_BINARY_DIR}/build_utils")
 
@@ -81,6 +83,6 @@ ENDIF()
 
 # Since Qt 5.15, the CMake targets are also available as Qt::Core, Qt::Gui, and so on.
 # This eases writing CMake code that can work with both Qt 5 and Qt 6.
-target_link_libraries(Accountancy PRIVATE Qt::Widgets AccountancyCore AccountancyUi AccountancyUtils)
+target_link_libraries(Accountancy PRIVATE Qt::Widgets AccountancyCore AccountancyController AccountancyModel AccountancyUi AccountancyUtils)
 
 qt_finalize_executable(Accountancy)

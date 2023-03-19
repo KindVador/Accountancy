@@ -1,5 +1,5 @@
 #include "addownerdialog.hpp"
-#include "../core/controller.hpp"
+#include "controller/controller.hpp"
 #include "ui_addownerdialog.h"
 
 

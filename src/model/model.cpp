@@ -1,18 +1,19 @@
 #include "model.hpp"
 #include <QJsonArray>
+#include <utility>
 
 const QString Model::_modelVersion = "0.1";
 
 constexpr const int ObjectRole = Qt::UserRole + 1;
 
-const std::unique_ptr<Model> Model::_singleton = std::make_unique<Model>();
+const std::unique_ptr<Model> Model::_singleton = std::make_unique<Model>("MainModel");
 
 Model* Model::instance()
 {
     return _singleton.get();
 }
 
-Model::Model()
+Model::Model(QString name) : AbstractModel(std::move(name))
 {
     // set source model for AccountFilter
     _accountFilteredModel->setSourceModel(_accountModel.get());
@@ -101,7 +102,7 @@ void Model::write(QJsonObject& json) const
     if (_categoryModel != nullptr) {
         QJsonArray categories;
         for (int i = 0; i < _categoryModel->rowCount(QModelIndex()); ++i) {
-            const Category* category = _categoryModel->data(_categoryModel->index(i, 0), ObjectRole).value<Category*>();
+            const Category* category = _categoryModel->data(_categoryModel->index(i, 0, QModelIndex()), ObjectRole).value<Category*>();
             QJsonObject categoryJson;
             category->write(categoryJson);
             categories.append(categoryJson);
@@ -172,6 +173,7 @@ void Model::write(QJsonObject& json) const
 
 void Model::read(const QJsonObject& json)
 {
+    qDebug() << "Reading model from JSON object";
     // check Model version
     if (!json.contains("model_version") || json["model_version"].toString() != _modelVersion) {
         qWarning() << "Wrong model version";
@@ -278,7 +280,24 @@ ImportConfigModel* Model::getImportConfigModel() const
 {
     return _importConfigModel.get();
 }
+
 CategoryModel* Model::getCategoryModel()
 {
     return _categoryModel.get();
+}
+
+bool Model::registerModel(AbstractModel* newModel, const QString& name)
+{
+    return false;
+}
+
+bool Model::unregisterModel(AbstractModel* model)
+{
+    return false;
+}
+
+template<typename T>
+T* Model::getModel(const QString& name)
+{
+    return nullptr;
 }

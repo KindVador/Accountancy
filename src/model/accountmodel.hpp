@@ -1,16 +1,21 @@
 #ifndef ACCOUNTANCY_ACCOUNTMODEL_HPP
 #define ACCOUNTANCY_ACCOUNTMODEL_HPP
 
-#include "account.hpp"
+#include "abstractmodel.hpp"
+#include "core/account.hpp"
 
 #include <QAbstractItemModel>
 
-class AccountModel : public QAbstractListModel
+class AccountModel : public QAbstractListModel, public AbstractModel
 {
     Q_OBJECT
 public:
-    AccountModel() = default;
+    explicit AccountModel(QString name);
     ~AccountModel() override = default;
+
+    // AbstractModel
+    [[nodiscard]] bool isDirty() const override;
+    void reset() override;
 
     // QAbstractListModel interface
     [[nodiscard]] int rowCount(const QModelIndex& parent) const override;
@@ -23,8 +28,6 @@ public:
     void removeAccount(const QModelIndex& index);
 
     [[nodiscard]] const QList<Account*>& accounts() const;
-
-    void reset();
 
 private:
     QList<Account*> _accounts;

@@ -1,6 +1,6 @@
 // You may need to build the project (run Qt uic code generator) to get "ui_TransactionsWidget.h" resolved
 #include "transactionswidget.hpp"
-#include "../core/model.hpp"
+#include "model/model.hpp"
 #include "ui_transactionswidget.h"
 
 #include <algorithm>
@@ -31,6 +31,8 @@ TransactionsWidget::TransactionsWidget(Account* account, QWidget* parent) : QWid
     ui->tableView->sortByColumn(0, Qt::SortOrder::DescendingOrder);
     ui->tableView->setSortingEnabled(true);
     ui->tableView->setContextMenuPolicy(Qt::CustomContextMenu);
+    _category_item_delegate->setParent(ui->tableView);
+    ui->tableView->setItemDelegateForColumn(5, _category_item_delegate.get());
     connect(ui->tableView, &QTableView::customContextMenuRequested, this, &TransactionsWidget::customMenuRequested);
 }
 

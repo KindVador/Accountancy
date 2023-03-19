@@ -23,19 +23,34 @@ public:
     void setName(const QString& name);
 
     // Public API for SubCategories
-    void addSubCategory(const Category* subCategory);
-    bool removeSubCategory(const Category* subCategory);
+    void addSubCategory(Category* subCategory);
+    bool removeSubCategory(Category* subCategory);
     bool removeSubCategoryByName(const QString& name);
-    [[nodiscard]] QVector<const Category*> subCategories() const;
+    [[nodiscard]] QVector<Category*>& subCategories();
+    void removeAllSubCategories();
 
     // Serialization
     void read(const QJsonObject& json) override;
     void write(QJsonObject& json) const override;
 
+    // Tree item
+    /*!
+     * @brief
+     * @param row
+     * @return
+     */
+    [[nodiscard]] Category* subCategory(int row) const;
+    [[nodiscard]] int childCount() const;
+    [[nodiscard]] int columnCount() const;
+    [[nodiscard]] QVariant data(int column) const;
+    [[nodiscard]] int row() const;
+    [[nodiscard]] Category* parentItem() const;
+
 private:
     QUuid _uid;
     QString _name;
-    QList<const Category*> _subCategories;
+    QVector<Category*> _subCategories;
+    Category* _parentItem;
 };
 
 #endif//ACCOUNTANCY_CATEGORY_HPP

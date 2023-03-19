@@ -1,9 +1,10 @@
 #include "mainwindow.hpp"
-#include "../core/controller.hpp"
 #include "addaccountdialog.hpp"
 #include "addownerdialog.hpp"
 #include "categoriesdialog.hpp"
+#include "categoriestreedialog.hpp"
 #include "contextualmenugenerator.hpp"
+#include "controller/controller.hpp"
 #include "currenciesdialog.hpp"
 #include "importdatadialog.hpp"
 #include "institutionsdialog.hpp"
@@ -223,6 +224,7 @@ void MainWindow::onInstitutionsAction()
 
 void MainWindow::onCategoriesAction()
 {
-    auto dlg = CategoriesDialog(this, _model->getCategoryModel());
+    //    auto dlg = CategoriesDialog(this, _model->getCategoryModel());
+    auto dlg = CategoriesTreeDialog(this, _model->getCategoryModel());
     dlg.exec();
 }

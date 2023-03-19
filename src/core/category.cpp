@@ -13,12 +13,12 @@ Category::Category(QString name) : _name(std::move(name))
     _uid = QUuid::createUuid();
 }
 
-void Category::addSubCategory(const Category* subCategory)
+void Category::addSubCategory(Category* subCategory)
 {
     return _subCategories.append(subCategory);
 }
 
-bool Category::removeSubCategory(const Category* subCategory)
+bool Category::removeSubCategory(Category* subCategory)
 {
     return _subCategories.removeOne(subCategory);
 }
@@ -28,7 +28,7 @@ bool Category::removeSubCategoryByName(const QString& name)
     return _subCategories.removeIf([&name](const Category* sc) { return sc != nullptr && sc->getName() == name; });
 }
 
-QVector<const Category*> Category::subCategories() const
+QVector<Category*>& Category::subCategories()
 {
     return _subCategories;
 }
@@ -97,4 +97,51 @@ Category* Category::fromJson(const QJsonObject& json)
     auto category = new Category;
     category->read(json);
     return category;
+}
+
+Category* Category::subCategory(int row) const
+{
+    if (row < 0 || row >= _subCategories.size())
+        return nullptr;
+    return _subCategories.at(row);
+}
+
+int Category::childCount() const
+{
+    return static_cast<int>(_subCategories.count());
+}
+
+int Category::columnCount() const
+{
+    return 1;
+}
+
+QVariant Category::data(int column) const
+{
+    if (column == 0)
+        return QVariant(_name);
+
+    return {};
+}
+
+int Category::row() const
+{
+    if (_parentItem)
+        return static_cast<int>(_parentItem->_subCategories.indexOf(const_cast<Category*>(this)));
+
+    return 0;
+}
+
+Category* Category::parentItem() const
+{
+    return _parentItem;
+}
+
+void Category::removeAllSubCategories()
+{
+    for (Category* subCat: _subCategories) {
+        subCat->removeAllSubCategories();
+    }
+    qDeleteAll(_subCategories);
+    _subCategories.clear();
 }

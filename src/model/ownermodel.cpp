@@ -1,6 +1,12 @@
 #include "ownermodel.hpp"
 
+#include <utility>
+
 constexpr const int ObjectRole = Qt::UserRole + 1;
+
+OwnerModel::OwnerModel(QString name) : AbstractModel(std::move(name))
+{
+}
 
 void OwnerModel::addOwner(Owner* owner)
 {
@@ -80,4 +86,10 @@ Owner* OwnerModel::getOwner(QUuid uid) const
         return nullptr;
 
     return *ownerIt;
+}
+
+bool OwnerModel::isDirty() const
+{
+    // TODO implement OwnerModel::isDirty()
+    return false;
 }

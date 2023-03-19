@@ -5,16 +5,21 @@
 #include <QDebug>
 #include <QUuid>
 
-#include "owner.hpp"
+#include "abstractmodel.hpp"
+#include "core/owner.hpp"
 
 
-class OwnerModel : public QAbstractListModel
+class OwnerModel : public QAbstractListModel, public AbstractModel
 {
     Q_OBJECT
 
 public:
-    OwnerModel() = default;
+    explicit OwnerModel(QString name);
     ~OwnerModel() override = default;
+
+    // AbstractModel
+    [[nodiscard]] bool isDirty() const override;
+    void reset() override;
 
     // QAbstractListModel interface
     [[nodiscard]] int rowCount(const QModelIndex& parent) const override;
@@ -26,7 +31,6 @@ public:
     [[nodiscard]] Owner* getOwner(const QString& name) const;
     [[nodiscard]] Owner* getOwner(QUuid uid) const;
 
-    void reset();
 
 private:
     QList<Owner*> _owners;

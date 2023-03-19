@@ -1,13 +1,19 @@
 #include "transactionmodel.hpp"
+#include "category.hpp"
 
 #include <QColor>
+#include <utility>
 
-QList<QString> TransactionModel::headerLabels = {"Date", "Name", "Amount", "Balance", "Status", "Comment"};
+QList<QString> TransactionModel::headerLabels = {"Date", "Name", "Amount", "Balance", "Status", "Category", "Comment"};
 
 constexpr const int ObjectRole = Qt::UserRole + 1;
 constexpr const int UIDRole = Qt::UserRole + 2;
 
-TransactionModel::TransactionModel(Account* account) : _account(account)
+TransactionModel::TransactionModel(QString name) : AbstractModel(std::move(name))
+{
+}
+
+TransactionModel::TransactionModel(Account* account) : AbstractModel(account != nullptr ? account->getUid().toString() : ""), _account(account)
 {
 }
 
@@ -41,7 +47,14 @@ QVariant TransactionModel::data(const QModelIndex& index, int role) const
                 return QString("%1%2").arg(QString::number(t->getCurrentBalance()), currency->getSymbol());
             case 4:
                 return TRANSACTION_STATUS_2_STRING[t->getStatus()];
-            case 5:
+            case 5: {
+                const Category* category = t->getCategory();
+                if (category != nullptr)
+                    return category->getName();
+                else
+                    return {};
+            }
+            case 6:
                 return t->getComment();
             default:
                 return {};
@@ -130,4 +143,10 @@ void TransactionModel::setAccount(Account* account)
     beginResetModel();
     _account = account;
     endResetModel();
+}
+
+bool TransactionModel::isDirty() const
+{
+    // TODO implement TransactionModel::isDirty()
+    return false;
 }

@@ -1,5 +1,5 @@
 #include "createcurrencydialog.hpp"
-#include "../core/controller.hpp"
+#include "controller/controller.hpp"
 #include "ui_createcurrencydialog.h"
 
 

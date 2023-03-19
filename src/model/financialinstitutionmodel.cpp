@@ -1,6 +1,12 @@
 #include "financialinstitutionmodel.hpp"
 
+#include <utility>
+
 constexpr const int ObjectRole = Qt::UserRole + 1;
+
+FinancialInstitutionModel::FinancialInstitutionModel(QString name) : AbstractModel(std::move(name))
+{
+}
 
 int FinancialInstitutionModel::rowCount(const QModelIndex& parent) const
 {
@@ -78,4 +84,10 @@ FinancialInstitution* FinancialInstitutionModel::getFinancialInstitution(QUuid u
     if (res != _institutions.cend())
         return *res;
     return nullptr;
+}
+
+bool FinancialInstitutionModel::isDirty() const
+{
+    // TODO implement FinancialInstitutionModel::isDirty()
+    return false;
 }

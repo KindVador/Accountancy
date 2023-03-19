@@ -1,4 +1,4 @@
-#include "core/controller.hpp"
+#include "controller/controller.hpp"
 
 #include <QApplication>
 #include <QIcon>

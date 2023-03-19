@@ -1,5 +1,5 @@
 #include "createcategorydialog.hpp"
-#include "../core/controller.hpp"
+#include "controller/controller.hpp"
 #include "ui_createcategorydialog.h"
 
 CreateCategoryDialog::CreateCategoryDialog(QWidget* parent) : QDialog(parent), ui(new Ui::CreateCategoryDialog)

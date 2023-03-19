@@ -1,6 +1,6 @@
 #include "importdatadialog.hpp"
-#include "../core/importconfig.hpp"
-#include "../core/model.hpp"
+#include "core/importconfig.hpp"
+#include "model/model.hpp"
 #include "ui_importdatadialog.h"
 
 #include <QFileDialog>

@@ -1,6 +1,12 @@
 #include "accountmodel.hpp"
 
+#include <utility>
+
 constexpr const int ObjectRole = Qt::UserRole + 1;
+
+AccountModel::AccountModel(QString name) : AbstractModel(std::move(name))
+{
+}
 
 int AccountModel::rowCount(const QModelIndex& parent) const
 {
@@ -65,4 +71,10 @@ void AccountModel::removeAccount(const QModelIndex& index)
 const QList<Account*>& AccountModel::accounts() const
 {
     return _accounts;
+}
+
+bool AccountModel::isDirty() const
+{
+    // TODO implement AccountModel::isDirty()
+    return false;
 }

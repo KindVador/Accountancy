@@ -1,6 +1,12 @@
 #include "currencymodel.hpp"
 
+#include <utility>
+
 constexpr const int ObjectRole = Qt::UserRole + 1;
+
+CurrencyModel::CurrencyModel(QString name) : AbstractModel(std::move(name))
+{
+}
 
 int CurrencyModel::rowCount(const QModelIndex& parent) const
 {
@@ -90,4 +96,10 @@ Currency* CurrencyModel::getCurrency(QUuid uid) const
         return nullptr;
 
     return *currencyIt;
+}
+
+bool CurrencyModel::isDirty() const
+{
+    // TODO implement CurrencyModel::isDirty()
+    return false;
 }

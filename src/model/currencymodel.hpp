@@ -5,15 +5,20 @@
 #include <QDebug>
 #include <QUuid>
 
-#include "currency.hpp"
+#include "abstractmodel.hpp"
+#include "core/currency.hpp"
 
-class CurrencyModel : public QAbstractListModel
+class CurrencyModel : public QAbstractListModel, public AbstractModel
 {
     Q_OBJECT
 
 public:
-    CurrencyModel() = default;
+    explicit CurrencyModel(QString name);
     ~CurrencyModel() override = default;
+
+    // AbstractModel
+    [[nodiscard]] bool isDirty() const override;
+    void reset() override;
 
     // QAbstractListModel interface
     [[nodiscard]] int rowCount(const QModelIndex& parent) const override;
@@ -25,8 +30,6 @@ public:
     void removeCurrency(QUuid uid);
     [[nodiscard]] Currency* getCurrency(const QString& name) const;
     [[nodiscard]] Currency* getCurrency(QUuid uid) const;
-
-    void reset();
 
 private:
     QList<Currency*> _currencies;

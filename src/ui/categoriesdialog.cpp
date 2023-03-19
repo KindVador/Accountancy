@@ -1,5 +1,5 @@
 #include "categoriesdialog.hpp"
-#include "../core/controller.hpp"
+#include "controller/controller.hpp"
 #include "createcategorydialog.hpp"
 #include "ui_categoriesdialog.h"
 

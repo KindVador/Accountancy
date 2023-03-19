@@ -3,7 +3,7 @@
 
 #include <QDialog>
 
-#include "../core/currencymodel.hpp"
+#include "model/currencymodel.hpp"
 
 QT_BEGIN_NAMESPACE
 namespace Ui

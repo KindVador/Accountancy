@@ -3,7 +3,7 @@
 
 #include <QDialog>
 
-#include "../core/categorymodel.hpp"
+#include "model/categorymodel.hpp"
 
 QT_BEGIN_NAMESPACE
 namespace Ui

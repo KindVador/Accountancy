@@ -1,6 +1,12 @@
 #include "importconfigmodel.hpp"
 
+#include <utility>
+
 constexpr const int ObjectRole = Qt::UserRole + 1;
+
+ImportConfigModel::ImportConfigModel(QString name) : AbstractModel(std::move(name))
+{
+}
 
 int ImportConfigModel::rowCount(const QModelIndex& parent) const
 {
@@ -55,4 +61,10 @@ void ImportConfigModel::reset()
     beginResetModel();
     _importConfigs.clear();
     endResetModel();
+}
+
+bool ImportConfigModel::isDirty() const
+{
+    // TODO implement ImportConfigModel::isDirty()
+    return false;
 }

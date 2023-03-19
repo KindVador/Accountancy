@@ -1,5 +1,5 @@
 #include "controller.hpp"
-#include "../utils/instrumentor.hpp"
+#include "utils/instrumentor.hpp"
 
 #include <QJsonDocument>
 #include <QMessageBox>
@@ -241,17 +241,16 @@ void Controller::removeInstitution(const QUuid& uid)
     _model->getFinancialInstitutionModel()->removeFinancialInstitution(uid);
 }
 
-void Controller::addCategory(Category* category)
+void Controller::addCategory(Category* category, Category* parent)
 {
     if (_model == nullptr)
         return;
-
-    _model->getCategoryModel()->addCategory(category);
+    _model->getCategoryModel()->addCategory(category, parent);
 }
 
-Category* Controller::addCategory(const QString& name)
+Category* Controller::addCategory(const QString& name, Category* parent)
 {
-    return _model->getCategoryModel()->addCategory(name);
+    return _model->getCategoryModel()->addCategory(name, parent);
 }
 
 void Controller::removeCategory(const QUuid& uid)
