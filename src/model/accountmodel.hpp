@@ -16,6 +16,8 @@ public:
     // AbstractModel
     [[nodiscard]] bool isDirty() const override;
     void reset() override;
+    void write(QJsonObject& json) const override;
+    void read(const QJsonObject& json) override;
 
     // QAbstractListModel interface
     [[nodiscard]] int rowCount(const QModelIndex& parent) const override;

@@ -9,6 +9,10 @@ CurrenciesDialog::CurrenciesDialog(QWidget* parent, CurrencyModel* model) : QDia
 
     // init TableView model
     ui->tableView->setModel(_model);
+    if (_model != nullptr)
+        qWarning() << "    ==> Init of CurrenciesDialog with model: " << _model->getName();
+    else
+        qWarning() << "    ==> Init of CurrenciesDialog with NULL ptr";
 
     // connect buttons
     connect(ui->addPushButton, &QPushButton::clicked, this, &CurrenciesDialog::onAddCurrencyAction);

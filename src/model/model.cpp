@@ -6,7 +6,7 @@ const QString Model::_modelVersion = "0.1";
 
 constexpr const int ObjectRole = Qt::UserRole + 1;
 
-const std::unique_ptr<Model> Model::_singleton = std::make_unique<Model>("MainModel");
+const std::unique_ptr<Model> Model::_singleton = std::make_unique<Model>("Model");
 
 Model* Model::instance()
 {
@@ -16,27 +16,7 @@ Model* Model::instance()
 Model::Model(QString name) : AbstractModel(std::move(name))
 {
     // set source model for AccountFilter
-    _accountFilteredModel->setSourceModel(_accountModel.get());
-}
-
-OwnerModel* Model::getOwnerModel() const
-{
-    return _ownerModel.get();
-}
-
-CurrencyModel* Model::getCurrencyModel() const
-{
-    return _currencyModel.get();
-}
-
-OwnerModel* Model::getOwnerModel()
-{
-    return _ownerModel.get();
-}
-
-CurrencyModel* Model::getCurrencyModel()
-{
-    return _currencyModel.get();
+    _accountFilteredModel->setSourceModel(getModel<AccountModel>("AccountModel"));
 }
 
 float Model::balanceForOwner(const Owner* owner)
@@ -46,16 +26,6 @@ float Model::balanceForOwner(const Owner* owner)
 
     // TODO: implement this method to compute the Total balance of a Owner
     return -1;
-}
-
-AccountModel* Model::getAccountModel() const
-{
-    return _accountModel.get();
-}
-
-AccountModel* Model::getAccountModel()
-{
-    return _accountModel.get();
 }
 
 AccountFilter* Model::getAccountFilter() const
@@ -79,18 +49,9 @@ void Model::setOwnerFilter(const QString& ownerName)
         return;
 
     qWarning() << "Model::setOwnerFilter" << ownerName;
-    const Owner* owner = _ownerModel->getOwner(ownerName);
+    auto ownerModel = getModel<OwnerModel>("OwnerModel");
+    const Owner* owner = ownerModel->getOwner(ownerName);
     _accountFilteredModel->setActiveOwnerUid(owner->getUid());
-}
-
-FinancialInstitutionModel* Model::getFinancialInstitutionModel() const
-{
-    return _institutionsModel.get();
-}
-
-FinancialInstitutionModel* Model::getFinancialInstitutionModel()
-{
-    return _institutionsModel.get();
 }
 
 void Model::write(QJsonObject& json) const
@@ -98,76 +59,13 @@ void Model::write(QJsonObject& json) const
     // Model version
     json["model_version"] = _modelVersion;
 
-    // Categories
-    if (_categoryModel != nullptr) {
-        QJsonArray categories;
-        for (int i = 0; i < _categoryModel->rowCount(QModelIndex()); ++i) {
-            const Category* category = _categoryModel->data(_categoryModel->index(i, 0, QModelIndex()), ObjectRole).value<Category*>();
-            QJsonObject categoryJson;
-            category->write(categoryJson);
-            categories.append(categoryJson);
+    // write each models
+    QHashIterator<QString, AbstractModel*> it(_models);
+    while (it.hasNext()) {
+        it.next();
+        if (it.value() != nullptr) {
+            it.value()->write(json);
         }
-        json["categories"] = categories;
-    }
-
-    // Currencies
-    if (_currencyModel != nullptr) {
-        QJsonArray currencies;
-        for (int i = 0; i < _currencyModel->rowCount(QModelIndex()); ++i) {
-            const Currency* currency = _currencyModel->data(_currencyModel->index(i, 0), ObjectRole).value<Currency*>();
-            QJsonObject currencyJson;
-            currency->write(currencyJson);
-            currencies.append(currencyJson);
-        }
-        json["currencies"] = currencies;
-    }
-
-    // Owners
-    if (_ownerModel != nullptr) {
-        QJsonArray owners;
-        for (int i = 0; i < _ownerModel->rowCount(QModelIndex()); ++i) {
-            const Owner* owner = _ownerModel->data(_ownerModel->index(i, 0), ObjectRole).value<Owner*>();
-            QJsonObject ownerJson;
-            owner->write(ownerJson);
-            owners.append(ownerJson);
-        }
-        json["owners"] = owners;
-    }
-
-    // Institutions
-    if (_institutionsModel != nullptr) {
-        QJsonArray institutions;
-        for (int i = 0; i < _institutionsModel->rowCount(QModelIndex()); ++i) {
-            const FinancialInstitution* institution = _institutionsModel->data(_institutionsModel->index(i, 0), ObjectRole).value<FinancialInstitution*>();
-            QJsonObject institutionJson;
-            institution->write(institutionJson);
-            institutions.append(institutionJson);
-        }
-        json["institutions"] = institutions;
-    }
-
-    // Accounts
-    if (_accountModel != nullptr) {
-        QJsonArray accounts;
-        for (int i = 0; i < _accountModel->rowCount(QModelIndex()); ++i) {
-            const Account* account = _accountModel->data(_accountModel->index(i, 0), ObjectRole).value<Account*>();
-            QJsonObject accountJson;
-            account->write(accountJson);
-            accounts.append(accountJson);
-        }
-        json["accounts"] = accounts;
-    }
-
-    // Import Configs
-    if (_importConfigModel != nullptr) {
-        QJsonArray importConfigs;
-        for (int i = 0; i < _importConfigModel->rowCount(QModelIndex()); ++i) {
-            const ImportConfig* importConfig = _importConfigModel->data(_importConfigModel->index(i, 0), ObjectRole).value<ImportConfig*>();
-            QJsonObject importConfigJson;
-            importConfig->write(importConfigJson);
-            importConfigs.append(importConfigJson);
-        }
-        json["importConfigurations"] = importConfigs;
     }
 }
 
@@ -180,60 +78,34 @@ void Model::read(const QJsonObject& json)
         return;
     }
 
-    // Owners
-    if (json.contains("owners") && json["owners"].isArray()) {
-        QJsonArray ownersJsonArray = json["owners"].toArray();
-        for (const QJsonValueConstRef& owner: qAsConst(ownersJsonArray))
-            _ownerModel->addOwner(Owner::fromJson(owner.toObject()));
+    // read each models
+    QHashIterator<QString, AbstractModel*> it(_models);
+    while (it.hasNext()) {
+        it.next();
+        if (it.value() != nullptr) {
+            it.value()->read(json);
+        }
     }
 
-    // Categories
-    if (json.contains("categories") && json["categories"].isArray()) {
-        QJsonArray categoriesJsonArray = json["categories"].toArray();
-        for (const QJsonValueConstRef& category: qAsConst(categoriesJsonArray))
-            _categoryModel->addCategory(Category::fromJson(category.toObject()));
-    }
-
-    // Currencies
-    if (json.contains("currencies") && json["currencies"].isArray()) {
-        QJsonArray currenciesJsonArray = json["currencies"].toArray();
-        for (const QJsonValueConstRef& currency: qAsConst(currenciesJsonArray))
-            _currencyModel->addCurrency(Currency::fromJson(currency.toObject()));
-    }
-
-    // Financial Institutions
-    if (json.contains("institutions") && json["institutions"].isArray()) {
-        QJsonArray institutionsJsonArray = json["institutions"].toArray();
-        for (const QJsonValueConstRef& institution: qAsConst(institutionsJsonArray))
-            _institutionsModel->addFinancialInstitution(FinancialInstitution::fromJson(institution.toObject()));
-    }
-
-    // Accounts
-    if (json.contains("accounts") && json["accounts"].isArray()) {
-        QJsonArray accountsJsonArray = json["accounts"].toArray();
-        for (const QJsonValueConstRef& account: qAsConst(accountsJsonArray))
-            _accountModel->addAccount(Account::fromJson(account.toObject()));
-    }
     // link model objects to each account
-    for (Account* account: _accountModel->accounts()) {
-        // link currency
-        QUuid currencyUid = account->getCurrency()->getUid();
-        account->setCurrency(_currencyModel->getCurrency(currencyUid));
-        // link financial institution
-        QUuid institutionUid = account->getInstitution()->getUid();
-        account->setInstitution(_institutionsModel->getFinancialInstitution(institutionUid));
-        // link owners
-        QList<QUuid> ownersIds = account->getOwnersUid();
-        account->getOwners().clear();
-        for (QUuid ownerUid: ownersIds)
-            account->addOwner(_ownerModel->getOwner(ownerUid));
-    }
-
-    // Import Configs
-    if (json.contains("importConfigurations") && json["importConfigurations"].isArray()) {
-        QJsonArray importConfigsJsonArray = json["importConfigurations"].toArray();
-        for (const QJsonValueConstRef& importConfig: qAsConst(importConfigsJsonArray))
-            _importConfigModel->addImportConfig(ImportConfig::fromJson(importConfig.toObject()));
+    auto accountModel = getModel<AccountModel>("AccountModel");
+    auto currencyModel = getModel<CurrencyModel>("CurrencyModel");
+    auto institutionsModel = getModel<FinancialInstitutionModel>("FinancialInstitutionModel");
+    auto ownerModel = getModel<OwnerModel>("OwnerModel");
+    if (accountModel != nullptr && currencyModel != nullptr && institutionsModel != nullptr && ownerModel != nullptr) {
+        for (Account* account: accountModel->accounts()) {
+            // link currency
+            QUuid currencyUid = account->getCurrency()->getUid();
+            account->setCurrency(currencyModel->getCurrency(currencyUid));
+            // link financial institution
+            QUuid institutionUid = account->getInstitution()->getUid();
+            account->setInstitution(institutionsModel->getFinancialInstitution(institutionUid));
+            // link owners
+            QList<QUuid> ownersIds = account->getOwnersUid();
+            account->getOwners().clear();
+            for (QUuid ownerUid: ownersIds)
+                account->addOwner(ownerModel->getOwner(ownerUid));
+        }
     }
 }
 
@@ -249,55 +121,73 @@ bool Model::isDirty() const
 
 void Model::reset()
 {
-    if (_ownerModel != nullptr)
-        _ownerModel->reset();
-
-    if (_currencyModel != nullptr)
-        _currencyModel->reset();
-
-    if (_accountModel != nullptr)
-        _accountModel->reset();
-
-    if (_institutionsModel != nullptr)
-        _institutionsModel->reset();
-
     if (_accountFilteredModel != nullptr)
         _accountFilteredModel->invalidate();
 
-    if (_importConfigModel != nullptr)
-        _importConfigModel->reset();
-
-    if (_categoryModel != nullptr)
-        _categoryModel->reset();
+    QHashIterator<QString, AbstractModel*> it(_models);
+    while (it.hasNext()) {
+        it.next();
+        if (it.value() != nullptr) {
+            it.value()->reset();
+        }
+    }
 }
 
-ImportConfigModel* Model::getImportConfigModel()
+bool Model::registerModel(AbstractModel* newModel)
 {
-    return _importConfigModel.get();
-}
+    if (newModel == nullptr) {
+        qWarning() << "Invalid model to register";
+        return false;
+    }
 
-ImportConfigModel* Model::getImportConfigModel() const
-{
-    return _importConfigModel.get();
-}
+    if (_models.contains(newModel->getName())) {
+        qWarning() << "Model : " << newModel->getName() << " already registered";
+        return false;
+    }
 
-CategoryModel* Model::getCategoryModel()
-{
-    return _categoryModel.get();
-}
-
-bool Model::registerModel(AbstractModel* newModel, const QString& name)
-{
-    return false;
+    qDebug() << "Registering model: " << newModel->getName();
+    _models.insert(newModel->getName(), newModel);
+    return true;
 }
 
 bool Model::unregisterModel(AbstractModel* model)
 {
-    return false;
+    if (model == nullptr)
+        return false;
+
+    return _models.remove(model->getName());
 }
 
 template<typename T>
 T* Model::getModel(const QString& name)
 {
-    return nullptr;
+    qDebug() << "Model::getModel() " << name;
+    if (name.isEmpty() || !_models.contains(name))
+        return nullptr;
+
+    auto model = dynamic_cast<T*>(_models.value(name));
+    if (model == nullptr)
+        qCritical() << "No valid model to return for name: " << name;
+
+    return model;
+}
+
+template<>
+CategoryModel* Model::getModel(const QString& name)
+{
+    qDebug() << "Model::getModel() (specialization CategoryModel)" << name;
+    if (name.isEmpty() || !_models.contains(name))
+        return nullptr;
+
+    return dynamic_cast<CategoryModel*>(_models.value(name));
+}
+
+template<>
+FinancialInstitutionModel* Model::getModel(const QString& name)
+{
+    qDebug() << "Model::getModel() (specialization FinancialInstitutionModel)" << name;
+    if (name.isEmpty() || !_models.contains(name))
+        return nullptr;
+
+    return dynamic_cast<FinancialInstitutionModel*>(_models.value(name));
 }

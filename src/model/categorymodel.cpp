@@ -2,6 +2,8 @@
 #include <iostream>
 #include <utility>
 
+#include <QJsonArray>
+
 constexpr const int ObjectRole = Qt::UserRole + 1;
 
 CategoryModel::CategoryModel(QString name) : AbstractModel(std::move(name))
@@ -25,6 +27,7 @@ int CategoryModel::rowCount(const QModelIndex& parent) const
 
 QVariant CategoryModel::data(const QModelIndex& index, int role) const
 {
+    qDebug() << "CategoryModel::data() " << index.row() << " " << role;
     if (!index.isValid() || index.row() >= _rootCategory->childCount() || index.row() < 0)
         return {};
 
@@ -211,4 +214,25 @@ bool CategoryModel::isDirty() const
 {
     // TODO implement CategoryModel::isDirty()
     return false;
+}
+
+void CategoryModel::write(QJsonObject& json) const
+{
+    QJsonArray categories;
+    for (int i = 0; i < rowCount(QModelIndex()); ++i) {
+        const Category* category = data(index(i, 0, QModelIndex()), ObjectRole).value<Category*>();
+        QJsonObject categoryJson;
+        category->write(categoryJson);
+        categories.append(categoryJson);
+    }
+    json[getName()] = categories;
+}
+
+void CategoryModel::read(const QJsonObject& json)
+{
+    if (json.contains(getName()) && json[getName()].isArray()) {
+        QJsonArray categoriesJsonArray = json[getName()].toArray();
+        for (const QJsonValueConstRef& category: qAsConst(categoriesJsonArray))
+            addCategory(Category::fromJson(category.toObject()));
+    }
 }

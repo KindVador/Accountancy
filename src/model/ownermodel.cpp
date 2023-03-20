@@ -2,6 +2,8 @@
 
 #include <utility>
 
+#include <QJsonArray>
+
 constexpr const int ObjectRole = Qt::UserRole + 1;
 
 OwnerModel::OwnerModel(QString name) : AbstractModel(std::move(name))
@@ -12,7 +14,7 @@ void OwnerModel::addOwner(Owner* owner)
 {
     if (owner == nullptr)
         return;
-
+    qDebug() << "Owner model, add Owner: " << owner->getName();
     beginResetModel();
     _owners.append(owner);
     endResetModel();
@@ -20,6 +22,7 @@ void OwnerModel::addOwner(Owner* owner)
 
 Owner* OwnerModel::addOwner(const QString& name, double warningBalance, const QString& comment, bool isHidden)
 {
+    qDebug() << "Owner model, add Owner: " << name;
     auto* newOwner = new Owner(name, warningBalance, comment, isHidden);
     addOwner(newOwner);
     return newOwner;
@@ -42,6 +45,7 @@ int OwnerModel::rowCount(const QModelIndex& parent) const
 
 QVariant OwnerModel::data(const QModelIndex& index, int role) const
 {
+    qDebug() << "OwnerModel::data() " << index.row() << " " << role;
     if (!index.isValid() || index.row() >= _owners.count() || index.row() < 0)
         return {};
 
@@ -92,4 +96,25 @@ bool OwnerModel::isDirty() const
 {
     // TODO implement OwnerModel::isDirty()
     return false;
+}
+
+void OwnerModel::write(QJsonObject& json) const
+{
+    QJsonArray owners;
+    for (int i = 0; i < rowCount(QModelIndex()); ++i) {
+        const Owner* owner = data(index(i, 0), ObjectRole).value<Owner*>();
+        QJsonObject ownerJson;
+        owner->write(ownerJson);
+        owners.append(ownerJson);
+    }
+    json[getName()] = owners;
+}
+
+void OwnerModel::read(const QJsonObject& json)
+{
+    if (json.contains(getName()) && json[getName()].isArray()) {
+        QJsonArray ownersJsonArray = json[getName()].toArray();
+        for (const QJsonValueConstRef& owner: qAsConst(ownersJsonArray))
+            addOwner(Owner::fromJson(owner.toObject()));
+    }
 }

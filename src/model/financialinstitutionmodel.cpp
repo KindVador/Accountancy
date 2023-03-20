@@ -2,6 +2,8 @@
 
 #include <utility>
 
+#include <QJsonArray>
+
 constexpr const int ObjectRole = Qt::UserRole + 1;
 
 FinancialInstitutionModel::FinancialInstitutionModel(QString name) : AbstractModel(std::move(name))
@@ -90,4 +92,25 @@ bool FinancialInstitutionModel::isDirty() const
 {
     // TODO implement FinancialInstitutionModel::isDirty()
     return false;
+}
+
+void FinancialInstitutionModel::write(QJsonObject& json) const
+{
+    QJsonArray institutions;
+    for (int i = 0; i < rowCount(QModelIndex()); ++i) {
+        const FinancialInstitution* institution = data(index(i, 0), ObjectRole).value<FinancialInstitution*>();
+        QJsonObject institutionJson;
+        institution->write(institutionJson);
+        institutions.append(institutionJson);
+    }
+    json[getName()] = institutions;
+}
+
+void FinancialInstitutionModel::read(const QJsonObject& json)
+{
+    if (json.contains(getName()) && json[getName()].isArray()) {
+        QJsonArray institutionsJsonArray = json[getName()].toArray();
+        for (const QJsonValueConstRef& institution: qAsConst(institutionsJsonArray))
+            addFinancialInstitution(FinancialInstitution::fromJson(institution.toObject()));
+    }
 }

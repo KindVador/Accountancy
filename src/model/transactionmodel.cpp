@@ -27,6 +27,7 @@ int TransactionModel::rowCount(const QModelIndex& parent) const
 
 QVariant TransactionModel::data(const QModelIndex& index, int role) const
 {
+    qDebug() << "TransactionModel::data() " << index.row() << " " << role;
     if (!index.isValid() || _account == nullptr)
         return {};
 
@@ -149,4 +150,12 @@ bool TransactionModel::isDirty() const
 {
     // TODO implement TransactionModel::isDirty()
     return false;
+}
+
+void TransactionModel::write(QJsonObject& json) const
+{
+}
+
+void TransactionModel::read(const QJsonObject& json)
+{
 }

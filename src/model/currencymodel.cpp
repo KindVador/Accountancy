@@ -2,6 +2,8 @@
 
 #include <utility>
 
+#include <QJsonArray>
+
 constexpr const int ObjectRole = Qt::UserRole + 1;
 
 CurrencyModel::CurrencyModel(QString name) : AbstractModel(std::move(name))
@@ -15,6 +17,7 @@ int CurrencyModel::rowCount(const QModelIndex& parent) const
 
 QVariant CurrencyModel::data(const QModelIndex& index, int role) const
 {
+    qDebug() << "CurrencyModel::data() " << index.row() << " " << role;
     if (!index.isValid() || index.row() >= _currencies.count() || index.row() < 0)
         return {};
 
@@ -102,4 +105,25 @@ bool CurrencyModel::isDirty() const
 {
     // TODO implement CurrencyModel::isDirty()
     return false;
+}
+
+void CurrencyModel::write(QJsonObject& json) const
+{
+    QJsonArray currencies;
+    for (int i = 0; i < rowCount(QModelIndex()); ++i) {
+        const Currency* currency = data(index(i, 0), ObjectRole).value<Currency*>();
+        QJsonObject currencyJson;
+        currency->write(currencyJson);
+        currencies.append(currencyJson);
+    }
+    json[getName()] = currencies;
+}
+
+void CurrencyModel::read(const QJsonObject& json)
+{
+    if (json.contains(getName()) && json[getName()].isArray()) {
+        QJsonArray currenciesJsonArray = json[getName()].toArray();
+        for (const QJsonValueConstRef& currency: qAsConst(currenciesJsonArray))
+            addCurrency(Currency::fromJson(currency.toObject()));
+    }
 }

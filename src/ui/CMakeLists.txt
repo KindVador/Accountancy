@@ -39,5 +39,5 @@ else()
     add_library(${NAME} ${SOURCES} ${UI_SOURCES})
 endif()
 
-target_link_libraries(${NAME} PRIVATE Qt::Widgets)
+target_link_libraries(${NAME} PRIVATE Qt::Widgets AccountancyController AccountancyModel)
 target_include_directories(${NAME} PUBLIC "${CMAKE_CURRENT_SOURCE_DIR}" "${CMAKE_CURRENT_SOURCE_DIR}/..")

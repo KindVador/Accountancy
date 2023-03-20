@@ -1,6 +1,7 @@
 #ifndef ACCOUNTANCY_ABSTRACTMODEL_HPP
 #define ACCOUNTANCY_ABSTRACTMODEL_HPP
 
+#include <QJsonObject>
 #include <QString>
 
 /**
@@ -17,7 +18,7 @@ public:
      * @brief returns model's name
      * @return QString with model's name
      */
-    virtual const QString& getName();
+    virtual const QString& getName() const;
     /**
      * @brief tells if model has unsaved modification
      * @return returns true if model has unsaved modification otherwise false
@@ -27,6 +28,16 @@ public:
      * @brief reset the model.
      */
     virtual void reset() = 0;
+    /**
+     * @brief
+     * @param json
+     */
+    virtual void write(QJsonObject& json) const = 0;
+    /**
+     * @brief
+     * @param json
+     */
+    virtual void read(const QJsonObject& json) = 0;
 
 protected:
     QString _name;

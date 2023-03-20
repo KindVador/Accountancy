@@ -2,6 +2,8 @@
 
 #include <utility>
 
+#include <QJsonArray>
+
 constexpr const int ObjectRole = Qt::UserRole + 1;
 
 AccountModel::AccountModel(QString name) : AbstractModel(std::move(name))
@@ -15,6 +17,7 @@ int AccountModel::rowCount(const QModelIndex& parent) const
 
 QVariant AccountModel::data(const QModelIndex& index, int role) const
 {
+    qDebug() << "AccountModel::data() " << index.row() << " " << role;
     if (!index.isValid() || index.row() >= _accounts.count() || index.row() < 0)
         return {};
 
@@ -77,4 +80,25 @@ bool AccountModel::isDirty() const
 {
     // TODO implement AccountModel::isDirty()
     return false;
+}
+
+void AccountModel::write(QJsonObject& json) const
+{
+    QJsonArray accounts;
+    for (int i = 0; i < rowCount(QModelIndex()); ++i) {
+        const Account* account = data(index(i, 0), ObjectRole).value<Account*>();
+        QJsonObject accountJson;
+        account->write(accountJson);
+        accounts.append(accountJson);
+    }
+    json[getName()] = accounts;
+}
+
+void AccountModel::read(const QJsonObject& json)
+{
+    if (json.contains(getName()) && json[getName()].isArray()) {
+        QJsonArray accountsJsonArray = json[getName()].toArray();
+        for (const QJsonValueConstRef& account: qAsConst(accountsJsonArray))
+            addAccount(Account::fromJson(account.toObject()));
+    }
 }

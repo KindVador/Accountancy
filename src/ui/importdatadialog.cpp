@@ -15,11 +15,11 @@ ImportDataDialog::ImportDataDialog(QWidget* parent) : QDialog(parent),
     setWindowTitle("Import transactions to an account");
 
     // Populate owner ComboBox
-    ui->ownerComboBox->setModel(Model::instance()->getOwnerModel());
+    ui->ownerComboBox->setModel(Model::instance()->getModel<OwnerModel>("OwnerModel"));
     // Populate account ComboBox
     ui->accountComboBox->setModel(Model::instance()->getAccountFilter());
     // Populate importConfiguration ComboBox
-    ui->importConfigComboBox->setModel(Model::instance()->getImportConfigModel());
+    // ui->importConfigComboBox->setModel(Model::instance()->getModel<ImportConfigModel>("ImportConfigModel"));
 
     connect(ui->addFileButton, &QPushButton::clicked, this, &ImportDataDialog::addFiles);
     connect(ui->removeFileButton, &QPushButton::clicked, this, &ImportDataDialog::removeSelectedFiles);

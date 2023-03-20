@@ -1,28 +1,30 @@
 set(NAME AccountancyModel)
 
 set(HEADER_FILES
+        abstractmodel.hpp
         currencymodel.hpp
         ownermodel.hpp
         accountmodel.hpp
         financialinstitutionmodel.hpp
         transactionmodel.hpp
-        model.hpp
-        importconfigmodel.hpp
         categorymodel.hpp
+        importconfigmodel.hpp
+        model.hpp
         treemodel.hpp
-        abstractmodel.hpp)
+        )
 
 set(SOURCE_FILES
+        abstractmodel.cpp
         currencymodel.cpp
         ownermodel.cpp
         accountmodel.cpp
         financialinstitutionmodel.cpp
         transactionmodel.cpp
-        model.cpp
-        importconfigmodel.cpp
         categorymodel.cpp
+        importconfigmodel.cpp
+        model.cpp
         treemodel.cpp
-        abstractmodel.cpp)
+        )
 
 add_library(${NAME} ${HEADER_FILES} ${SOURCE_FILES})
 

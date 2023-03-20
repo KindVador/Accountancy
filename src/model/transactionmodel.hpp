@@ -17,6 +17,8 @@ public:
     // AbstractModel
     [[nodiscard]] bool isDirty() const override;
     void reset() override;
+    void write(QJsonObject& json) const override;
+    void read(const QJsonObject& json) override;
 
     // QAbstractItemModel
     [[nodiscard]] QVariant headerData(int section, Qt::Orientation orientation, int role) const override;

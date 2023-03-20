@@ -12,6 +12,8 @@
 #include "ownermodel.hpp"
 #include "transactionmodel.hpp"
 
+#include <QHash>
+
 #include <memory>
 
 class Model : public QObject, public AbstractModel
@@ -34,36 +36,39 @@ public:
     /**
      * @brief register a model with its name
      * @param newModel is a pointer to the model to be registered
-     * @param name is the name of the new model
      * @return true if new model has been successfully registered otherwise false
      */
-    bool registerModel(AbstractModel* newModel, const QString& name);
+    bool registerModel(AbstractModel* newModel);
+
     /**
      * @brief
      * @param model
      * @return
      */
     bool unregisterModel(AbstractModel* model);
+
+    /**
+     * @brief
+     * @tparam T
+     * @param name
+     * @return
+     */
     template<typename T>
     T* getModel(const QString& name);
 
+    // TODO fix why template specialization is required for linker
+    template<>
+    CategoryModel* getModel(const QString& name);
+    template<>
+    FinancialInstitutionModel* getModel(const QString& name);
+
+
     // Getters
-    [[nodiscard]] OwnerModel* getOwnerModel() const;
-    [[nodiscard]] OwnerModel* getOwnerModel();
-    [[nodiscard]] CurrencyModel* getCurrencyModel() const;
-    [[nodiscard]] CurrencyModel* getCurrencyModel();
-    [[nodiscard]] AccountModel* getAccountModel() const;
-    [[nodiscard]] AccountModel* getAccountModel();
     [[nodiscard]] AccountFilter* getAccountFilter() const;
-    [[nodiscard]] FinancialInstitutionModel* getFinancialInstitutionModel() const;
-    [[nodiscard]] FinancialInstitutionModel* getFinancialInstitutionModel();
-    [[nodiscard]] ImportConfigModel* getImportConfigModel() const;
-    [[nodiscard]] ImportConfigModel* getImportConfigModel();
-    [[nodiscard]] CategoryModel* getCategoryModel();
 
     // Serialization
-    void write(QJsonObject& json) const;
-    void read(const QJsonObject& json);
+    void write(QJsonObject& json) const override;
+    void read(const QJsonObject& json) override;
 
     void setOwnerFilter(QUuid OwnerUid);
     void setOwnerFilter(const QString& ownerName);
@@ -72,14 +77,9 @@ public:
 private:
     static const std::unique_ptr<Model> _singleton;
     static const QString _modelVersion;
-    QVector<std::unique_ptr<AbstractModel>> _models;
-    std::unique_ptr<OwnerModel> _ownerModel = std::make_unique<OwnerModel>("Owner");
-    std::unique_ptr<CurrencyModel> _currencyModel = std::make_unique<CurrencyModel>("Currency");
-    std::unique_ptr<AccountModel> _accountModel = std::make_unique<AccountModel>("Account");
-    std::unique_ptr<FinancialInstitutionModel> _institutionsModel = std::make_unique<FinancialInstitutionModel>("FinancialInstitution");
+    QHash<QString, AbstractModel*> _models;
+    // TODO refactoring to move account filter in controller part
     std::unique_ptr<AccountFilter> _accountFilteredModel = std::make_unique<AccountFilter>();
-    std::unique_ptr<ImportConfigModel> _importConfigModel = std::make_unique<ImportConfigModel>("ImportConfig");
-    std::unique_ptr<CategoryModel> _categoryModel = std::make_unique<CategoryModel>("Category");
 };
 
 #endif//ACCOUNTANCY_MODEL_HPP

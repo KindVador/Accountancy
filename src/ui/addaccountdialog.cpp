@@ -13,13 +13,13 @@ AddAccountDialog::AddAccountDialog(QWidget* parent) : QDialog(parent), ui(new Ui
         ui->typeComboBox->addItem(it.key());
 
     // Populate Currency ComboBox
-    ui->currencyComboBox->setModel(Model::instance()->getCurrencyModel());
+    ui->currencyComboBox->setModel(Model::instance()->getModel<CurrencyModel>("CurrencyModel"));
 
     // Populate Institution ComboBox
-    ui->institutionComboBox->setModel(Model::instance()->getFinancialInstitutionModel());
+    ui->institutionComboBox->setModel(Model::instance()->getModel<FinancialInstitutionModel>("FinancialInstitutionModel"));
 
     // Populate Owners List
-    ui->ownersListView->setModel(Model::instance()->getOwnerModel());
+    ui->ownersListView->setModel(Model::instance()->getModel<OwnerModel>("OwnerModel"));
 
     // make connections
     connect(ui->buttonBox, &QDialogButtonBox::accepted, this, &AddAccountDialog::accept);

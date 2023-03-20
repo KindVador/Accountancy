@@ -54,6 +54,6 @@ int main(int argc, char* argv[])
         controller->loadFile(filePath);
     controller->showMainWindow();
 
-    // Lancement de l'application
+    // launching application
     return QApplication::exec();
 }

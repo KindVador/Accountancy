@@ -84,7 +84,11 @@ void MainWindow::setModel(Model* model)
     _model.reset(model);
 
     // connect Owner model
-    ui->ownersView->setModel(_model->getOwnerModel());
+    if (auto ownerModel = _model->getModel<OwnerModel>("OwnerModel"); model != nullptr) {
+        ui->ownersView->setModel(ownerModel);
+    } else {
+        qCritical() << "Invalid Owner model";
+    }
 
     // connect Account model through AccountFilter model
     ui->accountsView->setModel(_model->getAccountFilter());
@@ -111,7 +115,12 @@ void MainWindow::onActionMainDock(bool checked)
 void MainWindow::onAccountDoubleClicked(const QModelIndex& index)
 {
     // get selected account
-    auto* selectedAccount = _model->getAccountModel()->data(index, ObjectRole).value<Account*>();
+    Account* selectedAccount = nullptr;
+    if (auto model = _model->getModel<AccountModel>("AccountModel"); model != nullptr) {
+        selectedAccount = model->data(index, ObjectRole).value<Account*>();
+    } else {
+        qWarning() << "Invalid AccountModel";
+    }
     if (selectedAccount == nullptr)
         return;
 
@@ -190,10 +199,13 @@ void MainWindow::updateEditionInterface(bool enable)
 
 void MainWindow::onRemoveOwnerAction()
 {
-    OwnerModel* ownerModel = _model->getOwnerModel();
-    QList<QModelIndex> selIndexes = ui->ownersView->selectionModel()->selectedIndexes();
-    for (const QModelIndex& selIndex: qAsConst(selIndexes))
-        ownerModel->removeOwner(selIndex);
+    if (auto ownerModel = _model->getModel<OwnerModel>("OwnerModel"); ownerModel != nullptr) {
+        QList<QModelIndex> selIndexes = ui->ownersView->selectionModel()->selectedIndexes();
+        for (const QModelIndex& selIndex: qAsConst(selIndexes))
+            ownerModel->removeOwner(selIndex);
+    } else {
+        qWarning() << "Invalid OwnerModel";
+    }
 }
 
 void MainWindow::onAddAccountAction()
@@ -204,27 +216,30 @@ void MainWindow::onAddAccountAction()
 
 void MainWindow::onRemoveAccountAction()
 {
-    AccountModel* accountModel = _model->getAccountModel();
-    QList<QModelIndex> selIndexes = ui->accountsView->selectionModel()->selectedIndexes();
-    for (const QModelIndex& selIndex: qAsConst(selIndexes))
-        accountModel->removeAccount(selIndex);
+    if (auto model = _model->getModel<AccountModel>("AccountModel"); model != nullptr) {
+        QList<QModelIndex> selIndexes = ui->accountsView->selectionModel()->selectedIndexes();
+        for (const QModelIndex& selIndex: qAsConst(selIndexes))
+            model->removeAccount(selIndex);
+    } else {
+        qWarning() << "Invalid AccountModel";
+    }
 }
 
 void MainWindow::onCurrenciesAction()
 {
-    auto dlg = CurrenciesDialog(this, _model->getCurrencyModel());
+    auto dlg = CurrenciesDialog(this, _model->getModel<CurrencyModel>("CurrencyModel"));
     dlg.exec();
 }
 
 void MainWindow::onInstitutionsAction()
 {
-    auto dlg = InstitutionsDialog(this, _model->getFinancialInstitutionModel());
+    auto dlg = InstitutionsDialog(this, _model->getModel<FinancialInstitutionModel>("FinancialInstitutionModel"));
     dlg.exec();
 }
 
 void MainWindow::onCategoriesAction()
 {
     //    auto dlg = CategoriesDialog(this, _model->getCategoryModel());
-    auto dlg = CategoriesTreeDialog(this, _model->getCategoryModel());
+    auto dlg = CategoriesTreeDialog(this, _model->getModel<CategoryModel>("CategoryModel"));
     dlg.exec();
 }
