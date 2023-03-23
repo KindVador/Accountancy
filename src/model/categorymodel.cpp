@@ -27,7 +27,6 @@ int CategoryModel::rowCount(const QModelIndex& parent) const
 
 QVariant CategoryModel::data(const QModelIndex& index, int role) const
 {
-    qDebug() << "CategoryModel::data() " << index.row() << " " << role;
     if (!index.isValid() || index.row() >= _rootCategory->childCount() || index.row() < 0)
         return {};
 

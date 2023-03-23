@@ -63,8 +63,9 @@ public:
     FinancialInstitutionModel* getModel(const QString& name);
 
 
-    // Getters
+    // Getters & Setters
     [[nodiscard]] AccountFilter* getAccountFilter() const;
+    void setAccountFilter(AccountModel* model);
 
     // Serialization
     void write(QJsonObject& json) const override;

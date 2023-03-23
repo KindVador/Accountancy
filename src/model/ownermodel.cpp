@@ -45,7 +45,6 @@ int OwnerModel::rowCount(const QModelIndex& parent) const
 
 QVariant OwnerModel::data(const QModelIndex& index, int role) const
 {
-    qDebug() << "OwnerModel::data() " << index.row() << " " << role;
     if (!index.isValid() || index.row() >= _owners.count() || index.row() < 0)
         return {};
 

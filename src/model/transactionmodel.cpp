@@ -27,7 +27,6 @@ int TransactionModel::rowCount(const QModelIndex& parent) const
 
 QVariant TransactionModel::data(const QModelIndex& index, int role) const
 {
-    qDebug() << "TransactionModel::data() " << index.row() << " " << role;
     if (!index.isValid() || _account == nullptr)
         return {};
 

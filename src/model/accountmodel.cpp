@@ -17,7 +17,6 @@ int AccountModel::rowCount(const QModelIndex& parent) const
 
 QVariant AccountModel::data(const QModelIndex& index, int role) const
 {
-    qDebug() << "AccountModel::data() " << index.row() << " " << role;
     if (!index.isValid() || index.row() >= _accounts.count() || index.row() < 0)
         return {};
 

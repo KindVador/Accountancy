@@ -18,7 +18,7 @@ public:
      * @brief returns model's name
      * @return QString with model's name
      */
-    virtual const QString& getName() const;
+    [[nodiscard]] virtual const QString& getName() const;
     /**
      * @brief tells if model has unsaved modification
      * @return returns true if model has unsaved modification otherwise false

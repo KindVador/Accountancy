@@ -15,8 +15,6 @@ Model* Model::instance()
 
 Model::Model(QString name) : AbstractModel(std::move(name))
 {
-    // set source model for AccountFilter
-    _accountFilteredModel->setSourceModel(getModel<AccountModel>("AccountModel"));
 }
 
 float Model::balanceForOwner(const Owner* owner)
@@ -30,8 +28,12 @@ float Model::balanceForOwner(const Owner* owner)
 
 AccountFilter* Model::getAccountFilter() const
 {
-    qWarning() << "Model::getAccountFilter";
     return _accountFilteredModel.get();
+}
+
+void Model::setAccountFilter(AccountModel* model)
+{
+    _accountFilteredModel->setSourceModel(model);
 }
 
 void Model::setOwnerFilter(QUuid OwnerUid)
@@ -39,7 +41,6 @@ void Model::setOwnerFilter(QUuid OwnerUid)
     if (_accountFilteredModel == nullptr || OwnerUid.isNull())
         return;
 
-    qWarning() << "Model::setOwnerFilter" << OwnerUid;
     _accountFilteredModel->setActiveOwnerUid(OwnerUid);
 }
 
@@ -48,7 +49,6 @@ void Model::setOwnerFilter(const QString& ownerName)
     if (_accountFilteredModel == nullptr)
         return;
 
-    qWarning() << "Model::setOwnerFilter" << ownerName;
     auto ownerModel = getModel<OwnerModel>("OwnerModel");
     const Owner* owner = ownerModel->getOwner(ownerName);
     _accountFilteredModel->setActiveOwnerUid(owner->getUid());
@@ -71,7 +71,6 @@ void Model::write(QJsonObject& json) const
 
 void Model::read(const QJsonObject& json)
 {
-    qDebug() << "Reading model from JSON object";
     // check Model version
     if (!json.contains("model_version") || json["model_version"].toString() != _modelVersion) {
         qWarning() << "Wrong model version";
@@ -161,7 +160,6 @@ bool Model::unregisterModel(AbstractModel* model)
 template<typename T>
 T* Model::getModel(const QString& name)
 {
-    qDebug() << "Model::getModel() " << name;
     if (name.isEmpty() || !_models.contains(name))
         return nullptr;
 
@@ -175,7 +173,6 @@ T* Model::getModel(const QString& name)
 template<>
 CategoryModel* Model::getModel(const QString& name)
 {
-    qDebug() << "Model::getModel() (specialization CategoryModel)" << name;
     if (name.isEmpty() || !_models.contains(name))
         return nullptr;
 
@@ -185,7 +182,6 @@ CategoryModel* Model::getModel(const QString& name)
 template<>
 FinancialInstitutionModel* Model::getModel(const QString& name)
 {
-    qDebug() << "Model::getModel() (specialization FinancialInstitutionModel)" << name;
     if (name.isEmpty() || !_models.contains(name))
         return nullptr;
 

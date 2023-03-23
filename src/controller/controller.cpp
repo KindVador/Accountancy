@@ -17,6 +17,7 @@ Controller::Controller() : _model(Model::instance()), _mainWindow(new MainWindow
     _model->registerModel(new FinancialInstitutionModel("FinancialInstitutionModel"));
     _model->registerModel(new ImportConfigModel("ImportConfigModel"));
     _model->registerModel(new CategoryModel("CategoryModel"));
+    _model->setAccountFilter(_model->getModel<AccountModel>("AccountModel"));
 
     // connect with MainWindow
     if (_mainWindow != nullptr) {

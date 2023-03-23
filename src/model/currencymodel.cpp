@@ -17,7 +17,6 @@ int CurrencyModel::rowCount(const QModelIndex& parent) const
 
 QVariant CurrencyModel::data(const QModelIndex& index, int role) const
 {
-    qDebug() << "CurrencyModel::data() " << index.row() << " " << role;
     if (!index.isValid() || index.row() >= _currencies.count() || index.row() < 0)
         return {};
 
