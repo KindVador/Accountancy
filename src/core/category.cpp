@@ -3,12 +3,12 @@
 #include <QJsonArray>
 #include <QJsonObject>
 
-Category::Category()
+Category::Category() : _name(""), _parentItem(nullptr)
 {
     _uid = QUuid::createUuid();
 }
 
-Category::Category(QString name) : _name(std::move(name))
+Category::Category(QString name, Category* parent) : _name(std::move(name)), _parentItem(parent)
 {
     _uid = QUuid::createUuid();
 }
@@ -50,6 +50,7 @@ void Category::read(const QJsonObject& json)
         for (QJsonValue subCategory: subCategoriesArray) {
             auto subCategoryPtr = new Category;
             subCategoryPtr->read(subCategory.toObject());
+            subCategoryPtr->setParentItem(this);
             _subCategories.append(subCategoryPtr);
         }
     }
@@ -119,7 +120,7 @@ int Category::columnCount() const
 QVariant Category::data(int column) const
 {
     if (column == 0)
-        return QVariant(_name);
+        return {_name};
 
     return {};
 }
@@ -144,4 +145,14 @@ void Category::removeAllSubCategories()
     }
     qDeleteAll(_subCategories);
     _subCategories.clear();
+}
+
+Category* Category::getParentItem() const
+{
+    return _parentItem;
+}
+
+void Category::setParentItem(Category* parentItem)
+{
+    _parentItem = parentItem;
 }

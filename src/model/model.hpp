@@ -45,7 +45,7 @@ public:
      * @param model
      * @return
      */
-    bool unregisterModel(AbstractModel* model);
+    bool unregisterModel(const AbstractModel* model);
 
     /**
      * @brief

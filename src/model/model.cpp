@@ -149,7 +149,7 @@ bool Model::registerModel(AbstractModel* newModel)
     return true;
 }
 
-bool Model::unregisterModel(AbstractModel* model)
+bool Model::unregisterModel(const AbstractModel* model)
 {
     if (model == nullptr)
         return false;

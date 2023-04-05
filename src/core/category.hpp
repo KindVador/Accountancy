@@ -11,7 +11,7 @@ class Category : public ISerializable
 
 public:
     Category();
-    explicit Category(QString name);
+    explicit Category(QString name, Category* parent = nullptr);
     ~Category() override = default;
 
     static Category* fromJson(const QJsonObject& json);
@@ -21,6 +21,8 @@ public:
     void setUid(const QUuid& uid);
     [[nodiscard]] const QString& getName() const;
     void setName(const QString& name);
+    [[nodiscard]] Category* getParentItem() const;
+    void setParentItem(Category* parentItem);
 
     // Public API for SubCategories
     void addSubCategory(Category* subCategory);
@@ -34,11 +36,6 @@ public:
     void write(QJsonObject& json) const override;
 
     // Tree item
-    /*!
-     * @brief
-     * @param row
-     * @return
-     */
     [[nodiscard]] Category* subCategory(int row) const;
     [[nodiscard]] int childCount() const;
     [[nodiscard]] int columnCount() const;
@@ -50,7 +47,7 @@ private:
     QUuid _uid;
     QString _name;
     QVector<Category*> _subCategories;
-    Category* _parentItem;
+    Category* _parentItem = nullptr;
 };
 
 #endif//ACCOUNTANCY_CATEGORY_HPP

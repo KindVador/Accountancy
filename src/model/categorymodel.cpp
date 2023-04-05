@@ -12,7 +12,7 @@ CategoryModel::CategoryModel(QString name) : AbstractModel(std::move(name))
 
 int CategoryModel::rowCount(const QModelIndex& parent) const
 {
-    Category* category = nullptr;
+    const Category* category = nullptr;
     if (!parent.isValid()) {
         category = _rootCategory.get();
     } else {
@@ -32,10 +32,11 @@ QVariant CategoryModel::data(const QModelIndex& index, int role) const
 
     QVariant v;
     auto item = static_cast<Category*>(index.internalPointer());
+
     switch (role) {
-        case Qt::DisplayRole:
+        case Qt::DisplayRole: {
             v.setValue(item->getName());
-            break;
+        } break;
         case Qt::UserRole:
             v.setValue(item->getUid());
             break;
@@ -56,10 +57,8 @@ void CategoryModel::addCategory(Category* category, Category* parent)
 
     beginResetModel();
     if (parent == nullptr) {
-        qDebug() << "DEBUG: addCategory: " << category->getName();
         _rootCategory->addSubCategory(category);
     } else {
-        qDebug() << "DEBUG: addCategory: " << category->getName() << " to " << parent->getName();
         parent->addSubCategory(category);
     }
     endResetModel();
@@ -145,16 +144,16 @@ QModelIndex CategoryModel::index(int row, int column, const QModelIndex& parent)
     if (!hasIndex(row, column, parent))
         return {};
 
-    Category* parentItem;
+    const Category* parentItem = nullptr;
 
     if (!parent.isValid())
         parentItem = _rootCategory.get();
     else
         parentItem = static_cast<Category*>(parent.internalPointer());
 
-    Category* childItem = parentItem->subCategory(row);
-    if (childItem)
+    if (const Category* childItem = parentItem->subCategory(row)) {
         return createIndex(row, column, childItem);
+    }
     return {};
 }
 
@@ -164,9 +163,9 @@ QModelIndex CategoryModel::parent(const QModelIndex& child) const
         return {};
 
     auto childItem = static_cast<Category*>(child.internalPointer());
-    Category* parentItem = childItem->parentItem();
+    const Category* parentItem = childItem->parentItem();
 
-    if (parentItem == _rootCategory.get())
+    if (parentItem == nullptr || parentItem == _rootCategory.get())
         return {};
 
     return createIndex(parentItem->row(), 0, parentItem);
@@ -229,9 +228,13 @@ void CategoryModel::write(QJsonObject& json) const
 
 void CategoryModel::read(const QJsonObject& json)
 {
-    if (json.contains(getName()) && json[getName()].isArray()) {
-        QJsonArray categoriesJsonArray = json[getName()].toArray();
-        for (const QJsonValueConstRef& category: qAsConst(categoriesJsonArray))
-            addCategory(Category::fromJson(category.toObject()));
+    // check that JSON object contains Category model data
+    if (!json.contains(getName()) || !json[getName()].isArray())
+        return;
+
+    for (const QJsonValueConstRef& category: json[getName()].toArray()) {
+        if (Category* newCategory = Category::fromJson(category.toObject())) {
+            addCategory(newCategory, _rootCategory.get());
+        }
     }
 }

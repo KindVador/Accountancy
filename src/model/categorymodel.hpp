@@ -79,7 +79,7 @@ public:
 
 
 private:
-    std::unique_ptr<Category> _rootCategory = std::make_unique<Category>();
+    std::unique_ptr<Category> _rootCategory = std::make_unique<Category>("ROOT_CATEGORY");
 };
 
 
