@@ -11,10 +11,10 @@ set(SOURCES mainwindow.hpp mainwindow.cpp
         institutionsdialog.cpp institutionsdialog.hpp
         createcurrencydialog.cpp createcurrencydialog.hpp
         createinstitutiondialog.cpp createinstitutiondialog.hpp
-        categoriesdialog.cpp categoriesdialog.hpp
         createcategorydialog.cpp createcategorydialog.hpp
         comboboxitemdelegate.cpp comboboxitemdelegate.hpp
         categoriestreedialog.cpp categoriestreedialog.hpp
+        selectcategorydialog.cpp selectcategorydialog.hpp
         )
 
 set(UI_SOURCES mainwindow.ui
@@ -27,10 +27,9 @@ set(UI_SOURCES mainwindow.ui
         institutionsdialog.ui
         createcurrencydialog.ui
         createinstitutiondialog.ui
-        categoriesdialog.ui
         createcategorydialog.ui
         categoriestreedialog.ui
-        )
+        selectcategorydialog.ui)
 
 if(${CMAKE_SYSTEM_NAME} MATCHES "Linux")
     qt_wrap_ui(SOURCES ${UI_SOURCES})

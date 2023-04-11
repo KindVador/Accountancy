@@ -1,7 +1,6 @@
 #include "mainwindow.hpp"
 #include "addaccountdialog.hpp"
 #include "addownerdialog.hpp"
-#include "categoriesdialog.hpp"
 #include "categoriestreedialog.hpp"
 #include "contextualmenugenerator.hpp"
 #include "controller/controller.hpp"

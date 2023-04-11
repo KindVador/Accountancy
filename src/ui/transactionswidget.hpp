@@ -29,11 +29,16 @@ public:
 public slots:
     void customMenuRequested(QPoint pos);
 
+private slots:
+    void onDoubleClicked(const QModelIndex& index);
+
 private:
     Ui::TransactionsWidget* ui;
     std::unique_ptr<QSortFilterProxyModel> _proxyModel = std::make_unique<QSortFilterProxyModel>();
     std::unique_ptr<TransactionModel> _transaction_model = std::make_unique<TransactionModel>("LocalTransactionModel");
     std::unique_ptr<ComboBoxItemDelegate> _category_item_delegate = std::make_unique<ComboBoxItemDelegate>();
+
+    bool selectCategory(Transaction* transaction);
 };
 
 #endif//ACCOUNTANCY_TRANSACTIONSWIDGET_HPP

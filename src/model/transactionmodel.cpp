@@ -84,6 +84,14 @@ QVariant TransactionModel::data(const QModelIndex& index, int role) const
         }
     } else if (role == UIDRole) {
         return t->getUid();
+    } else if (role == ObjectRole) {
+        /*If the QVariant contains a pointer to a type derived from QObject then T may be any QObject type.
+         * If the pointer stored in the QVariant can be qobject_cast to T, then that result is returned.
+         * Otherwise nullptr is returned. Note that this only works for QObject subclasses which use the Q_OBJECT macro.
+         *
+         * As Transaction object doesn't inherit from QObject, we need to store the pointer as void* */
+
+        return QVariant::fromValue(static_cast<void*>(const_cast<Transaction*>(t)));
     }
     return {};
 }
