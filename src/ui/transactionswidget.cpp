@@ -119,9 +119,11 @@ bool TransactionsWidget::selectCategory(Transaction* transaction)
     if (transaction == nullptr)
         return false;
 
-    qDebug() << "Select Category for transaction: " << transaction->getUid() << " --> " << transaction->getName();
     auto dlg = SelectCategoryDialog(this, Model::instance()->getModel<CategoryModel>("CategoryModel"));
-    int res = dlg.exec();
-    
+    if (int res = dlg.exec(); res == QDialog::Accepted) {
+
+        transaction->setCategory(dlg.getSelectedCategory());
+        return true;
+    }
     return false;
 }

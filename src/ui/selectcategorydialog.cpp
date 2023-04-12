@@ -10,6 +10,9 @@ SelectCategoryDialog::SelectCategoryDialog(QWidget* parent, CategoryModel* model
 
     // init TableView model
     ui->treeView->setModel(_model);
+
+    connect(ui->buttonBox, &QDialogButtonBox::accepted, this, &SelectCategoryDialog::accept);
+    connect(ui->buttonBox, &QDialogButtonBox::rejected, this, &SelectCategoryDialog::reject);
 }
 
 SelectCategoryDialog::~SelectCategoryDialog()
@@ -19,10 +22,18 @@ SelectCategoryDialog::~SelectCategoryDialog()
 
 void SelectCategoryDialog::accept()
 {
+    auto selection_model = ui->treeView->selectionModel();
+    auto selected_indexes = selection_model->selectedIndexes();
+    _selected_category = static_cast<Category*>(selected_indexes.first().internalPointer());
     QDialog::accept();
 }
 
 void SelectCategoryDialog::reject()
 {
+    _selected_category = nullptr;
     QDialog::reject();
+}
+const Category* SelectCategoryDialog::getSelectedCategory() const
+{
+    return _selected_category;
 }

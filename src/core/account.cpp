@@ -341,3 +341,8 @@ bool Account::isTransactionRegistered(const Transaction* transaction) const
 
     return std::any_of(_transactions.cbegin(), _transactions.cend(), [&transaction](const Transaction* t) { return *transaction == *t; });
 }
+
+QList<Transaction*>& Account::getTransactions()
+{
+    return _transactions;
+}

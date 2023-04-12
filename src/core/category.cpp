@@ -156,3 +156,18 @@ void Category::setParentItem(Category* parentItem)
 {
     _parentItem = parentItem;
 }
+
+Category* Category::getCategory(QUuid uid) const
+{
+    if (_uid == uid)
+        return const_cast<Category*>(this);
+
+    for (auto sc: _subCategories) {
+        if (sc->getUid() == uid)
+            return sc;
+        auto sc2 = sc->getCategory(uid);
+        if (sc2 != nullptr)
+            return sc2;
+    }
+    return nullptr;
+}

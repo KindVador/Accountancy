@@ -160,6 +160,12 @@ void Transaction::read(const QJsonObject& json)
 
     if (json.contains("current_balance") && json["current_balance"].isDouble())
         _current_balance = json["current_balance"].toDouble();
+
+    if (json.contains("category") && json["category"].isString()) {
+        auto category = new Category;
+        category->setUid(QUuid(json["category"].toString()));
+        setCategory(category);
+    }
 }
 
 void Transaction::write(QJsonObject& json) const

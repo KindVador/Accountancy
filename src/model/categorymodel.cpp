@@ -195,17 +195,7 @@ Category* CategoryModel::category(const QString& name) const
 
 Category* CategoryModel::category(const QUuid& uid) const
 {
-    for (Category* category: _rootCategory->subCategories()) {
-        if (category != nullptr && category->getUid() == uid)
-            return category;
-
-        // recursive call to look deeper in the tree
-        Category* c = this->category(uid);
-
-        if (c != nullptr)
-            return c;
-    }
-    return nullptr;
+    return _rootCategory->getCategory(uid);
 }
 
 bool CategoryModel::isDirty() const

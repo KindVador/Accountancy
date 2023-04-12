@@ -81,6 +81,7 @@ public:
     [[nodiscard]] QString getDisplayedName() const;
     [[nodiscard]] QList<QUuid> getOwnersUid() const;
     [[nodiscard]] QList<const Owner*>& getOwners();
+    [[nodiscard]] QList<Transaction*>& getTransactions();
     bool addTransaction(Transaction* transaction);
     bool removeTransaction(Transaction* transaction);
     bool removeTransaction(const QUuid& uid);

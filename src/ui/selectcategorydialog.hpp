@@ -20,6 +20,8 @@ public:
     explicit SelectCategoryDialog(QWidget* parent, CategoryModel* model);
     ~SelectCategoryDialog() override;
 
+    [[nodiscard]] const Category* getSelectedCategory() const;
+
 public slots:
     void accept() override;
     void reject() override;
@@ -27,6 +29,7 @@ public slots:
 private:
     Ui::SelectCategoryDialog* ui;
     CategoryModel* _model = nullptr;
+    const Category* _selected_category = nullptr;
 };
 
 

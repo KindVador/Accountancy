@@ -91,6 +91,7 @@ void Model::read(const QJsonObject& json)
     auto currencyModel = getModel<CurrencyModel>("CurrencyModel");
     auto institutionsModel = getModel<FinancialInstitutionModel>("FinancialInstitutionModel");
     auto ownerModel = getModel<OwnerModel>("OwnerModel");
+    auto categoryModel = getModel<CategoryModel>("CategoryModel");
     if (accountModel != nullptr && currencyModel != nullptr && institutionsModel != nullptr && ownerModel != nullptr) {
         for (Account* account: accountModel->accounts()) {
             // link currency
@@ -104,6 +105,14 @@ void Model::read(const QJsonObject& json)
             account->getOwners().clear();
             for (QUuid ownerUid: ownersIds)
                 account->addOwner(ownerModel->getOwner(ownerUid));
+            // lik category in transactions
+            for (auto transaction: account->getTransactions()) {
+                const Category* category = transaction->getCategory();
+                if (category == nullptr)
+                    continue;
+                qDebug() << transaction->getName() << " " << transaction->getUid() << " " << category->getUid();
+                transaction->setCategory(categoryModel->category(category->getUid()));
+            }
         }
     }
 }
