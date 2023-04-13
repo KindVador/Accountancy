@@ -11,7 +11,7 @@ set(HEADER_FILES
         importconfigmodel.hpp
         model.hpp
         treemodel.hpp
-        )
+        categorymodelfilter.hpp)
 
 set(SOURCE_FILES
         abstractmodel.cpp
@@ -24,7 +24,7 @@ set(SOURCE_FILES
         importconfigmodel.cpp
         model.cpp
         treemodel.cpp
-        )
+        categorymodelfilter.cpp)
 
 add_library(${NAME} ${HEADER_FILES} ${SOURCE_FILES})
 

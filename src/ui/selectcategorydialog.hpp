@@ -4,6 +4,7 @@
 #include <QDialog>
 
 #include "model/categorymodel.hpp"
+#include "model/categorymodelfilter.hpp"
 
 QT_BEGIN_NAMESPACE
 namespace Ui
@@ -25,12 +26,13 @@ public:
 public slots:
     void accept() override;
     void reject() override;
+    void onFilterChanged(const QString& text);
 
 private:
     Ui::SelectCategoryDialog* ui;
     CategoryModel* _model = nullptr;
     const Category* _selected_category = nullptr;
+    std::unique_ptr<CategoryModelFilter> _filter = std::make_unique<CategoryModelFilter>(this);
 };
-
 
 #endif//ACCOUNTANCY_SELECTCATEGORYDIALOG_HPP
