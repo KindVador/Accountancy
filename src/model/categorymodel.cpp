@@ -58,10 +58,8 @@ void CategoryModel::addCategory(Category* category, Category* parent)
     beginResetModel();
     if (parent == nullptr) {
         _rootCategory->addSubCategory(category);
-        category->setParentItem(_rootCategory.get());
     } else {
         parent->addSubCategory(category);
-        category->setParentItem(parent);
     }
     endResetModel();
 }
@@ -76,7 +74,9 @@ Category* CategoryModel::addCategory(const QString& name, Category* parent)
     if (parent == nullptr) {
         addCategory(category);
     } else {
+        beginResetModel();
         parent->addSubCategory(category);
+        endResetModel();
     }
     return category;
 }

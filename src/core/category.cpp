@@ -15,6 +15,7 @@ Category::Category(QString name, Category* parent) : _name(std::move(name)), _pa
 
 void Category::addSubCategory(Category* subCategory)
 {
+    subCategory->setParentItem(this);
     return _subCategories.append(subCategory);
 }
 
