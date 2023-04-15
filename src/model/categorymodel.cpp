@@ -58,8 +58,10 @@ void CategoryModel::addCategory(Category* category, Category* parent)
     beginResetModel();
     if (parent == nullptr) {
         _rootCategory->addSubCategory(category);
+        category->setParentItem(_rootCategory.get());
     } else {
         parent->addSubCategory(category);
+        category->setParentItem(parent);
     }
     endResetModel();
 }
