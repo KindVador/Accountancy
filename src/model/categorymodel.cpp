@@ -113,7 +113,7 @@ void CategoryModel::removeCategory(const QString& name)
 
     Category* parent = categoryToRemove->parentItem();
     if (parent == nullptr) {
-        std::cout << "ERROR: no parent found for category: " << categoryToRemove->getName().toCFString() << std::endl;
+        qWarning() << "ERROR: no parent found for category: " << categoryToRemove->getName();
         return;
     }
 
