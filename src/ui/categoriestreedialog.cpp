@@ -23,7 +23,7 @@ CategoriesTreeDialog::~CategoriesTreeDialog()
 
 void CategoriesTreeDialog::onAddCategoryAction()
 {
-    auto dlg = CreateCategoryDialog(this);
+    auto dlg = CreateCategoryDialog(this, _model);
     dlg.exec();
 }
 

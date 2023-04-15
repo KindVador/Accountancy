@@ -6,14 +6,32 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>586</width>
-    <height>377</height>
+    <width>533</width>
+    <height>343</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>CreateCurrencyDialog</string>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
+   <item>
+    <widget class="QGroupBox" name="parentGroupBox">
+     <property name="tabletTracking">
+      <bool>false</bool>
+     </property>
+     <property name="title">
+      <string>Parent:</string>
+     </property>
+     <property name="checkable">
+      <bool>true</bool>
+     </property>
+     <layout class="QHBoxLayout" name="horizontalLayout">
+      <item>
+       <widget class="QTreeView" name="parentTreeView"/>
+      </item>
+     </layout>
+    </widget>
+   </item>
    <item>
     <layout class="QHBoxLayout" name="nameLayout">
      <item>
@@ -25,20 +43,6 @@
      </item>
      <item>
       <widget class="QLineEdit" name="nameLineEdit"/>
-     </item>
-    </layout>
-   </item>
-   <item>
-    <layout class="QHBoxLayout" name="subcategoriesLayout">
-     <item>
-      <widget class="QLabel" name="subcategoriesLabel">
-       <property name="text">
-        <string>Subcategories:</string>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <widget class="QTableView" name="subcategoriesTable"/>
      </item>
     </layout>
    </item>

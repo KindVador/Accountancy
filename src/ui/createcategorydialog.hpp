@@ -3,6 +3,8 @@
 
 #include <QDialog>
 
+#include "model/categorymodel.hpp"
+
 QT_BEGIN_NAMESPACE
 namespace Ui
 {
@@ -15,7 +17,7 @@ class CreateCategoryDialog : public QDialog
     Q_OBJECT
 
 public:
-    explicit CreateCategoryDialog(QWidget* parent = nullptr);
+    explicit CreateCategoryDialog(QWidget* parent, CategoryModel* model);
 
     ~CreateCategoryDialog() override;
 
@@ -25,6 +27,7 @@ public slots:
 
 private:
     Ui::CreateCategoryDialog* ui;
+    CategoryModel* _model = nullptr;
 };
 
 
