@@ -4,6 +4,8 @@
 #include <QMainWindow>
 #include <QString>
 
+#include <memory>
+
 class Model;
 
 QT_BEGIN_NAMESPACE
@@ -34,11 +36,11 @@ signals:
 private slots:
     void onCreateAction();
     void onOpenAction();
-    void onSaveAction();
+    void onSaveAction() const;
     void onSaveAsAction();
     void showCredits();
     void onActionImport();
-    void contextualOwnerMenuRequested(const QPoint& pos);
+    void contextualOwnerMenuRequested(const QPoint& pos) const;
     void onActionMainDock(bool checked);
     void onAccountDoubleClicked(const QModelIndex& index);
     void onAddOwnerAction();
@@ -47,10 +49,11 @@ private slots:
     void onRemoveAccountAction();
     void onCurrenciesAction();
     void onInstitutionsAction();
+    void onCategoriesAction();
 
 private:
     Ui::MainWindow* ui = nullptr;
-    Model* _model = nullptr;
+    std::unique_ptr<Model> _model;
 };
 
 #endif// MAINWINDOW_H

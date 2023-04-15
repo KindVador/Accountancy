@@ -1,5 +1,5 @@
 #include "currenciesdialog.hpp"
-#include "../core/controller.hpp"
+#include "controller/controller.hpp"
 #include "createcurrencydialog.hpp"
 #include "ui_currenciesdialog.h"
 
@@ -9,6 +9,10 @@ CurrenciesDialog::CurrenciesDialog(QWidget* parent, CurrencyModel* model) : QDia
 
     // init TableView model
     ui->tableView->setModel(_model);
+    if (_model != nullptr)
+        qWarning() << "    ==> Init of CurrenciesDialog with model: " << _model->getName();
+    else
+        qWarning() << "    ==> Init of CurrenciesDialog with NULL ptr";
 
     // connect buttons
     connect(ui->addPushButton, &QPushButton::clicked, this, &CurrenciesDialog::onAddCurrencyAction);
@@ -32,11 +36,11 @@ void CurrenciesDialog::reject()
 
 void CurrenciesDialog::onAddCurrencyAction()
 {
-    CreateCurrencyDialog dlg = CreateCurrencyDialog(this);
+    auto dlg = CreateCurrencyDialog(this);
     dlg.exec();
 }
 
-void CurrenciesDialog::onRemoveCurrencyAction()
+void CurrenciesDialog::onRemoveCurrencyAction() const
 {
     QList<QModelIndex> selectedIndexes = ui->tableView->selectionModel()->selectedIndexes();
     for (QModelIndex selectedIndex: selectedIndexes) {

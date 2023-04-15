@@ -1,5 +1,5 @@
 #include "controller.hpp"
-#include "../utils/instrumentor.hpp"
+#include "utils/instrumentor.hpp"
 
 #include <QJsonDocument>
 #include <QMessageBox>
@@ -10,6 +10,15 @@ Controller* Controller::_singleton = nullptr;
 
 Controller::Controller() : _model(Model::instance()), _mainWindow(new MainWindow)
 {
+    // init model
+    _model->registerModel(new OwnerModel("OwnerModel"));
+    _model->registerModel(new CurrencyModel("CurrencyModel"));
+    _model->registerModel(new AccountModel("AccountModel"));
+    _model->registerModel(new FinancialInstitutionModel("FinancialInstitutionModel"));
+    _model->registerModel(new ImportConfigModel("ImportConfigModel"));
+    _model->registerModel(new CategoryModel("CategoryModel"));
+    _model->setAccountFilter(_model->getModel<AccountModel>("AccountModel"));
+
     // connect with MainWindow
     if (_mainWindow != nullptr) {
         _mainWindow->setModel(_model);
@@ -29,7 +38,10 @@ void Controller::addOwner(Owner* owner)
     if (_model == nullptr)
         return;
 
-    _model->getOwnerModel()->addOwner(owner);
+    if (auto model = _model->getModel<OwnerModel>("OwnerModel"); model != nullptr)
+        model->addOwner(owner);
+
+    qDebug() << " Add Owner: " << owner->getName();
 }
 
 void Controller::showMainWindow()
@@ -40,20 +52,22 @@ void Controller::showMainWindow()
     _mainWindow->show();
 }
 
-Owner* Controller::addOwner(const QString& name, float warningBalance, const QString& comment, bool isHidden)
+Owner* Controller::addOwner(const QString& name, double warningBalance, const QString& comment, bool isHidden)
 {
     if (_model == nullptr)
         return nullptr;
 
     // model update
-    auto ownersModel = _model->getOwnerModel();
-    if (ownersModel != nullptr)
-        return ownersModel->addOwner(name, warningBalance, comment, isHidden);
+    if (auto model = _model->getModel<OwnerModel>("OwnerModel"); model != nullptr) {
+        qDebug() << " Add Owner: " << name;
+        return model->addOwner(name, warningBalance, comment, isHidden);
+    }
+
 
     return nullptr;
 }
 
-Account* Controller::addAccount(const FinancialInstitution* institution, AccountType type, Currency* currency,
+Account* Controller::addAccount(const FinancialInstitution* institution, AccountType type, const Currency* currency,
                                 const QList<const Owner*>& owners, float initialBalance, float warningBalance,
                                 const QString& accountNumber, const QString& comment, bool isIncludedInTotal,
                                 bool isHidden)
@@ -62,8 +76,12 @@ Account* Controller::addAccount(const FinancialInstitution* institution, Account
         return nullptr;
 
     // model update
-    return _model->getAccountModel()->addAccount(institution, type, currency, owners, initialBalance, warningBalance,
-                                                 accountNumber, comment, isIncludedInTotal, isHidden);
+    if (auto model = _model->getModel<AccountModel>("AccountModel"); model != nullptr) {
+        return model->addAccount(institution, type, currency, owners, initialBalance, warningBalance,
+                                 accountNumber, comment, isIncludedInTotal, isHidden);
+    }
+
+    return nullptr;
 }
 
 void Controller::onSelectedOwner(const QModelIndex& index)
@@ -71,21 +89,22 @@ void Controller::onSelectedOwner(const QModelIndex& index)
     if (!index.isValid() || _model == nullptr)
         return;
 
-    OwnerModel* model = _model->getOwnerModel();
-    auto ownerName = model->data(index, Qt::DisplayRole).value<QString>();
-    QUuid ownerUid = model->data(index, ObjectRole).value<Owner*>()->getUid();
-    qDebug() << "Controller::onSelectedOwner" << index.isValid() << ownerName << ownerUid;
-
-    // Apply filtering on Account's model
-    _model->setOwnerFilter(ownerUid);
-    _model->getAccountFilter()->invalidate();
+    if (auto ownerModel = _model->getModel<OwnerModel>("OwnerModel"); ownerModel != nullptr) {
+        auto ownerName = ownerModel->data(index, Qt::DisplayRole).value<QString>();
+        QUuid ownerUid = ownerModel->data(index, ObjectRole).value<Owner*>()->getUid();
+        qDebug() << "Controller::onSelectedOwner" << index.isValid() << ownerName << ownerUid;
+        // Apply filtering on Account's model
+        _model->setOwnerFilter(ownerUid);
+        _model->getAccountFilter()->invalidate();
+    }
 }
 
 void Controller::onSelectedAccount(const QModelIndex& index)
 {
-    AccountModel* model = _model->getAccountModel();
-    auto accountName = model->data(index, Qt::DisplayRole).value<QString>();
-    qDebug() << "Controller::onSelectedAccount" << index.isValid() << accountName;
+    if (auto model = _model->getModel<AccountModel>("AccountModel"); model != nullptr) {
+        auto accountName = model->data(index, Qt::DisplayRole).value<QString>();
+        qDebug() << "Controller::onSelectedAccount" << index.isValid() << accountName;
+    }
 }
 
 void Controller::clearOwnerSelection()
@@ -102,7 +121,7 @@ Controller* Controller::instance()
     return _singleton;
 }
 
-void Controller::addTransactionToAccount(Transaction* transaction, Account* account)
+void Controller::addTransactionToAccount(Transaction* transaction, Account* account) const
 {
     if (transaction == nullptr || account == nullptr)
         return;
@@ -115,12 +134,16 @@ void Controller::addFinancialInstitution(FinancialInstitution* institution)
     if (_model == nullptr)
         return;
 
-    _model->getFinancialInstitutionModel()->addFinancialInstitution(institution);
+    if (auto model = _model->getModel<FinancialInstitutionModel>("FinancialInstitutionModel"); model != nullptr)
+        model->addFinancialInstitution(institution);
 }
 
 FinancialInstitution* Controller::addFinancialInstitution(const QString& name)
 {
-    return _model->getFinancialInstitutionModel()->addFinancialInstitution(name);
+    if (auto model = _model->getModel<FinancialInstitutionModel>("FinancialInstitutionModel"); model != nullptr)
+        return model->addFinancialInstitution(name);
+
+    return nullptr;
 }
 
 const QString& Controller::getCurrentFilePath() const
@@ -158,6 +181,7 @@ bool Controller::saveToFile(const QString& filePath)
 
 bool Controller::loadFile(const QString& filePath)
 {
+    qDebug() << "loading file: " << filePath;
     Instrumentor::Get().BeginSession("Session1");
     {
         // Timer
@@ -184,8 +208,12 @@ bool Controller::loadFile(const QString& filePath)
 
 bool Controller::createNewFile(const QString& filePath)
 {
+    // check that mode is not null
+    if (_model == nullptr)
+        return false;
+
     // check if a model has unsaved modifications
-    if (_model != nullptr && _model->isDirty()) {
+    if (_model->isDirty()) {
         // ask user if he wants to save modifications
         int res = QMessageBox::question(nullptr,
                                         "Save modifications",
@@ -217,20 +245,61 @@ void Controller::addCurrency(Currency* currency)
     if (_model == nullptr)
         return;
 
-    _model->getCurrencyModel()->addCurrency(currency);
+    if (auto model = _model->getModel<CurrencyModel>("CurrencyModel"); model != nullptr)
+        model->addCurrency(currency);
 }
 
 Currency* Controller::addCurrency(const QString& name, const QString& symbol)
 {
-    return _model->getCurrencyModel()->addCurrency(name, symbol);
+    if (_model == nullptr)
+        return nullptr;
+
+    if (auto model = _model->getModel<CurrencyModel>("CurrencyModel"); model != nullptr)
+        return model->addCurrency(name, symbol);
+
+    return nullptr;
 }
 
-void Controller::removeCurrency(QUuid uid)
+void Controller::removeCurrency(const QUuid& uid)
 {
-    _model->getCurrencyModel()->removeCurrency(uid);
+    if (_model == nullptr || uid.isNull())
+        return;
+
+    if (auto model = _model->getModel<CurrencyModel>("CurrencyModel"); model != nullptr)
+        model->removeCurrency(uid);
 }
 
-void Controller::removeInstitution(QUuid uid)
+void Controller::removeInstitution(const QUuid& uid)
 {
-    _model->getFinancialInstitutionModel()->removeFinancialInstitution(uid);
+    if (auto model = _model->getModel<FinancialInstitutionModel>("FinancialInstitutionModel"); model != nullptr)
+        model->removeFinancialInstitution(uid);
+}
+
+void Controller::addCategory(Category* category, Category* parent)
+{
+    if (_model == nullptr)
+        return;
+
+    if (auto model = _model->getModel<CategoryModel>("CategoryModel"); model != nullptr)
+        model->addCategory(category, parent);
+}
+
+Category* Controller::addCategory(const QString& name, Category* parent)
+{
+    if (_model == nullptr)
+        return nullptr;
+
+    if (auto model = _model->getModel<CategoryModel>("CategoryModel"); model != nullptr)
+        return model->addCategory(name, parent);
+
+    return nullptr;
+}
+
+void Controller::removeCategory(const QUuid& uid)
+{
+    if (_model == nullptr || uid.isNull())
+        return;
+
+    if (auto model = _model->getModel<CategoryModel>("CategoryModel"); model != nullptr)
+        model->removeCategory(uid);
 }

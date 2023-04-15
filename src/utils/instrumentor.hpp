@@ -25,7 +25,8 @@
 
 struct ProfileResult {
     std::string Name;
-    long long Start, End;
+    long long Start;
+    long long End;
     uint32_t ThreadID;
 };
 
@@ -36,15 +37,12 @@ struct InstrumentationSession {
 class Instrumentor
 {
 private:
-    InstrumentationSession* m_CurrentSession;
+    InstrumentationSession* m_CurrentSession = nullptr;
     std::ofstream m_OutputStream;
-    int m_ProfileCount;
+    int m_ProfileCount = 0;
 
 public:
-    Instrumentor()
-        : m_CurrentSession(nullptr), m_ProfileCount(0)
-    {
-    }
+    Instrumentor() = default;
 
     void BeginSession(const std::string& name, const std::string& filepath = "results.json")
     {
@@ -105,8 +103,8 @@ public:
 class InstrumentationTimer
 {
 public:
-    InstrumentationTimer(const char* name)
-        : m_Name(name), m_Stopped(false)
+    explicit InstrumentationTimer(const char* name)
+        : m_Name(name)
     {
         m_StartTimepoint = std::chrono::high_resolution_clock::now();
     }
@@ -133,7 +131,7 @@ public:
 private:
     const char* m_Name;
     std::chrono::time_point<std::chrono::high_resolution_clock> m_StartTimepoint;
-    bool m_Stopped;
+    bool m_Stopped = false;
 };
 
 #endif//ACCOUNTANCY_INSTRUMENTOR_HPP

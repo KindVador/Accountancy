@@ -3,7 +3,7 @@
 
 #include <QDialog>
 
-#include "../core/currencymodel.hpp"
+#include "model/currencymodel.hpp"
 
 QT_BEGIN_NAMESPACE
 namespace Ui
@@ -25,7 +25,7 @@ public slots:
 
 private slots:
     void onAddCurrencyAction();
-    void onRemoveCurrencyAction();
+    void onRemoveCurrencyAction() const;
 
 private:
     Ui::CurrenciesDialog* ui;

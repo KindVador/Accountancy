@@ -5,16 +5,20 @@
 #include <QString>
 #include <QUuid>
 
+#include "Interfaces/iserializable.hpp"
 #include "currency.hpp"
 #include "owner.hpp"
 
-class LoanAccount
+class LoanAccount: public ISerializable
 {
 public:
     LoanAccount();
     LoanAccount(Currency* currency, const Owner* owner, float initialBalance, QString accountNumber,
                 QString comment, bool isHidden);
-    ~LoanAccount() = default;
+    ~LoanAccount() override = default;
+
+    void read(const QJsonObject& json) override;
+    void write(QJsonObject& json) const override;
 
 private:
     QUuid _uid;

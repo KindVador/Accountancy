@@ -1,5 +1,5 @@
 #include "institutionsdialog.hpp"
-#include "../core/controller.hpp"
+#include "controller/controller.hpp"
 #include "createinstitutiondialog.hpp"
 #include "ui_institutionsdialog.h"
 
@@ -34,11 +34,11 @@ void InstitutionsDialog::reject()
 
 void InstitutionsDialog::onAddInstitutionAction()
 {
-    CreateInstitutionDialog dlg = CreateInstitutionDialog(this);
+    auto dlg = CreateInstitutionDialog(this);
     dlg.exec();
 }
 
-void InstitutionsDialog::onRemoveInstitutionAction()
+void InstitutionsDialog::onRemoveInstitutionAction() const
 {
     QList<QModelIndex> selectedIndexes = ui->tableView->selectionModel()->selectedIndexes();
     for (QModelIndex selectedIndex: selectedIndexes) {

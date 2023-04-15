@@ -54,8 +54,8 @@ QList<Transaction*> FinancialInstitution::readTransactionsFromFile(QFile& dataFi
     int nbLinesToImport = (int) rawLines.count() - (config.getNbLinesToSkipStart() + config.getNbLinesToSkipEnd()) + 1;
     rawLines = rawLines.mid(firstLineToImport, nbLinesToImport);
 
-    for (int i = 0; i < rawLines.count(); ++i) {
-        QStringList fields = rawLines[i].split(config.getSeparatorChar());
+    for (const QString& rawLine: qAsConst(rawLines)) {
+        QStringList fields = rawLine.split(config.getSeparatorChar());
 
         if (fields.count() < config.nbFields())
             continue;
@@ -99,6 +99,10 @@ void FinancialInstitution::read(const QJsonObject& json)
 {
     if (json.contains("uid") && json["uid"].isString())
         _uid = QUuid(json["uid"].toString());
+
+    // check that uid is valid, otherwise generate a new one
+    if (_uid.isNull())
+        _uid = QUuid::createUuid();
 
     if (json.contains("name") && json["name"].isString())
         _name = json["name"].toString();

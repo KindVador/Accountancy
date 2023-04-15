@@ -5,15 +5,15 @@
 #include <QString>
 #include <QUuid>
 
+#include "Interfaces/iserializable.hpp"
 #include "currency.hpp"
 
-class Owner
+class Owner : public ISerializable
 {
 public:
     Owner();
-    Owner(QString& name, double warningBalance, QString& comment, bool isHidden);
-    Owner(QString name, double warningBalance, QString comment, bool isHidden);
-    ~Owner() = default;
+    Owner(const QString& name, double warningBalance, const QString& comment, bool isHidden);
+    ~Owner() override = default;
 
     static Owner* fromJson(const QJsonObject& json);
 
@@ -30,8 +30,8 @@ public:
     void setUid(QUuid uid);
 
     // Serialization
-    void read(const QJsonObject& json);
-    void write(QJsonObject& json) const;
+    void read(const QJsonObject& json) override;
+    void write(QJsonObject& json) const override;
 
 private:
     QUuid _uid;

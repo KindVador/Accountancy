@@ -1,5 +1,5 @@
 #include "addaccountdialog.hpp"
-#include "../core/controller.hpp"
+#include "controller/controller.hpp"
 #include "ui_addaccountdialog.h"
 
 constexpr const int ObjectRole = Qt::UserRole + 1;
@@ -13,13 +13,13 @@ AddAccountDialog::AddAccountDialog(QWidget* parent) : QDialog(parent), ui(new Ui
         ui->typeComboBox->addItem(it.key());
 
     // Populate Currency ComboBox
-    ui->currencyComboBox->setModel(Model::instance()->getCurrencyModel());
+    ui->currencyComboBox->setModel(Model::instance()->getModel<CurrencyModel>("CurrencyModel"));
 
     // Populate Institution ComboBox
-    ui->institutionComboBox->setModel(Model::instance()->getFinancialInstitutionModel());
+    ui->institutionComboBox->setModel(Model::instance()->getModel<FinancialInstitutionModel>("FinancialInstitutionModel"));
 
     // Populate Owners List
-    ui->ownersListView->setModel(Model::instance()->getOwnerModel());
+    ui->ownersListView->setModel(Model::instance()->getModel<OwnerModel>("OwnerModel"));
 
     // make connections
     connect(ui->buttonBox, &QDialogButtonBox::accepted, this, &AddAccountDialog::accept);
@@ -40,9 +40,9 @@ void AddAccountDialog::accept()
 {
     Controller* controller = Controller::instance();
     QString accountNumber = ui->numberLineEdit->text();
-    auto institution = ui->institutionComboBox->currentData(ObjectRole).value<FinancialInstitution*>();
+    const FinancialInstitution* institution = ui->institutionComboBox->currentData(ObjectRole).value<FinancialInstitution*>();
     AccountType type = STRING_2_ACCOUNT_TYPE[ui->typeComboBox->currentText()];
-    auto currency = ui->currencyComboBox->currentData(ObjectRole).value<Currency*>();
+    const Currency* currency = ui->currencyComboBox->currentData(ObjectRole).value<Currency*>();
     QList<const Owner*> owners = getSelectedOwners();
     auto initialBalance = (float) ui->initialBalanceDoubleSpinBox->value();
     auto warningBalance = (float) ui->warningBalanceDoubleSpinBox->value();

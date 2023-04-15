@@ -1,5 +1,5 @@
-#ifndef ACCOUNTANCY_DATAFILEINTERFACE_HPP
-#define ACCOUNTANCY_DATAFILEINTERFACE_HPP
+#ifndef ACCOUNTANCY_IDATAFILEINTERFACE_HPP
+#define ACCOUNTANCY_IDATAFILEINTERFACE_HPP
 
 #include <QFile>
 #include <QJsonObject>
@@ -9,10 +9,10 @@
 class Transaction;
 class ImportConfig;
 
-class DataFileInterface
+class IDataFileInterface
 {
 public:
-    virtual ~DataFileInterface() = default;
+    virtual ~IDataFileInterface() = default;
     [[nodiscard]] virtual QList<Transaction*> readTransactionsFromFile(QFile& dataFile, const ImportConfig& config) const = 0;
 
 private:
@@ -20,4 +20,4 @@ private:
     QMap<QString, QString> _mapFile2Transaction;
 };
 
-#endif//ACCOUNTANCY_DATAFILEINTERFACE_HPP
+#endif//ACCOUNTANCY_IDATAFILEINTERFACE_HPP

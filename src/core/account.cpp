@@ -10,7 +10,7 @@ Account::Account()
     _uid = QUuid::createUuid();
 }
 
-Account::Account(const FinancialInstitution* institution, AccountType type, Currency* currency,
+Account::Account(const FinancialInstitution* institution, AccountType type, const Currency* currency,
                  const QList<const Owner*>& owners, float initialBalance, float warningBalance, QString accountNumber,
                  QString comment, bool isIncludedInTotal, bool isHidden) : _institution(institution), _currency(currency), _owners(owners), _initialBalance(initialBalance),
                                                                            _warningBalance(warningBalance), _accountNumber(std::move(accountNumber)),
@@ -84,7 +84,7 @@ bool Account::removeTransaction(const QUuid& uid)
     if (uid.isNull())
         return false;
 
-    auto res = std::find_if(_transactions.cbegin(), _transactions.cend(), [this, &uid](const Transaction* t) {
+    auto res = std::find_if(_transactions.cbegin(), _transactions.cend(), [&uid](const Transaction* t) {
         return t != nullptr && t->getUid() == uid;
     });
 
@@ -133,6 +133,10 @@ void Account::read(const QJsonObject& json)
 {
     if (json.contains("uid") && json["uid"].isString())
         _uid = QUuid(json["uid"].toString());
+
+    // check that uid is valid, otherwise generate a new one
+    if (_uid.isNull())
+        _uid = QUuid::createUuid();
 
     if (json.contains("institution")) {
         auto fi = new FinancialInstitution;
@@ -306,8 +310,8 @@ void Account::addOwner(const Owner* owner)
 void Account::updateTransactionsBalance()
 {
     // sort transactions by date
-    std::sort(_transactions.begin(), _transactions.end(), [](Transaction* t1, Transaction* t2) -> bool { return t1->getDateTime() <
-                                                                                                                t2->getDateTime(); });
+    std::sort(_transactions.begin(), _transactions.end(), [](const Transaction* t1, const Transaction* t2) { return t1->getDateTime() <
+                                                                                                                    t2->getDateTime(); });
 
     // update current balance for each transactions
     double previousBalance = _initialBalance;
@@ -336,4 +340,9 @@ bool Account::isTransactionRegistered(const Transaction* transaction) const
         return false;
 
     return std::any_of(_transactions.cbegin(), _transactions.cend(), [&transaction](const Transaction* t) { return *transaction == *t; });
+}
+
+QList<Transaction*>& Account::getTransactions()
+{
+    return _transactions;
 }

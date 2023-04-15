@@ -1,6 +1,14 @@
 #include "importconfigmodel.hpp"
 
+#include <utility>
+
+#include <QJsonArray>
+
 constexpr const int ObjectRole = Qt::UserRole + 1;
+
+ImportConfigModel::ImportConfigModel(QString name) : AbstractModel(std::move(name))
+{
+}
 
 int ImportConfigModel::rowCount(const QModelIndex& parent) const
 {
@@ -55,4 +63,31 @@ void ImportConfigModel::reset()
     beginResetModel();
     _importConfigs.clear();
     endResetModel();
+}
+
+bool ImportConfigModel::isDirty() const
+{
+    // TODO implement ImportConfigModel::isDirty()
+    return false;
+}
+
+void ImportConfigModel::write(QJsonObject& json) const
+{
+    QJsonArray importConfigs;
+    for (int i = 0; i < rowCount(QModelIndex()); ++i) {
+        const ImportConfig* importConfig = data(index(i, 0), ObjectRole).value<ImportConfig*>();
+        QJsonObject importConfigJson;
+        importConfig->write(importConfigJson);
+        importConfigs.append(importConfigJson);
+    }
+    json[getName()] = importConfigs;
+}
+
+void ImportConfigModel::read(const QJsonObject& json)
+{
+    if (json.contains(getName()) && json[getName()].isArray()) {
+        QJsonArray importConfigsJsonArray = json[getName()].toArray();
+        for (const QJsonValueConstRef& importConfig: qAsConst(importConfigsJsonArray))
+            addImportConfig(ImportConfig::fromJson(importConfig.toObject()));
+    }
 }

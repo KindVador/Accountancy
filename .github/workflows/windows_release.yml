@@ -14,7 +14,7 @@ env:
   # Customize the CMake build type here (Release, Debug, RelWithDebInfo, etc.)
   BUILD_TYPE:        Release
   SOURCE_DIR:        ${{ github.workspace }}
-  QT_VERSION:        6.3.0
+  QT_VERSION:        6.5.0
   QT_ARCHITECTURE:   win64_msvc2019_64
   QT_LIB_PATH:       msvc2019_64
 

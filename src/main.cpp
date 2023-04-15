@@ -1,4 +1,4 @@
-#include "core/controller.hpp"
+#include "controller/controller.hpp"
 
 #include <QApplication>
 #include <QIcon>
@@ -6,12 +6,12 @@
 #include <QString>
 #include <QTranslator>
 
-static QString ACC_MAJOR_VERSION = QString("1");
-static QString ACC_MINOR_VERSION = QString("0");
-static QString ACC_PATCH_VERSION = QString("0");
-static QString VERSION_STRING = QString("%1.%2.%3").arg(ACC_MAJOR_VERSION, ACC_MINOR_VERSION, ACC_PATCH_VERSION);
+static const QString ACC_MAJOR_VERSION = QString("1");
+static const QString ACC_MINOR_VERSION = QString("0");
+static const QString ACC_PATCH_VERSION = QString("0");
+static const QString VERSION_STRING = QString("%1.%2.%3").arg(ACC_MAJOR_VERSION, ACC_MINOR_VERSION, ACC_PATCH_VERSION);
 
-inline int GetVersionNumber(QString& str)
+inline int GetVersionNumber(const QString& str)
 {
     QStringList online_version = str.split('.');
     if (online_version.size() != 3)
@@ -54,6 +54,6 @@ int main(int argc, char* argv[])
         controller->loadFile(filePath);
     controller->showMainWindow();
 
-    // Lancement de l'application
-    return app.exec();
+    // launching application
+    return QApplication::exec();
 }

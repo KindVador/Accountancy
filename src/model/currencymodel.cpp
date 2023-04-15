@@ -1,6 +1,14 @@
 #include "currencymodel.hpp"
 
+#include <utility>
+
+#include <QJsonArray>
+
 constexpr const int ObjectRole = Qt::UserRole + 1;
+
+CurrencyModel::CurrencyModel(QString name) : AbstractModel(std::move(name))
+{
+}
 
 int CurrencyModel::rowCount(const QModelIndex& parent) const
 {
@@ -40,7 +48,7 @@ void CurrencyModel::addCurrency(Currency* currency)
     endResetModel();
 }
 
-void CurrencyModel::removeCurrency(Currency* currency)
+void CurrencyModel::removeCurrency(const Currency* currency)
 {
     beginResetModel();
     auto res = std::find_if(_currencies.cbegin(), _currencies.cend(), [&currency](const Currency* c2) { return currency == c2; });
@@ -60,21 +68,14 @@ void CurrencyModel::removeCurrency(QUuid uid)
 
 Currency* CurrencyModel::addCurrency(const QString& name, const QString& symbol)
 {
-    auto* newCurrency = new Currency(name, symbol);
-    addCurrency(newCurrency);
-    return newCurrency;
-}
-
-Currency* CurrencyModel::addCurrency(QString&& name, QString&& symbol)
-{
-    auto* newCurrency = new Currency(name, symbol);
+    auto newCurrency = new Currency(name, symbol);
     addCurrency(newCurrency);
     return newCurrency;
 }
 
 Currency* CurrencyModel::getCurrency(const QString& name) const
 {
-    auto currencyIt = std::find_if(_currencies.begin(), _currencies.end(), [&name](Currency* currency) { return currency->getName() == name; });
+    auto currencyIt = std::find_if(_currencies.cbegin(), _currencies.cend(), [&name](const Currency* currency) { return currency->getName() == name; });
     // case NOT FOUND
     if (currencyIt == _currencies.end())
         return nullptr;
@@ -91,10 +92,37 @@ void CurrencyModel::reset()
 
 Currency* CurrencyModel::getCurrency(QUuid uid) const
 {
-    auto currencyIt = std::find_if(_currencies.begin(), _currencies.end(), [&uid](Currency* currency) { return currency->getUid() == uid; });
+    auto currencyIt = std::find_if(_currencies.cbegin(), _currencies.cend(), [&uid](const Currency* currency) { return currency->getUid() == uid; });
     // case NOT FOUND
     if (currencyIt == _currencies.end())
         return nullptr;
 
     return *currencyIt;
+}
+
+bool CurrencyModel::isDirty() const
+{
+    // TODO implement CurrencyModel::isDirty()
+    return false;
+}
+
+void CurrencyModel::write(QJsonObject& json) const
+{
+    QJsonArray currencies;
+    for (int i = 0; i < rowCount(QModelIndex()); ++i) {
+        const Currency* currency = data(index(i, 0), ObjectRole).value<Currency*>();
+        QJsonObject currencyJson;
+        currency->write(currencyJson);
+        currencies.append(currencyJson);
+    }
+    json[getName()] = currencies;
+}
+
+void CurrencyModel::read(const QJsonObject& json)
+{
+    if (json.contains(getName()) && json[getName()].isArray()) {
+        QJsonArray currenciesJsonArray = json[getName()].toArray();
+        for (const QJsonValueConstRef& currency: qAsConst(currenciesJsonArray))
+            addCurrency(Currency::fromJson(currency.toObject()));
+    }
 }

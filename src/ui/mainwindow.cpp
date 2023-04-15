@@ -1,8 +1,9 @@
 #include "mainwindow.hpp"
-#include "../core/controller.hpp"
 #include "addaccountdialog.hpp"
 #include "addownerdialog.hpp"
+#include "categoriestreedialog.hpp"
 #include "contextualmenugenerator.hpp"
+#include "controller/controller.hpp"
 #include "currenciesdialog.hpp"
 #include "importdatadialog.hpp"
 #include "institutionsdialog.hpp"
@@ -18,7 +19,7 @@
 
 constexpr const int ObjectRole = Qt::UserRole + 1;
 
-MainWindow::MainWindow(QWidget* parent) : QMainWindow(parent), ui(new Ui::MainWindow)
+MainWindow::MainWindow(QWidget* parent) : QMainWindow(parent), ui(new Ui::MainWindow())
 {
     ui->setupUi(this);
 
@@ -34,6 +35,7 @@ MainWindow::MainWindow(QWidget* parent) : QMainWindow(parent), ui(new Ui::MainWi
     // Edit Menu
     connect(ui->actionCurrencies, &QAction::triggered, this, &MainWindow::onCurrenciesAction);
     connect(ui->actionInstitutions, &QAction::triggered, this, &MainWindow::onInstitutionsAction);
+    connect(ui->actionCategories, &QAction::triggered, this, &MainWindow::onCategoriesAction);
 
     // View Menu
     connect(ui->actionMainDock, &QAction::triggered, this, &MainWindow::onActionMainDock);
@@ -58,7 +60,6 @@ MainWindow::~MainWindow()
     delete ui;
 }
 
-
 void MainWindow::showCredits()
 {
     QString text(tr("Icônes faites par Pixel perfect de www.flaticon.com"));// In english, Icons made by Pixel perfect from www.flaticon.com
@@ -67,31 +68,34 @@ void MainWindow::showCredits()
 
 void MainWindow::onActionImport()
 {
-    ImportDataDialog dialog = ImportDataDialog(this);
-    int res = dialog.exec();
-    if (res == QDialog::Accepted) {
-    }
+    auto dialog = ImportDataDialog(this);
+    dialog.exec();
 }
 
 Model* MainWindow::getModel() const
 {
-    return _model;
+    return _model.get();
 }
 
 void MainWindow::setModel(Model* model)
 {
     qWarning() << "MainWindow::setModel";
-    _model = model;
+    _model.reset(model);
 
     // connect Owner model
-    ui->ownersView->setModel(_model->getOwnerModel());
+    if (auto ownerModel = _model->getModel<OwnerModel>("OwnerModel"); model != nullptr) {
+        ui->ownersView->setModel(ownerModel);
+    } else {
+        qCritical() << "Invalid Owner model";
+    }
 
     // connect Account model through AccountFilter model
     ui->accountsView->setModel(_model->getAccountFilter());
 }
 
-void MainWindow::contextualOwnerMenuRequested(const QPoint& pos)
+void MainWindow::contextualOwnerMenuRequested(const QPoint& pos) const
 {
+    Q_UNUSED(pos)
     std::unique_ptr<QMenu> contextMenu;
     contextMenu.reset(ContextualMenuGenerator::ownerSectionMenu(this));
 
@@ -110,7 +114,12 @@ void MainWindow::onActionMainDock(bool checked)
 void MainWindow::onAccountDoubleClicked(const QModelIndex& index)
 {
     // get selected account
-    auto* selectedAccount = _model->getAccountModel()->data(index, ObjectRole).value<Account*>();
+    Account* selectedAccount = nullptr;
+    if (auto model = _model->getModel<AccountModel>("AccountModel"); model != nullptr) {
+        selectedAccount = model->data(index, ObjectRole).value<Account*>();
+    } else {
+        qWarning() << "Invalid AccountModel";
+    }
     if (selectedAccount == nullptr)
         return;
 
@@ -118,9 +127,8 @@ void MainWindow::onAccountDoubleClicked(const QModelIndex& index)
     delete centralWidget();
 
     // replace central widget by a TransactionsWidget
-    auto centralWidget = new TransactionsWidget();
+    auto centralWidget = new TransactionsWidget(selectedAccount, this);
     centralWidget->setTitle(selectedAccount->getDisplayedName());
-    centralWidget->setModel(_model->getTransactionModel(selectedAccount));
     setCentralWidget(centralWidget);
 }
 
@@ -138,7 +146,7 @@ void MainWindow::onOpenAction()
         updateEditionInterface(true);
 }
 
-void MainWindow::onSaveAction()
+void MainWindow::onSaveAction() const
 {
     Controller* controller = Controller::instance();
     controller->saveToFile(controller->getCurrentFilePath());
@@ -190,10 +198,13 @@ void MainWindow::updateEditionInterface(bool enable)
 
 void MainWindow::onRemoveOwnerAction()
 {
-    OwnerModel* ownerModel = _model->getOwnerModel();
-    QList<QModelIndex> selIndexes = ui->ownersView->selectionModel()->selectedIndexes();
-    for (const QModelIndex& selIndex: qAsConst(selIndexes))
-        ownerModel->removeOwner(selIndex);
+    if (auto ownerModel = _model->getModel<OwnerModel>("OwnerModel"); ownerModel != nullptr) {
+        QList<QModelIndex> selIndexes = ui->ownersView->selectionModel()->selectedIndexes();
+        for (const QModelIndex& selIndex: qAsConst(selIndexes))
+            ownerModel->removeOwner(selIndex);
+    } else {
+        qWarning() << "Invalid OwnerModel";
+    }
 }
 
 void MainWindow::onAddAccountAction()
@@ -204,20 +215,30 @@ void MainWindow::onAddAccountAction()
 
 void MainWindow::onRemoveAccountAction()
 {
-    AccountModel* accountModel = _model->getAccountModel();
-    QList<QModelIndex> selIndexes = ui->accountsView->selectionModel()->selectedIndexes();
-    for (const QModelIndex& selIndex: qAsConst(selIndexes))
-        accountModel->removeAccount(selIndex);
+    if (auto model = _model->getModel<AccountModel>("AccountModel"); model != nullptr) {
+        QList<QModelIndex> selIndexes = ui->accountsView->selectionModel()->selectedIndexes();
+        for (const QModelIndex& selIndex: qAsConst(selIndexes))
+            model->removeAccount(selIndex);
+    } else {
+        qWarning() << "Invalid AccountModel";
+    }
 }
 
 void MainWindow::onCurrenciesAction()
 {
-    auto dlg = new CurrenciesDialog(this, _model->getCurrencyModel());
-    dlg->exec();
+    auto dlg = CurrenciesDialog(this, _model->getModel<CurrencyModel>("CurrencyModel"));
+    dlg.exec();
 }
 
 void MainWindow::onInstitutionsAction()
 {
-    auto dlg = new InstitutionsDialog(this, _model->getFinancialInstitutionModel());
-    dlg->exec();
+    auto dlg = InstitutionsDialog(this, _model->getModel<FinancialInstitutionModel>("FinancialInstitutionModel"));
+    dlg.exec();
+}
+
+void MainWindow::onCategoriesAction()
+{
+    //    auto dlg = CategoriesDialog(this, _model->getCategoryModel());
+    auto dlg = CategoriesTreeDialog(this, _model->getModel<CategoryModel>("CategoryModel"));
+    dlg.exec();
 }

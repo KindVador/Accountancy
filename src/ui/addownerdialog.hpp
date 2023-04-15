@@ -1,7 +1,7 @@
 #ifndef ACCOUNTANCY_ADDOWNERDIALOG_HPP
 #define ACCOUNTANCY_ADDOWNERDIALOG_HPP
 
-#include "../core/owner.hpp"
+#include "core/owner.hpp"
 #include <QDialog>
 
 

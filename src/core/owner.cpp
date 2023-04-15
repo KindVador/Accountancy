@@ -5,14 +5,8 @@ Owner::Owner()
     _uid = QUuid::createUuid();
 }
 
-Owner::Owner(QString& name, double warningBalance, QString& comment, bool isHidden)
+Owner::Owner(const QString& name, double warningBalance, const QString& comment, bool isHidden)
     : _name(name), _warningBalance(warningBalance), _comment(comment), _isHidden(isHidden)
-{
-    _uid = QUuid::createUuid();
-}
-
-Owner::Owner(QString name, double warningBalance, QString comment, bool isHidden)
-    : _name(std::move(name)), _warningBalance(warningBalance), _comment(std::move(comment)), _isHidden(isHidden)
 {
     _uid = QUuid::createUuid();
 }
@@ -29,7 +23,7 @@ void Owner::setName(const QString& value)
 
 float Owner::getWarningBalance() const
 {
-    return _warningBalance;
+    return static_cast<float>(_warningBalance);
 }
 
 void Owner::setWarningBalance(float value)
@@ -71,6 +65,10 @@ void Owner::read(const QJsonObject& json)
 {
     if (json.contains("uid") && json["uid"].isString())
         _uid = QUuid(json["uid"].toString());
+
+    // check that uid is valid, otherwise generate a new one
+    if (_uid.isNull())
+        _uid = QUuid::createUuid();
 
     if (json.contains("name") && json["name"].isString())
         _name = json["name"].toString();

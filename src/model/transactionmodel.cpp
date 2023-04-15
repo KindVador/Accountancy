@@ -1,13 +1,19 @@
 #include "transactionmodel.hpp"
+#include "category.hpp"
 
 #include <QColor>
+#include <utility>
 
-QList<QString> TransactionModel::headerLabels = {"Date", "Name", "Amount", "Balance", "Status", "Comment"};
+QList<QString> TransactionModel::headerLabels = {"Date", "Name", "Amount", "Balance", "Status", "Category", "Comment"};
 
 constexpr const int ObjectRole = Qt::UserRole + 1;
 constexpr const int UIDRole = Qt::UserRole + 2;
 
-TransactionModel::TransactionModel(Account* account) : _account(account)
+TransactionModel::TransactionModel(QString name) : AbstractModel(std::move(name))
+{
+}
+
+TransactionModel::TransactionModel(Account* account) : AbstractModel(account != nullptr ? account->getUid().toString() : ""), _account(account)
 {
 }
 
@@ -24,7 +30,7 @@ QVariant TransactionModel::data(const QModelIndex& index, int role) const
     if (!index.isValid() || _account == nullptr)
         return {};
 
-    Transaction* t = _account->transactionAt(index.row());
+    const Transaction* t = _account->transactionAt(index.row());
     if (t == nullptr)
         return {};
 
@@ -41,7 +47,14 @@ QVariant TransactionModel::data(const QModelIndex& index, int role) const
                 return QString("%1%2").arg(QString::number(t->getCurrentBalance()), currency->getSymbol());
             case 4:
                 return TRANSACTION_STATUS_2_STRING[t->getStatus()];
-            case 5:
+            case 5: {
+                const Category* category = t->getCategory();
+                if (category != nullptr)
+                    return category->getName();
+                else
+                    return {};
+            }
+            case 6:
                 return t->getComment();
             default:
                 return {};
@@ -71,6 +84,14 @@ QVariant TransactionModel::data(const QModelIndex& index, int role) const
         }
     } else if (role == UIDRole) {
         return t->getUid();
+    } else if (role == ObjectRole) {
+        /*If the QVariant contains a pointer to a type derived from QObject then T may be any QObject type.
+         * If the pointer stored in the QVariant can be qobject_cast to T, then that result is returned.
+         * Otherwise nullptr is returned. Note that this only works for QObject subclasses which use the Q_OBJECT macro.
+         *
+         * As Transaction object doesn't inherit from QObject, we need to store the pointer as void* */
+
+        return QVariant::fromValue(static_cast<void*>(const_cast<Transaction*>(t)));
     }
     return {};
 }
@@ -118,4 +139,30 @@ bool TransactionModel::removeTransaction(QUuid transactionUid)
     res = _account->removeTransaction(transactionUid);
     endResetModel();
     return res;
+}
+
+Account* TransactionModel::getAccount() const
+{
+    return _account;
+}
+
+void TransactionModel::setAccount(Account* account)
+{
+    beginResetModel();
+    _account = account;
+    endResetModel();
+}
+
+bool TransactionModel::isDirty() const
+{
+    // TODO implement TransactionModel::isDirty()
+    return false;
+}
+
+void TransactionModel::write(QJsonObject& json) const
+{
+}
+
+void TransactionModel::read(const QJsonObject& json)
+{
 }

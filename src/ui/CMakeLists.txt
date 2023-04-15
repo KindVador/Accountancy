@@ -1,3 +1,4 @@
+set(NAME AccountancyUi)
 
 set(SOURCES mainwindow.hpp mainwindow.cpp
         owneritemwidget.hpp owneritemwidget.cpp
@@ -10,6 +11,10 @@ set(SOURCES mainwindow.hpp mainwindow.cpp
         institutionsdialog.cpp institutionsdialog.hpp
         createcurrencydialog.cpp createcurrencydialog.hpp
         createinstitutiondialog.cpp createinstitutiondialog.hpp
+        createcategorydialog.cpp createcategorydialog.hpp
+        comboboxitemdelegate.cpp comboboxitemdelegate.hpp
+        categoriestreedialog.cpp categoriestreedialog.hpp
+        selectcategorydialog.cpp selectcategorydialog.hpp
         )
 
 set(UI_SOURCES mainwindow.ui
@@ -22,14 +27,16 @@ set(UI_SOURCES mainwindow.ui
         institutionsdialog.ui
         createcurrencydialog.ui
         createinstitutiondialog.ui
-        )
+        createcategorydialog.ui
+        categoriestreedialog.ui
+        selectcategorydialog.ui)
 
 if(${CMAKE_SYSTEM_NAME} MATCHES "Linux")
     qt_wrap_ui(SOURCES ${UI_SOURCES})
-    add_library(AccountancyUi ${SOURCES})
+    add_library(${NAME} ${SOURCES})
 else()
-    add_library(AccountancyUi ${SOURCES} ${UI_SOURCES})
+    add_library(${NAME} ${SOURCES} ${UI_SOURCES})
 endif()
 
-target_link_libraries(AccountancyUi PRIVATE Qt::Widgets)
-target_include_directories(AccountancyUi PUBLIC "${CMAKE_CURRENT_SOURCE_DIR}")
+target_link_libraries(${NAME} PRIVATE Qt::Widgets AccountancyController AccountancyModel)
+target_include_directories(${NAME} PUBLIC "${CMAKE_CURRENT_SOURCE_DIR}" "${CMAKE_CURRENT_SOURCE_DIR}/..")

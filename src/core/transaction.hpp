@@ -8,7 +8,10 @@
 #include <QString>
 #include <QUuid>
 
+#include "Interfaces/iserializable.hpp"
+
 class Account;
+class Category;
 
 enum class TransactionStatus : int
 {
@@ -20,7 +23,7 @@ enum class TransactionStatus : int
     Cancelled
 };
 
-static QHash<TransactionStatus, QString> TRANSACTION_STATUS_2_STRING{
+static const QHash<TransactionStatus, QString> TRANSACTION_STATUS_2_STRING{
         {TransactionStatus::Planned, "Planned"},
         {TransactionStatus::Created, "Created"},
         {TransactionStatus::Imported, "Imported"},
@@ -28,7 +31,7 @@ static QHash<TransactionStatus, QString> TRANSACTION_STATUS_2_STRING{
         {TransactionStatus::Locked, "Locked"},
         {TransactionStatus::Cancelled, "Cancelled"}};
 
-static QHash<QString, TransactionStatus> STRING_2_TRANSACTION_STATUS{
+static const QHash<QString, TransactionStatus> STRING_2_TRANSACTION_STATUS{
         {"Planned", TransactionStatus::Planned},
         {"Created", TransactionStatus::Created},
         {"Imported", TransactionStatus::Imported},
@@ -36,20 +39,19 @@ static QHash<QString, TransactionStatus> STRING_2_TRANSACTION_STATUS{
         {"Locked", TransactionStatus::Locked},
         {"Cancelled", TransactionStatus::Cancelled}};
 
-class Transaction
+class Transaction : public ISerializable
 {
 public:
     Transaction();
-    explicit Transaction(QString& name, QString& comment, TransactionStatus status, QDateTime& datetime, double amount);
     explicit Transaction(QString name, QString comment, TransactionStatus status, QDateTime datetime, double amount);
-    ~Transaction() = default;
+    ~Transaction() override = default;
     static Transaction fromJson(const QJsonObject& json);
     // Copy constructor
     Transaction(const Transaction& origin);
     // Move constructor
     Transaction(Transaction&& origin) noexcept;
 
-    friend void swap(Transaction& lhs, Transaction& rhs);
+    friend void swap(Transaction& lhs, Transaction& rhs) noexcept;
 
     // Operators
     Transaction& operator=(const Transaction& rhs);    // Copy-Assignment Operator
@@ -74,10 +76,12 @@ public:
     void setAmount(double amount);
     [[nodiscard]] double getCurrentBalance() const;
     void setCurrentBalance(double currentBalance);
+    [[nodiscard]] const Category* getCategory() const;
+    void setCategory(const Category* category);
 
     // Serialization
-    void read(const QJsonObject& json);
-    void write(QJsonObject& json) const;
+    void read(const QJsonObject& json) override;
+    void write(QJsonObject& json) const override;
 
     // public API
     void printToConsole() const;
@@ -90,8 +94,9 @@ private:
     QDateTime _dateTime;
     double _amount = 0.0;
     double _current_balance = 0.0;
-    Account* _accountFrom = nullptr;
-    Account* _accountTo = nullptr;
+    const Account* _accountFrom = nullptr;
+    const Account* _accountTo = nullptr;
+    const Category* _category = nullptr;
 };
 
 Q_DECLARE_METATYPE(Transaction*)

@@ -3,15 +3,22 @@
 
 #include <QAbstractListModel>
 
-#include "importconfig.hpp"
+#include "abstractmodel.hpp"
+#include "core/importconfig.hpp"
 
-class ImportConfigModel : public QAbstractListModel
+class ImportConfigModel : public QAbstractListModel, public AbstractModel
 {
     Q_OBJECT
 
 public:
-    ImportConfigModel() = default;
+    explicit ImportConfigModel(QString name);
     ~ImportConfigModel() override = default;
+
+    // AbstractModel
+    [[nodiscard]] bool isDirty() const override;
+    void reset() override;
+    void write(QJsonObject& json) const override;
+    void read(const QJsonObject& json) override;
 
     // QAbstractListModel interface
     [[nodiscard]] int rowCount(const QModelIndex& parent) const override;
@@ -21,8 +28,6 @@ public:
     void removeImportConfig(const QModelIndex& index);
 
     [[nodiscard]] const QList<ImportConfig*>& importConfigs() const;
-
-    void reset();
 
 private:
     QList<ImportConfig*> _importConfigs;

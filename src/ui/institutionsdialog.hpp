@@ -1,7 +1,7 @@
 #ifndef ACCOUNTANCY_INSTITUTIONSDIALOG_HPP
 #define ACCOUNTANCY_INSTITUTIONSDIALOG_HPP
 
-#include "../core/financialinstitutionmodel.hpp"
+#include "model/financialinstitutionmodel.hpp"
 #include <QDialog>
 
 QT_BEGIN_NAMESPACE
@@ -24,7 +24,7 @@ public slots:
 
 private slots:
     void onAddInstitutionAction();
-    void onRemoveInstitutionAction();
+    void onRemoveInstitutionAction() const;
 
 private:
     Ui::InstitutionsDialog* ui;

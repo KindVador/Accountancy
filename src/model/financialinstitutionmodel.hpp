@@ -1,16 +1,23 @@
 #ifndef ACCOUNTANCY_FINANCIALINSTITUTIONMODEL_HPP
 #define ACCOUNTANCY_FINANCIALINSTITUTIONMODEL_HPP
 
-#include "financialinstitution.hpp"
+#include "abstractmodel.hpp"
+#include "core/financialinstitution.hpp"
 
 #include <QAbstractItemModel>
 
-class FinancialInstitutionModel : public QAbstractListModel
+class FinancialInstitutionModel : public QAbstractListModel, public AbstractModel
 {
     Q_OBJECT
 public:
-    FinancialInstitutionModel() = default;
+    explicit FinancialInstitutionModel(QString name);
     ~FinancialInstitutionModel() override = default;
+
+    // AbstractModel
+    [[nodiscard]] bool isDirty() const override;
+    void reset() override;
+    void write(QJsonObject& json) const override;
+    void read(const QJsonObject& json) override;
 
     // QAbstractListModel interface
     [[nodiscard]] int rowCount(const QModelIndex& parent) const override;
@@ -18,12 +25,10 @@ public:
 
     void addFinancialInstitution(FinancialInstitution* institution);
     FinancialInstitution* addFinancialInstitution(const QString& name);
-    void removeFinancialInstitution(FinancialInstitution* institution);
+    void removeFinancialInstitution(const FinancialInstitution* institution);
     void removeFinancialInstitution(QUuid uid);
 
     [[nodiscard]] FinancialInstitution* getFinancialInstitution(QUuid uid) const;
-
-    void reset();
 
 private:
     QList<FinancialInstitution*> _institutions;
