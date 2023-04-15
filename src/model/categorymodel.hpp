@@ -7,9 +7,6 @@
 #include "core/category.hpp"
 
 
-// TODO implement a tree model for categories
-// https://doc.qt.io/qt-6/qtwidgets-itemviews-simpletreemodel-example.html
-
 /**
  * @brief Category model based on a Tree structure.
  */

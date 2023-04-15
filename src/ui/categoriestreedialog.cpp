@@ -6,6 +6,7 @@
 CategoriesTreeDialog::CategoriesTreeDialog(QWidget* parent, CategoryModel* model) : QDialog(parent), ui(new Ui::CategoriesTreeDialog), _model(model)
 {
     ui->setupUi(this);
+    setWindowTitle("Categories");
 
     // init TableView model
     ui->treeView->setModel(_model);
@@ -18,16 +19,6 @@ CategoriesTreeDialog::CategoriesTreeDialog(QWidget* parent, CategoryModel* model
 CategoriesTreeDialog::~CategoriesTreeDialog()
 {
     delete ui;
-}
-
-void CategoriesTreeDialog::accept()
-{
-    QDialog::accept();
-}
-
-void CategoriesTreeDialog::reject()
-{
-    QDialog::reject();
 }
 
 void CategoriesTreeDialog::onAddCategoryAction()

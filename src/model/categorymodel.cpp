@@ -136,7 +136,10 @@ Qt::ItemFlags CategoryModel::flags(const QModelIndex& index) const
 
 QVariant CategoryModel::headerData(int section, Qt::Orientation orientation, int role) const
 {
-    return QAbstractItemModel::headerData(section, orientation, role);
+    if (section == 0 && orientation == Qt::Orientation::Horizontal && role == Qt::DisplayRole)
+        return {"Categories"};
+    else
+        return QAbstractItemModel::headerData(section, orientation, role);
 }
 
 QModelIndex CategoryModel::index(int row, int column, const QModelIndex& parent) const

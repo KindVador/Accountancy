@@ -19,10 +19,6 @@ public:
     explicit CategoriesTreeDialog(QWidget* parent, CategoryModel* model);
     ~CategoriesTreeDialog() override;
 
-public slots:
-    void accept() override;
-    void reject() override;
-
 private slots:
     void onAddCategoryAction();
     void onRemoveCategoryAction() const;
