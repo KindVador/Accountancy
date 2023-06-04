@@ -37,7 +37,7 @@ int main(int argc, char* argv[])
         qDebug() << "ERROR: the file [" << settings.fileName() << "] is not writable.";
 
     // set ICON
-    QIcon app_icon(":/imgs/accountancy.svg");
+    QIcon app_icon(":/icns/resources/icons/accountancy.svg");
     QApplication::setWindowIcon(app_icon);
 
     // Parse command line arguments

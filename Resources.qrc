@@ -1,6 +1,5 @@
 <RCC>
     <qresource prefix="/icns/black">
-        <file>resources/icons/accountancy.svg</file>
         <file>resources/icons/doc_import_icon_16.png</file>
         <file>resources/icons/doc_import_icon_24.png</file>
         <file>resources/icons/doc_import_icon_32.png</file>
@@ -23,5 +22,18 @@
         <file>resources/icons/save-all.svg</file>
         <file>resources/icons/trash.svg</file>
         <file>resources/icons/undo.svg</file>
+    </qresource>
+    <qresource prefix="/icns">
+        <file>resources/icons/accountancy.ico</file>
+        <file>resources/icons/accountancy_512.png</file>
+        <file>resources/icons/accountancy_256.png</file>
+        <file>resources/icons/accountancy.svg</file>
+        <file>resources/icons/accountancy_96.png</file>
+        <file>resources/icons/accountancy_128.png</file>
+        <file>resources/icons/accountancy_72.png</file>
+        <file>resources/icons/accountancy_64.png</file>
+        <file>resources/icons/accountancy_48.png</file>
+        <file>resources/icons/accountancy_32.png</file>
+        <file>resources/icons/accountancy.icns</file>
     </qresource>
 </RCC>
