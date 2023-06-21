@@ -19,7 +19,7 @@ ImportDataDialog::ImportDataDialog(QWidget* parent) : QDialog(parent),
     // Populate account ComboBox
     ui->accountComboBox->setModel(Model::instance()->getAccountFilter());
     // Populate importConfiguration ComboBox
-    // ui->importConfigComboBox->setModel(Model::instance()->getModel<ImportConfigModel>("ImportConfigModel"));
+    ui->importConfigComboBox->setModel(Model::instance()->getModel<ImportConfigModel>("ImportConfigModel"));
 
     connect(ui->addFileButton, &QPushButton::clicked, this, &ImportDataDialog::addFiles);
     connect(ui->removeFileButton, &QPushButton::clicked, this, &ImportDataDialog::removeSelectedFiles);

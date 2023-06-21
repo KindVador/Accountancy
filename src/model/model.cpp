@@ -165,34 +165,3 @@ bool Model::unregisterModel(const AbstractModel* model)
 
     return _models.remove(model->getName());
 }
-
-template<typename T>
-T* Model::getModel(const QString& name)
-{
-    if (name.isEmpty() || !_models.contains(name))
-        return nullptr;
-
-    auto model = dynamic_cast<T*>(_models.value(name));
-    if (model == nullptr)
-        qCritical() << "No valid model to return for name: " << name;
-
-    return model;
-}
-
-template<>
-CategoryModel* Model::getModel(const QString& name)
-{
-    if (name.isEmpty() || !_models.contains(name))
-        return nullptr;
-
-    return dynamic_cast<CategoryModel*>(_models.value(name));
-}
-
-template<>
-FinancialInstitutionModel* Model::getModel(const QString& name)
-{
-    if (name.isEmpty() || !_models.contains(name))
-        return nullptr;
-
-    return dynamic_cast<FinancialInstitutionModel*>(_models.value(name));
-}

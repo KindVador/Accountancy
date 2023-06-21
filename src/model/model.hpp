@@ -48,20 +48,27 @@ public:
     bool unregisterModel(const AbstractModel* model);
 
     /**
-     * @brief
+     * @brief template function to get a pointer to a sub model.
+     * This function need to be implemented in the header to avoid lack of valid instantiation when compiling other object files,
+     * If you put your template definition in a separate .cpp file, when the compiler compiles that file it may not know which instantiations you need.
+     * Conversely, at the call sites which would instantiate the correct version of the template function,
+     * if the definition of the function body isn't available the compiler won't have the information to instantiate the required specializations.
      * @tparam T
      * @param name
      * @return
      */
     template<typename T>
-    T* getModel(const QString& name);
+    inline T* getModel(const QString& name)
+    {
+        if (name.isEmpty() || !_models.contains(name))
+            return nullptr;
 
-    // TODO fix why template specialization is required for linker
-    template<>
-    CategoryModel* getModel(const QString& name);
-    template<>
-    FinancialInstitutionModel* getModel(const QString& name);
+        auto model = dynamic_cast<T*>(_models.value(name));
+        if (model == nullptr)
+            qCritical() << "No valid model to return for name: " << name;
 
+        return model;
+    }
 
     // Getters & Setters
     [[nodiscard]] AccountFilter* getAccountFilter() const;
