@@ -31,6 +31,7 @@ MainWindow::MainWindow(QWidget* parent) : QMainWindow(parent), ui(new Ui::MainWi
     connect(ui->actionImport, &QAction::triggered, this, &MainWindow::onActionImport);
     connect(ui->actionSave, &QAction::triggered, this, &MainWindow::onSaveAction);
     connect(ui->actionSaveAs, &QAction::triggered, this, &MainWindow::onSaveAsAction);
+    connect(ui->actionClose, &QAction::triggered, this, &MainWindow::onCloseAction);
 
     // Edit Menu
     connect(ui->actionCurrencies, &QAction::triggered, this, &MainWindow::onCurrenciesAction);
@@ -62,7 +63,8 @@ MainWindow::~MainWindow()
 
 void MainWindow::showCredits()
 {
-    QString text(tr("Icônes faites par Pixel perfect de www.flaticon.com"));// In english, Icons made by Pixel perfect from www.flaticon.com
+    QString text = QCoreApplication::applicationVersion().prepend("Version: ");
+    text.append(tr("\nIcônes faites par Pixel perfect de www.flaticon.com"));// In english, Icons made by Pixel perfect from www.flaticon.com
     QMessageBox::information(this, "Credits", text);
 }
 
@@ -238,7 +240,14 @@ void MainWindow::onInstitutionsAction()
 
 void MainWindow::onCategoriesAction()
 {
-    //    auto dlg = CategoriesDialog(this, _model->getCategoryModel());
     auto dlg = CategoriesTreeDialog(this, _model->getModel<CategoryModel>("CategoryModel"));
     dlg.exec();
+}
+
+void MainWindow::onCloseAction()
+{
+    if (Controller* controller = Controller::instance())
+        controller->saveSettings();
+
+    close();
 }

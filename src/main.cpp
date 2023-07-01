@@ -2,12 +2,11 @@
 
 #include <QApplication>
 #include <QIcon>
-#include <QSettings>
 #include <QString>
 #include <QTranslator>
 
-static const QString ACC_MAJOR_VERSION = QString("1");
-static const QString ACC_MINOR_VERSION = QString("0");
+static const QString ACC_MAJOR_VERSION = QString("0");
+static const QString ACC_MINOR_VERSION = QString("1");
 static const QString ACC_PATCH_VERSION = QString("0");
 static const QString VERSION_STRING = QString("%1.%2.%3").arg(ACC_MAJOR_VERSION, ACC_MINOR_VERSION, ACC_PATCH_VERSION);
 
@@ -31,10 +30,7 @@ int main(int argc, char* argv[])
     QCoreApplication::setOrganizationName("KindVador");
     QCoreApplication::setApplicationName("Accountancy");
     QSettings::setDefaultFormat(QSettings::IniFormat);
-
-    QSettings settings(QCoreApplication::applicationName());
-    if (!settings.isWritable())
-        qDebug() << "ERROR: the file [" << settings.fileName() << "] is not writable.";
+    QCoreApplication::setApplicationVersion(VERSION_STRING);
 
     // set ICON
     QIcon app_icon(":/icns/resources/icons/accountancy.svg");
@@ -52,6 +48,8 @@ int main(int argc, char* argv[])
     Controller* controller = Controller::instance();
     if (!filePath.isEmpty())
         controller->loadFile(filePath);
+    else
+        controller->loadFromSettings();
     controller->showMainWindow();
 
     // launching application

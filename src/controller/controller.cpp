@@ -1,15 +1,19 @@
 #include "controller.hpp"
 #include "utils/instrumentor.hpp"
 
+#include <QApplication>
 #include <QJsonDocument>
 #include <QMessageBox>
 
 constexpr const int ObjectRole = Qt::UserRole + 1;
 
 Controller* Controller::_singleton = nullptr;
+QSettings Controller::_settings = QSettings(QCoreApplication::applicationName());
 
 Controller::Controller() : _model(Model::instance()), _mainWindow(new MainWindow)
 {
+    loadSettings();
+
     // init model
     _model->registerModel(new OwnerModel("OwnerModel"));
     _model->registerModel(new CurrencyModel("CurrencyModel"));
@@ -302,4 +306,31 @@ void Controller::removeCategory(const QUuid& uid)
 
     if (auto model = _model->getModel<CategoryModel>("CategoryModel"); model != nullptr)
         model->removeCategory(uid);
+}
+
+void Controller::loadSettings()
+{
+    QString previous_file = _settings.value("last_loaded_file").toString();
+    if (!previous_file.isEmpty())
+        _currentFilePath = previous_file;
+}
+
+void Controller::saveSettings() const
+{
+    if (!_settings.isWritable()) {
+        qDebug() << "ERROR: the file [" << _settings.fileName() << "] is not writable.";
+        return;
+    }
+
+    if (!_currentFilePath.isEmpty())
+        _settings.setValue("last_loaded_file", _currentFilePath);
+}
+
+bool Controller::loadFromSettings()
+{
+    QString previous_file = _settings.value("last_loaded_file").toString();
+    if (!previous_file.isEmpty())
+        return loadFile(previous_file);
+    else
+        return false;
 }

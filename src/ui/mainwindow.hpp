@@ -50,6 +50,7 @@ private slots:
     void onCurrenciesAction();
     void onInstitutionsAction();
     void onCategoriesAction();
+    void onCloseAction();
 
 private:
     Ui::MainWindow* ui = nullptr;

@@ -9,6 +9,7 @@
 #include "ui/mainwindow.hpp"
 
 #include <QObject>
+#include <QSettings>
 
 class Controller : public QObject
 {
@@ -54,10 +55,15 @@ public:
     bool createNewFile(const QString& filePath);
     bool loadFile(const QString& filePath);
     bool saveToFile(const QString& filePath);
+    bool loadFromSettings();
 
     // CURRENT FILE
     [[nodiscard]] const QString& getCurrentFilePath() const;
     void setCurrentFilePath(const QString& currentFilePath);
+
+    // Application settings
+    void loadSettings();
+    void saveSettings() const;
 
 public slots:
     void clearOwnerSelection();
@@ -71,6 +77,7 @@ private:
     Model* _model = nullptr;
     MainWindow* _mainWindow = nullptr;
     QString _currentFilePath;
+    static QSettings _settings;
 
     // Singleton
     explicit Controller();
