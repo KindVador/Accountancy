@@ -71,7 +71,7 @@ void ImportDataDialog::accept()
     for (int i = 0; i < ui->filesListWidget->count(); ++i) {
         const QListWidgetItem* item = ui->filesListWidget->item(i);
         auto dataFile = QFile(item->text());
-        transactions.append(financialInstitution->readTransactionsFromFile(dataFile, *config));
+        transactions.append(financialInstitution->readTransactionsFromFile(dataFile, *config, account->getCurrency()));
     }
 
     // add transactions to the selected count

@@ -25,7 +25,7 @@ public:
     void setName(const QString& name);
 
     // IDataFileInterface
-    [[nodiscard]] QList<Transaction*> readTransactionsFromFile(QFile& dataFile, const ImportConfig& config) const override;
+    [[nodiscard]] QList<Transaction*> readTransactionsFromFile(QFile& dataFile, const ImportConfig& config, const Currency* currency) const override;
 
     // Serialization
     void read(const QJsonObject& json) override;

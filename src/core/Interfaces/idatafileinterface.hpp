@@ -8,12 +8,13 @@
 
 class Transaction;
 class ImportConfig;
+class Currency;
 
 class IDataFileInterface
 {
 public:
     virtual ~IDataFileInterface() = default;
-    [[nodiscard]] virtual QList<Transaction*> readTransactionsFromFile(QFile& dataFile, const ImportConfig& config) const = 0;
+    [[nodiscard]] virtual QList<Transaction*> readTransactionsFromFile(QFile& dataFile, const ImportConfig& config, const Currency* currency) const = 0;
 
 private:
     int _nbLinesToSkip = 0;

@@ -1,4 +1,5 @@
 #include "financialinstitution.hpp"
+#include "core/currency.hpp"
 #include "importconfig.hpp"
 
 #include <QDebug>
@@ -35,7 +36,7 @@ void FinancialInstitution::setName(const QString& name)
     _name = name;
 }
 
-QList<Transaction*> FinancialInstitution::readTransactionsFromFile(QFile& dataFile, const ImportConfig& config) const
+QList<Transaction*> FinancialInstitution::readTransactionsFromFile(QFile& dataFile, const ImportConfig& config, const Currency* currency) const
 {
     if (!dataFile.open(QIODevice::ReadOnly | QIODevice::Text))
         return {};
@@ -86,6 +87,9 @@ QList<Transaction*> FinancialInstitution::readTransactionsFromFile(QFile& dataFi
         if (replaceDecimalCharacter)
             amountValue.replace(config.getDecimalChar(), locale.decimalPoint());
 
+        if (currency != nullptr && amountValue.contains(currency->getSymbol()))
+            amountValue.replace(currency->getSymbol(), "", Qt::CaseInsensitive);
+        
         transaction->setAmount(locale.toDouble(amountValue));
 
         transactions.append(transaction);

@@ -1,3 +1,4 @@
+#include "../../src/core/currency.hpp"
 #include "../../src/core/financialinstitution.hpp"
 #include "importconfig.hpp"
 #include <catch2/catch.hpp>
@@ -24,7 +25,8 @@ TEST_CASE("DataImport CaisseEpargne old format", "[core]")
 
     REQUIRE(dataFile.exists());
 
-    QList<Transaction*> transactions = fi.readTransactionsFromFile(dataFile, config);
+    Currency euro{"Euro", "€"};
+    QList<Transaction*> transactions = fi.readTransactionsFromFile(dataFile, config, &euro);
     // check that all transactions have been read
     CHECK(transactions.count() == 51);
 
@@ -63,7 +65,8 @@ TEST_CASE("DataImport CaisseEpargne new format", "[core]")
 
     REQUIRE(dataFile.exists());
 
-    QList<Transaction*> transactions = fi.readTransactionsFromFile(dataFile, config);
+    Currency euro{"Euro", "€"};
+    QList<Transaction*> transactions = fi.readTransactionsFromFile(dataFile, config, &euro);
     // check that all transactions have been read
     CHECK(transactions.count() == 19);
 
@@ -102,7 +105,8 @@ TEST_CASE("DataImport CaisseEpargne new format with French Date format", "[core]
 
     REQUIRE(dataFile.exists());
 
-    QList<Transaction*> transactions = fi.readTransactionsFromFile(dataFile, config);
+    Currency euro{"Euro", "€"};
+    QList<Transaction*> transactions = fi.readTransactionsFromFile(dataFile, config, &euro);
     // check that all transactions have been read
     CHECK(transactions.count() == 2);
 
@@ -141,7 +145,8 @@ TEST_CASE("DataImport HelloBank", "[core]")
 
     REQUIRE(dataFile.exists());
 
-    QList<Transaction*> transactions = fi.readTransactionsFromFile(dataFile, config);
+    Currency euro{"Euro", "€"};
+    QList<Transaction*> transactions = fi.readTransactionsFromFile(dataFile, config, &euro);
     // check that all transactions have been read
     CHECK(transactions.count() == 15);
 
