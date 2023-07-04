@@ -65,7 +65,7 @@ public:
      * @param name
      * @return
      */
-    [[nodiscard]] Category* category(const QString& name) const;
+    [[nodiscard]] Category* category(const QString& name, const Category* root_item = nullptr) const;
 
     /**
      * @brief Search in the tree model a category based on its UID

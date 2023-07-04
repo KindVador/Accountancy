@@ -1,4 +1,5 @@
 #include "importdatadialog.hpp"
+#include "controller/controller.hpp"
 #include "core/importconfig.hpp"
 #include "model/model.hpp"
 #include "ui_importdatadialog.h"
@@ -55,13 +56,16 @@ void ImportDataDialog::removeSelectedFiles()
 
 void ImportDataDialog::accept()
 {
+    auto controller = Controller::instance();
+    if (controller == nullptr)
+        return;
+
     // get selected Account
     auto* account = ui->accountComboBox->currentData(ObjectRole).value<Account*>();
     if (account == nullptr)
         return;
 
-    // get Financial Institution from selected Account
-    auto financialInstitution = account->getInstitution();
+    auto category_model = Model::instance()->getModel<CategoryModel>("CategoryModel");
 
     // Get selected import configuration to use for reading data
     const ImportConfig* config = ui->importConfigComboBox->currentData(ObjectRole).value<ImportConfig*>();
@@ -71,7 +75,7 @@ void ImportDataDialog::accept()
     for (int i = 0; i < ui->filesListWidget->count(); ++i) {
         const QListWidgetItem* item = ui->filesListWidget->item(i);
         auto dataFile = QFile(item->text());
-        transactions.append(financialInstitution->readTransactionsFromFile(dataFile, *config, account->getCurrency()));
+        transactions.append(controller->readTransactionsFromFile(dataFile, *config, account->getCurrency(), category_model));
     }
 
     // add transactions to the selected count

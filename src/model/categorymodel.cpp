@@ -183,17 +183,26 @@ int CategoryModel::columnCount(const QModelIndex& parent) const
     return _rootCategory->columnCount();
 }
 
-Category* CategoryModel::category(const QString& name) const
+Category* CategoryModel::category(const QString& name, const Category* root_item) const
 {
-    for (Category* category: _rootCategory->subCategories()) {
-        if (category != nullptr && category->getName() == name)
+    if (name.isEmpty())
+        return nullptr;
+
+    if (root_item == nullptr)
+        root_item = _rootCategory.get();
+
+    for (Category* category: root_item->subCategories()) {
+        if (category == nullptr)
+            continue;
+        if (category->getName() == name)
             return category;
+        if (!category->subCategories().isEmpty()) {
+            // recursive call to look deeper in the tree
+            Category* c = this->category(name, category);
 
-        // recursive call to look deeper in the tree
-        Category* c = this->category(name);
-
-        if (c != nullptr)
-            return c;
+            if (c != nullptr)
+                return c;
+        }
     }
     return nullptr;
 }

@@ -3,6 +3,7 @@ cmake_minimum_required(VERSION 3.20)
 project(TestsAccountancy LANGUAGES CXX)
 
 include_directories(../src/core)
+include_directories(../src/controller)
 
 find_package(Qt6 COMPONENTS Core Test REQUIRED)
 
@@ -29,7 +30,7 @@ set(TEST_SRC
         )
 
 add_executable(TestsAccountancy ${TEST_SRC})
-target_link_libraries(TestsAccountancy PRIVATE Catch2::Catch2 Qt6::Core Qt6::Widgets AccountancyCore)
+target_link_libraries(TestsAccountancy PRIVATE Catch2::Catch2 Qt6::Core Qt6::Widgets AccountancyCore AccountancyController AccountancyUi)
 
 # copy tests data in the same folder than tests binary
 add_custom_command(

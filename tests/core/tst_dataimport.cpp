@@ -1,3 +1,4 @@
+#include "../../src/controller/controller.hpp"
 #include "../../src/core/currency.hpp"
 #include "../../src/core/financialinstitution.hpp"
 #include "importconfig.hpp"
@@ -5,7 +6,9 @@
 
 TEST_CASE("DataImport CaisseEpargne old format", "[core]")
 {
-    FinancialInstitution fi("CaisseEpargne");
+    auto controller = Controller::instance();
+    if (controller == nullptr)
+        return;
 
     auto dataFile = QFile("data/caisse_epargne/old_format.csv");
     ImportConfig config;
@@ -26,7 +29,7 @@ TEST_CASE("DataImport CaisseEpargne old format", "[core]")
     REQUIRE(dataFile.exists());
 
     Currency euro{"Euro", "€"};
-    QList<Transaction*> transactions = fi.readTransactionsFromFile(dataFile, config, &euro);
+    QList<Transaction*> transactions = controller->readTransactionsFromFile(dataFile, config, &euro, nullptr);
     // check that all transactions have been read
     CHECK(transactions.count() == 51);
 
@@ -47,7 +50,9 @@ TEST_CASE("DataImport CaisseEpargne old format", "[core]")
 
 TEST_CASE("DataImport CaisseEpargne new format", "[core]")
 {
-    FinancialInstitution fi("CaisseEpargne");
+    auto controller = Controller::instance();
+    if (controller == nullptr)
+        return;
 
     auto dataFile = QFile("data/caisse_epargne/new_format.csv");
     ImportConfig config;
@@ -66,7 +71,7 @@ TEST_CASE("DataImport CaisseEpargne new format", "[core]")
     REQUIRE(dataFile.exists());
 
     Currency euro{"Euro", "€"};
-    QList<Transaction*> transactions = fi.readTransactionsFromFile(dataFile, config, &euro);
+    QList<Transaction*> transactions = controller->readTransactionsFromFile(dataFile, config, &euro, nullptr);
     // check that all transactions have been read
     CHECK(transactions.count() == 19);
 
@@ -87,7 +92,9 @@ TEST_CASE("DataImport CaisseEpargne new format", "[core]")
 
 TEST_CASE("DataImport CaisseEpargne new format with French Date format", "[core]")
 {
-    FinancialInstitution fi("CaisseEpargne");
+    auto controller = Controller::instance();
+    if (controller == nullptr)
+        return;
 
     auto dataFile = QFile("data/caisse_epargne/new_format_date2.csv");
     ImportConfig config;
@@ -106,7 +113,7 @@ TEST_CASE("DataImport CaisseEpargne new format with French Date format", "[core]
     REQUIRE(dataFile.exists());
 
     Currency euro{"Euro", "€"};
-    QList<Transaction*> transactions = fi.readTransactionsFromFile(dataFile, config, &euro);
+    QList<Transaction*> transactions = controller->readTransactionsFromFile(dataFile, config, &euro, nullptr);
     // check that all transactions have been read
     CHECK(transactions.count() == 2);
 
@@ -127,7 +134,9 @@ TEST_CASE("DataImport CaisseEpargne new format with French Date format", "[core]
 
 TEST_CASE("DataImport HelloBank", "[core]")
 {
-    FinancialInstitution fi("Hello Bank!");
+    auto controller = Controller::instance();
+    if (controller == nullptr)
+        return;
 
     auto dataFile = QFile("data/hello_bank/HB_03_10_2022.csv");
     ImportConfig config;
@@ -146,7 +155,7 @@ TEST_CASE("DataImport HelloBank", "[core]")
     REQUIRE(dataFile.exists());
 
     Currency euro{"Euro", "€"};
-    QList<Transaction*> transactions = fi.readTransactionsFromFile(dataFile, config, &euro);
+    QList<Transaction*> transactions = controller->readTransactionsFromFile(dataFile, config, &euro, nullptr);
     // check that all transactions have been read
     CHECK(transactions.count() == 15);
 

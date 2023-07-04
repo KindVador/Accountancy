@@ -29,8 +29,9 @@ public:
     bool removeSubCategory(Category* subCategory);
     bool removeSubCategoryByName(const QString& name);
     [[nodiscard]] QVector<Category*>& subCategories();
+    [[nodiscard]] const QVector<Category*>& subCategories() const;
     void removeAllSubCategories();
-    Category* getCategory(QUuid uid) const;
+    [[nodiscard]] Category* getCategory(QUuid uid) const;
 
     // Serialization
     void read(const QJsonObject& json) override;

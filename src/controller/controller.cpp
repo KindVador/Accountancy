@@ -334,3 +334,81 @@ bool Controller::loadFromSettings()
     else
         return false;
 }
+
+QList<Transaction*> Controller::readTransactionsFromFile(QFile& dataFile, const ImportConfig& config, const Currency* currency, const CategoryModel* category_model) const
+{
+    if (!dataFile.open(QIODevice::ReadOnly | QIODevice::Text))
+        return {};
+
+    QLocale locale = QLocale::system();
+    bool replaceDecimalCharacter = config.getDecimalChar() != locale.decimalPoint();
+
+    QList<Transaction*> transactions;
+    QVector<QString> rawLines;
+    QTextStream inStream(&dataFile);
+    // Reads the data up to the end of file
+    while (!inStream.atEnd())
+        rawLines.append(inStream.readLine());
+
+    int firstLineToImport = config.getNbLinesToSkipStart() == 0 ? 0 : config.getNbLinesToSkipStart();
+    int nbLinesToImport = (int) rawLines.count() - (config.getNbLinesToSkipStart() + config.getNbLinesToSkipEnd()) + 1;
+    rawLines = rawLines.mid(firstLineToImport, nbLinesToImport);
+
+    for (const QString& rawLine: qAsConst(rawLines)) {
+        QStringList fields = rawLine.split(config.getSeparatorChar());
+
+        if (fields.count() < config.nbFields())
+            continue;
+
+        auto* transaction = new Transaction();
+        // Name
+        if (int name_position = config.getColumnPosition("Name"); name_position >= 0)
+            transaction->setName(fields[name_position]);
+        // Comment
+        if (int comment_position = config.getColumnPosition("Comment"); comment_position >= 0)
+            transaction->setComment(fields[comment_position]);
+
+        // Data and Time
+        if (int date_position = config.getColumnPosition("Date"); date_position >= 0) {
+            QDate date = locale.toDate(fields[date_position], config.getDateFormat());
+            // fix year date as 20 is interpreted as 1920 instead of 2020
+            if (date.year() + 100 <= QDate::currentDate().year())
+                date = date.addYears(100);
+            QTime time;
+            int time_position = config.getColumnPosition("Time");
+            if (config.hasTime() && time_position >= 0) {
+                QString timeString = fields[config.getColumnPosition("Time")];
+                const QString& timeFormat = config.getTimeFormat();
+                if ((timeString.length() > timeFormat.length()) && timeString.length() > 28)
+                    timeString = timeString.mid(17, 12);
+                time = QTime::fromString(timeString, timeFormat);
+            }
+            transaction->setDateTime(QDateTime(date, time));
+        }
+
+        // Amount
+        QString amountValue;
+        if (!fields[config.getColumnPosition("DebitAmount")].isEmpty())
+            amountValue = fields[config.getColumnPosition("DebitAmount")];
+        else
+            amountValue = fields[config.getColumnPosition("CreditAmount")];
+
+        if (replaceDecimalCharacter)
+            amountValue.replace(config.getDecimalChar(), locale.decimalPoint());
+
+        if (currency != nullptr && amountValue.contains(currency->getSymbol()))
+            amountValue.replace(currency->getSymbol(), "", Qt::CaseInsensitive);
+
+        transaction->setAmount(locale.toDouble(amountValue));
+
+        // Category
+        if (int category_position = config.getColumnPosition("Category"); category_model != nullptr && category_position >= 0) {
+            transaction->setCategory(category_model->category(fields[category_position]));
+        }
+
+        transactions.append(transaction);
+    }
+    dataFile.close();
+
+    return transactions;
+}

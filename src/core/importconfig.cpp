@@ -150,7 +150,10 @@ void ImportConfig::setName(const QString& newName)
 
 int ImportConfig::getColumnPosition(const QString& columnName) const
 {
-    return _columns[columnName];
+    if (_columns.contains(columnName))
+        return _columns[columnName];
+    else
+        return -1;
 }
 
 void ImportConfig::addColumn(const QString& columnName, int position)

@@ -62,8 +62,12 @@ QList<QUuid> Account::getOwnersUid() const
 bool Account::addTransaction(Transaction* transaction)
 {
     // check if transaction already exist in account
-    if (transaction == nullptr || isTransactionRegistered(transaction)) {
-        qWarning() << "Null Transaction or Transaction already registered in this account";
+    if (transaction == nullptr) {
+        qWarning() << "Null Transaction ";
+        return false;
+    }
+    if (isTransactionRegistered(transaction)) {
+        qWarning() << "Transaction already registered in this account";
         return false;
     }
 

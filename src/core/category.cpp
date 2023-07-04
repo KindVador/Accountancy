@@ -172,3 +172,8 @@ Category* Category::getCategory(QUuid uid) const
     }
     return nullptr;
 }
+
+const QVector<Category*>& Category::subCategories() const
+{
+    return _subCategories;
+}

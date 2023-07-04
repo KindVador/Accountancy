@@ -50,6 +50,7 @@ public:
 
     // TRANSACTIONS
     void addTransactionToAccount(Transaction* transaction, Account* account) const;
+    [[nodiscard]] QList<Transaction*> readTransactionsFromFile(QFile& dataFile, const ImportConfig& config, const Currency* currency, const CategoryModel* category_model) const;
 
     // CREATE, LOAD or SAVE MODEL TO FILE
     bool createNewFile(const QString& filePath);

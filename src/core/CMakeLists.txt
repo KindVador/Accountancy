@@ -2,7 +2,6 @@ set(NAME AccountancyCore)
 
 set(HEADER_FILES
         Interfaces/iserializable.hpp
-        Interfaces/idatafileinterface.hpp
         account.hpp
         currency.hpp
         loanaccount.hpp
