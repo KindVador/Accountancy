@@ -1,9 +1,14 @@
 #include "controller/controller.hpp"
 
 #include <QApplication>
+#include <QDir>
+#include <QFile>
 #include <QIcon>
+#include <QStandardPaths>
 #include <QString>
 #include <QTranslator>
+#include <QtLogging>
+#include <memory>
 
 static const QString ACC_MAJOR_VERSION = QString("0");
 static const QString ACC_MINOR_VERSION = QString("1");
@@ -22,6 +27,11 @@ inline int GetVersionNumber(const QString& str)
     return major * 10000 + minor * 100 + patch;
 }
 
+// set logging system
+static const QString LOG_FILENAME = QString("accountancy_log.txt");
+std::unique_ptr<QFile> _log_file;
+void messageHandler(QtMsgType type, const QMessageLogContext& context, const QString& msg);
+
 int main(int argc, char* argv[])
 {
     Q_INIT_RESOURCE(Resources);
@@ -31,6 +41,19 @@ int main(int argc, char* argv[])
     QCoreApplication::setApplicationName("Accountancy");
     QSettings::setDefaultFormat(QSettings::IniFormat);
     QCoreApplication::setApplicationVersion(VERSION_STRING);
+
+    // init LOG
+    QDir log_dir = QStandardPaths::writableLocation(QStandardPaths::AppDataLocation);
+    if (!log_dir.exists()) {
+        log_dir.cdUp();
+        log_dir.mkdir(QCoreApplication::applicationName());
+        log_dir.cd(QCoreApplication::applicationName());
+    }
+    _log_file = std::make_unique<QFile>(log_dir.absoluteFilePath(LOG_FILENAME));
+    if (!_log_file->open(QIODevice::WriteOnly)) {
+        qWarning() << "Unable to open file: " << _log_file->fileName();
+    }
+    qInstallMessageHandler(messageHandler);
 
     // set ICON
     QIcon app_icon(":/icns/resources/icons/accountancy.svg");
@@ -54,4 +77,33 @@ int main(int argc, char* argv[])
 
     // launching application
     return QApplication::exec();
+}
+
+void messageHandler(QtMsgType type, const QMessageLogContext& context, const QString& msg)
+{
+    if (_log_file == nullptr)
+        return;
+
+    QTextStream out_stream(_log_file.get());
+    out_stream << QDateTime::currentDateTime().toString("yyyy-MM-dd hh:mm:ss.zzz ");
+    switch (type) {
+        case QtInfoMsg:
+            out_stream << "INF ";
+            break;
+        case QtDebugMsg:
+            out_stream << "DBG ";
+            break;
+        case QtWarningMsg:
+            out_stream << "WRN ";
+            break;
+        case QtCriticalMsg:
+            out_stream << "CRT ";
+            break;
+        case QtFatalMsg:
+            out_stream << "FTL ";
+            break;
+    }
+
+    out_stream << context.category << ": " << msg << "\n";
+    out_stream.flush();
 }
