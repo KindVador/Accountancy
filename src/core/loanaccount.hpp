@@ -9,7 +9,7 @@
 #include "currency.hpp"
 #include "owner.hpp"
 
-class LoanAccount: public ISerializable
+class LoanAccount : public ISerializable
 {
 public:
     LoanAccount();
