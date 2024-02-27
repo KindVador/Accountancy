@@ -60,9 +60,7 @@ compile_commands.json
 # macOS
 .DS_Store
 /build_macOS
-
-# VSCode
-.VSCode
+/build
 
 # CLion
 .idea

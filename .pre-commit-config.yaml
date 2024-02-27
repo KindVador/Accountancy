@@ -13,4 +13,4 @@ repos:
     hooks:
       - id: clang-format
         args: [-i]
-        types_or: [c++, c, json]
+        types_or: [c++, c]

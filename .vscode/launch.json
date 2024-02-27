@@ -1,0 +1,21 @@
+{
+    // Use IntelliSense to learn about possible attributes.
+    // Hover to view descriptions of existing attributes.
+    // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "Accountancy",
+            "type": "cppdbg",
+            "request": "launch",
+            "program": "${workspaceRoot}/build/Accountancy.app/Contents/MacOS/Accountancy",
+            "args": ["${workspaceRoot}/tests/data/Florian_Accounts_Dev.acty"],
+            "stopAtEntry": false,
+            "cwd": "${workspaceRoot}",
+            "environment": [],
+            "externalConsole": false,
+            "MIMode": "lldb",
+            "preLaunchTask": ""
+        }
+    ]
+}
