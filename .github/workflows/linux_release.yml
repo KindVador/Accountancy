@@ -10,7 +10,7 @@ env:
   # Customize the CMake build type here (Release, Debug, RelWithDebInfo, etc.)
   BUILD_TYPE:  Release
   SOURCE_DIR:  ${{ github.workspace }}
-  QT_VERSION:  6.6.2
+  QT_VERSION:  6.5.1
   QT_LIB_PATH: gcc_64
 
 jobs:
@@ -25,6 +25,12 @@ jobs:
         uses: actions/checkout@v3
         with:
           submodules: recursive
+
+      - name: Install Shared libraries
+        run: sudo apt-get install icu-devtools
+
+      - name: Print ldconfig
+        run: echo "ldconfig -p | grep libicui18n.so*"
 
       - name: Install Qt
         uses: jurplel/install-qt-action@v3
@@ -55,12 +61,6 @@ jobs:
 
       - name: Print PATH
         run: echo "$PATH"
-
-      - name: Install Shared libraries
-        run: sudo apt-get install icu-devtools
-
-      - name: Print ldconfig
-        run: echo "ldconfig -p | grep libicui18n.so*"
 
       - name: Configure CMake
         # Configure CMake in a 'build' subdirectory. `CMAKE_BUILD_TYPE` is only required if you are using a single-configuration generator such as make.
