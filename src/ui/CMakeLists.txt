@@ -32,7 +32,7 @@ set(UI_SOURCES mainwindow.ui
         selectcategorydialog.ui)
 
 if(${CMAKE_SYSTEM_NAME} MATCHES "Linux")
-    mesage("CMAKE_CURRENT_SOURCE_DIR=${CMAKE_CURRENT_SOURCE_DIR}")
+    message("CMAKE_CURRENT_SOURCE_DIR=${CMAKE_CURRENT_SOURCE_DIR}")
     set(CMAKE_AUTOUIC_SEARCH_PATHS ${CMAKE_CURRENT_SOURCE_DIR})
     qt_wrap_ui(SOURCES ${UI_SOURCES})
     include_directories(BEFORE ${CMAKE_CURRENT_BINARY_DIR})
