@@ -20,6 +20,11 @@
             "description": "macOS specific part of the configuration",
             "cacheVariables": {
                 "CMAKE_PREFIX_PATH": "/Users/florian/Qt/6.6.0/macos"
+            },
+            "condition": {
+              "type": "equals",
+              "lhs": "${hostSystemName}",
+              "rhs": "Darwin"
             }
         },
         {
