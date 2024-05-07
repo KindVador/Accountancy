@@ -1,5 +1,5 @@
 {
-    "version": 7,
+    "version": 6,
     "cmakeMinimumRequired": {
         "major": 3,
         "minor": 20,
@@ -70,7 +70,25 @@
             ],
             "hidden": false,
             "description": "Local configuration using ninja in release"
-        }
+        },
+        {
+          "name": "WindowsCI",
+          "displayName": "WindowsCI",
+          "hidden": false,
+          "description": "Local configuration using ninja in release",
+          "generator": "Ninja",
+          "binaryDir": "${sourceDir}/build/${generator}/Release",
+          "cacheVariables": {
+            "CMAKE_BUILD_TYPE": "Release",
+            "CMAKE_INSTALL_PREFIX": "${sourceDir}/install/${presetName}",
+            "CMAKE_PREFIX_PATH": "/Users/florian/Qt/6.6.0/macos"
+          },
+          "condition": {
+            "type": "equals",
+            "lhs": "${hostSystemName}",
+            "rhs": "Windows"
+          }
+      }
     ],
     "buildPresets": [
         {
@@ -82,7 +100,12 @@
             "name": "macOS Release",
             "configurePreset": "ConfigureLocalRelease",
             "jobs": 7
-        }
+        },
+        {
+          "name": "WindowsCI",
+          "configurePreset": "WindowsCI",
+          "jobs": 4
+      }
     ],
     "testPresets": [
       {
@@ -103,6 +126,19 @@
         "configurePreset": "ConfigureLocalDebug",
         "output": {
           "outputOnFailure": true
+        },
+        "execution": {
+          "noTestsAction": "error",
+          "stopOnFailure": true
+        }
+      },
+      {
+        "name": "WindowsCI",
+        "displayName": "WindowsCI",
+        "configurePreset": "WindowsCI",
+        "output": {
+          "outputOnFailure": true,
+          "verbosity": "extra"
         },
         "execution": {
           "noTestsAction": "error",
