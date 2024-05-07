@@ -76,7 +76,8 @@
           "displayName": "WindowsCI",
           "hidden": false,
           "description": "Local configuration using ninja in release",
-          "generator": "Ninja",
+          "generator": "Visual Studio 17 2022",
+          "architecture": "x64",
           "binaryDir": "${sourceDir}/build/${generator}/Release",
           "cacheVariables": {
             "CMAKE_BUILD_TYPE": "Release",
