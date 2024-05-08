@@ -1,0 +1,251 @@
+{
+    "version": 6,
+    "cmakeMinimumRequired": {
+        "major": 3,
+        "minor": 20,
+        "patch": 0
+    },
+    "configurePresets": [
+      {
+        "name": "AccountancyBase",
+        "displayName": "AccountancyBase",
+        "hidden": true,
+        "description": "Project part of the configuration",
+        "generator": "Ninja"
+      },
+      {
+        "name": "macOSBase",
+        "displayName": "macOSBase",
+        "hidden": true,
+        "description": "macOS specific part of the configuration",
+        "cacheVariables": {
+            "CMAKE_PREFIX_PATH": "/Users/florian/Qt/6.6.0/macos"
+        },
+        "condition": {
+          "type": "equals",
+          "lhs": "${hostSystemName}",
+          "rhs": "Darwin"
+        }
+      },
+      {
+        "name": "DebugBase",
+        "displayName": "DebugBase",
+        "hidden": true,
+        "description": "Debug part of the configuration",
+        "binaryDir": "${sourceDir}/build/${generator}/Debug",
+        "cacheVariables": {
+            "CMAKE_BUILD_TYPE": "Debug",
+            "CMAKE_INSTALL_PREFIX": "${sourceDir}/install/${presetName}"
+        }
+      },
+      {
+        "name": "ReleaseBase",
+        "displayName": "ReleaseBase",
+        "hidden": true,
+        "description": "Release configuration",
+        "binaryDir": "${sourceDir}/build/${generator}/Release",
+        "cacheVariables": {
+            "CMAKE_BUILD_TYPE": "Release",
+            "CMAKE_INSTALL_PREFIX": "${sourceDir}/install/${presetName}"
+        }
+      },
+      {
+        "name": "ConfigureLocalDebug",
+        "displayName": "ConfigureLocalDebug",
+        "inherits": [
+            "AccountancyBase",
+            "macOSBase",
+            "DebugBase"
+        ],
+        "hidden": false,
+        "description": "Local configuration using ninja in debug"
+      },
+      {
+        "name": "ConfigureLocalRelease",
+        "displayName": "ConfigureLocalRelease",
+        "inherits": [
+            "AccountancyBase",
+            "macOSBase",
+            "ReleaseBase"
+        ],
+        "hidden": false,
+        "description": "Local configuration using ninja in release"
+      },
+      {
+        "name": "WindowsCI",
+        "displayName": "WindowsCI",
+        "hidden": false,
+        "description": "CI configuration using Visual Studio 2022 in release",
+        "generator": "Visual Studio 17 2022",
+        "architecture": "x64",
+        "binaryDir": "${sourceDir}/build",
+        "cacheVariables": {
+          "CMAKE_BUILD_TYPE": "Release",
+          "CMAKE_INSTALL_PREFIX": "${sourceDir}/install"
+        },
+        "condition": {
+          "type": "equals",
+          "lhs": "${hostSystemName}",
+          "rhs": "Windows"
+        }
+      },
+      {
+        "name": "macOSCI",
+        "displayName": "macOSCI",
+        "hidden": false,
+        "description": "CI configuration using Makefiles in release",
+        "generator": "Unix Makefiles",
+        "binaryDir": "${sourceDir}/build",
+        "cacheVariables": {
+          "CMAKE_BUILD_TYPE": "Release",
+          "CMAKE_INSTALL_PREFIX": "${sourceDir}/install"
+          },
+        "condition": {
+          "type": "equals",
+          "lhs": "${hostSystemName}",
+          "rhs": "Darwin"
+        }
+      },
+      {
+        "name": "LinuxCI",
+        "displayName": "LinuxCI",
+        "hidden": false,
+        "description": "CI configuration using Makefiles in release",
+        "generator": "Unix Makefiles",
+        "binaryDir": "${sourceDir}/build",
+        "cacheVariables": {
+          "CMAKE_BUILD_TYPE": "Release",
+          "CMAKE_INSTALL_PREFIX": "${sourceDir}/install"
+          },
+        "condition": {
+          "type": "equals",
+          "lhs": "${hostSystemName}",
+          "rhs": "Linux"
+        }
+      }
+    ],
+    "buildPresets": [
+      {
+        "name": "macOS Debug",
+        "configurePreset": "ConfigureLocalDebug",
+        "jobs": 7
+      },
+      {
+        "name": "macOS Release",
+        "configurePreset": "ConfigureLocalRelease",
+        "jobs": 7
+      },
+      {
+        "name": "WindowsCI",
+        "configurePreset": "WindowsCI",
+        "jobs": 4
+      },
+      {
+        "name": "macOSCI",
+        "configurePreset": "macOSCI",
+        "jobs": 4
+      },
+      {
+        "name": "LinuxCI",
+        "configurePreset": "LinuxCI",
+        "jobs": 4
+      }
+    ],
+    "testPresets": [
+      {
+        "name": "AllTestsRelease",
+        "displayName": "All Tests Release",
+        "configurePreset": "ConfigureLocalRelease",
+        "output": {
+          "outputOnFailure": true
+        },
+        "execution": {
+          "noTestsAction": "error",
+          "stopOnFailure": true
+        }
+      },
+      {
+        "name": "AllTestsDebug",
+        "displayName": "All Tests Debug",
+        "configurePreset": "ConfigureLocalDebug",
+        "output": {
+          "outputOnFailure": true
+        },
+        "execution": {
+          "noTestsAction": "error",
+          "stopOnFailure": true
+        }
+      },
+      {
+        "name": "WindowsCI",
+        "displayName": "WindowsCI",
+        "configurePreset": "WindowsCI",
+        "output": {
+          "outputOnFailure": true,
+          "verbosity": "extra"
+        },
+        "execution": {
+          "noTestsAction": "error",
+          "stopOnFailure": true
+        }
+      },
+      {
+        "name": "macOSCI",
+        "displayName": "macOSCI",
+        "configurePreset": "macOSCI",
+        "output": {
+          "outputOnFailure": true,
+          "verbosity": "extra"
+        },
+        "execution": {
+          "noTestsAction": "error",
+          "stopOnFailure": true
+        }
+      },
+      {
+        "name": "LinuxCI",
+        "displayName": "LinuxCI",
+        "configurePreset": "LinuxCI",
+        "output": {
+          "outputOnFailure": true,
+          "verbosity": "extra"
+        },
+        "execution": {
+          "noTestsAction": "error",
+          "stopOnFailure": true
+        }
+      }
+    ],
+    "workflowPresets": [
+      {
+        "name": "Rebuild Debug",
+        "steps": [
+          {
+            "type": "configure",
+            "name": "ConfigureLocalDebug"
+          },
+          {
+            "type": "build",
+            "name": "macOS Debug"
+          }
+        ]
+      },
+      {
+        "name": "Rebuild and Tests Debug",
+        "steps": [
+          {
+            "type": "configure",
+            "name": "ConfigureLocalDebug"
+          },
+          {
+            "type": "build",
+            "name": "macOS Debug"
+          },
+          {
+            "type": "test",
+            "name": "AllTestsDebug"
+          }
+        ]
+    }
+  ]
+}
