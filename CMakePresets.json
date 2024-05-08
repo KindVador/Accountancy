@@ -93,7 +93,7 @@
         "name": "macOSCI",
         "displayName": "macOSCI",
         "hidden": false,
-        "description": "CI configuration using ninja in release",
+        "description": "CI configuration using Makefiles in release",
         "generator": "Unix Makefiles",
         "binaryDir": "${sourceDir}/build",
         "cacheVariables": {
@@ -104,6 +104,23 @@
           "type": "equals",
           "lhs": "${hostSystemName}",
           "rhs": "Darwin"
+        }
+      },
+      {
+        "name": "LinuxCI",
+        "displayName": "LinuxCI",
+        "hidden": false,
+        "description": "CI configuration using Makefiles in release",
+        "generator": "Unix Makefiles",
+        "binaryDir": "${sourceDir}/build",
+        "cacheVariables": {
+          "CMAKE_BUILD_TYPE": "Release",
+          "CMAKE_INSTALL_PREFIX": "${sourceDir}/install"
+          },
+        "condition": {
+          "type": "equals",
+          "lhs": "${hostSystemName}",
+          "rhs": "Linux"
         }
       }
     ],
@@ -121,6 +138,16 @@
       {
         "name": "WindowsCI",
         "configurePreset": "WindowsCI",
+        "jobs": 4
+      },
+      {
+        "name": "macOSCI",
+        "configurePreset": "macOSCI",
+        "jobs": 4
+      },
+      {
+        "name": "LinuxCI",
+        "configurePreset": "LinuxCI",
         "jobs": 4
       }
     ],
@@ -153,6 +180,32 @@
         "name": "WindowsCI",
         "displayName": "WindowsCI",
         "configurePreset": "WindowsCI",
+        "output": {
+          "outputOnFailure": true,
+          "verbosity": "extra"
+        },
+        "execution": {
+          "noTestsAction": "error",
+          "stopOnFailure": true
+        }
+      },
+      {
+        "name": "macOSCI",
+        "displayName": "macOSCI",
+        "configurePreset": "macOSCI",
+        "output": {
+          "outputOnFailure": true,
+          "verbosity": "extra"
+        },
+        "execution": {
+          "noTestsAction": "error",
+          "stopOnFailure": true
+        }
+      },
+      {
+        "name": "LinuxCI",
+        "displayName": "LinuxCI",
+        "configurePreset": "LinuxCI",
         "output": {
           "outputOnFailure": true,
           "verbosity": "extra"
