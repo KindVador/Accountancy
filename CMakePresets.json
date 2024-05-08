@@ -78,10 +78,10 @@
         "description": "CI configuration using Visual Studio 2022 in release",
         "generator": "Visual Studio 17 2022",
         "architecture": "x64",
-        "binaryDir": "${sourceDir}/build/${generator}/Release",
+        "binaryDir": "${sourceDir}/build",
         "cacheVariables": {
           "CMAKE_BUILD_TYPE": "Release",
-          "CMAKE_INSTALL_PREFIX": "${sourceDir}/install/${presetName}"
+          "CMAKE_INSTALL_PREFIX": "${sourceDir}/install"
         },
         "condition": {
           "type": "equals",
@@ -94,11 +94,11 @@
         "displayName": "macOSCI",
         "hidden": false,
         "description": "CI configuration using ninja in release",
-        "generator": "Ninja",
-        "binaryDir": "${sourceDir}/build/${generator}/Release",
+        "generator": "Unix Makefiles",
+        "binaryDir": "${sourceDir}/build",
         "cacheVariables": {
           "CMAKE_BUILD_TYPE": "Release",
-          "CMAKE_INSTALL_PREFIX": "${sourceDir}/install/${presetName}"
+          "CMAKE_INSTALL_PREFIX": "${sourceDir}/install"
           },
         "condition": {
           "type": "equals",
