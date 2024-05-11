@@ -14,7 +14,7 @@ env:
   # Customize the CMake build type here (Release, Debug, RelWithDebInfo, etc.)
   BUILD_TYPE:        Release
   SOURCE_DIR:        ${{ github.workspace }}
-  QT_VERSION:        6.5.1
+  QT_VERSION:        6.7.0
   QT_ARCHITECTURE:   win64_msvc2019_64
   QT_LIB_PATH:       msvc2019_64
 
@@ -40,7 +40,7 @@ jobs:
           dir:              ${{ runner.temp }}
           arch:             ${{ env.QT_ARCHITECTURE }}
           install-deps:     true
-          archives:         qtbase qtsvg
+          archives:         'qtbase qtsvg qttools'
           cache:            false
           cache-key-prefix: install-qt-action
           setup-python:     false

@@ -10,7 +10,7 @@ env:
   # Customize the CMake build type here (Release, Debug, RelWithDebInfo, etc.)
   BUILD_TYPE:  Release
   SOURCE_DIR:  ${{ github.workspace }}
-  QT_VERSION:  6.5.1
+  QT_VERSION:  6.7.0
   QT_LIB_PATH: gcc_64
 
 jobs:
@@ -18,7 +18,7 @@ jobs:
     # The CMake configure and build commands are platform agnostic and should work equally well on Windows or Mac.
     # You can convert this to a matrix build if you need cross-platform coverage.
     # See: https://docs.github.com/en/free-pro-team@latest/actions/learn-github-actions/managing-complex-workflows#using-a-build-matrix
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-20.04
 
     steps:
       - name: Checkout repository and submodules
@@ -29,21 +29,22 @@ jobs:
       - name: Install Qt
         uses: jurplel/install-qt-action@v3
         with:
-          version:          ${{ env.QT_VERSION }}
-          host:             linux
-          target:           desktop
-          dir:              ${{ runner.temp }}
-          install-deps:     true
-          archives:         'qtbase qtsvg'
-          cache:            false
-          cache-key-prefix: install-qt-action
-          setup-python:     true
-          tools:            'tools_ifw tools_qtcreator,qt.tools.qtcreator'
-          set-env:          true
-          tools-only:       false
-          aqtversion:       '==2.1.*'
-          py7zrversion:     '==0.19.*'
-          extra:            '--external 7z'
+          version:            ${{ env.QT_VERSION }}
+          host:               linux
+          target:             desktop
+          dir:                ${{ runner.temp }}
+          install-deps:       true
+          archives:           'icu qtbase qtsvg qttools'
+          cache:              false
+          cache-key-prefix:   install-qt-action
+          setup-python:       true
+          tools:              'tools_ifw tools_ninja'
+          add-tools-to-path:  true
+          set-env:            true
+          tools-only:         false
+          aqtversion:         '==3.1.*'
+          py7zrversion:       '==0.19.*'
+          extra:              '--external 7z'
 
       - name: Update PATH
         run: |
