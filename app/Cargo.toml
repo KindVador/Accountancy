@@ -1,0 +1,19 @@
+[package]
+name = "accountancy"
+version.workspace = true
+edition.workspace = true
+authors.workspace = true
+license.workspace = true
+description = "Accountancy desktop application - thin Slint UI over accountancy-core."
+default-run = "accountancy"
+
+[[bin]]
+name = "accountancy"
+path = "src/main.rs"
+
+[dependencies]
+accountancy-core = { path = "../core" }
+slint = "1.13"
+
+[build-dependencies]
+slint-build = "1.13"

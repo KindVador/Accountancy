@@ -1,0 +1,21 @@
+[package]
+name = "accountancy-core"
+version.workspace = true
+edition.workspace = true
+authors.workspace = true
+license.workspace = true
+description = "Accountancy business-rule core: entities, SQLite persistence. No UI dependency."
+
+[lib]
+name = "accountancy_core"
+path = "src/lib.rs"
+
+[dependencies]
+rusqlite = { version = "0.32", features = ["bundled"] }
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+thiserror = "2"
+time = { version = "0.3", features = ["formatting", "parsing", "macros"] }
+
+[dev-dependencies]
+tempfile = "3"

@@ -1,6 +1,9 @@
-[package]
-name = "accountancy"
+[workspace]
+resolver = "2"
+members = ["core", "app"]
+
+[workspace.package]
 version = "0.1.0"
 edition = "2024"
-
-[dependencies]
+authors = ["Florian"]
+license = "MIT"

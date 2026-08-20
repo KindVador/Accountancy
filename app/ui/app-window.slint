@@ -1,0 +1,971 @@
+import { Button, LineEdit, ComboBox, ListView, VerticalBox, HorizontalBox, ScrollView } from "std-widgets.slint";
+
+export struct AccountItem {
+    id: int,
+    name: string,
+    currency: string,
+    balance-text: string,
+    is-closed: bool,
+}
+
+export struct TransactionItem {
+    id: int,
+    date-text: string,
+    label: string,
+    category-text: string,
+    amount-text: string,
+    balance-text: string,
+    is-debit: bool,
+    is-child: bool,
+    is-remainder: bool,
+}
+
+export struct RecurringRuleItem {
+    id: int,
+    account-text: string,
+    label: string,
+    amount-text: string,
+    period-text: string,
+    next-due-text: string,
+    end-text: string,
+}
+
+export struct BudgetRowItem {
+    budgeted-text: string,
+    actual-text: string,
+    difference-text: string,
+    name: string,
+}
+
+export struct ChequebookItem {
+    id: int,
+    range-text: string,
+    count-text: string,
+    reception-text: string,
+}
+
+export struct ChequeItem {
+    id: int,
+    number-text: string,
+    date-text: string,
+    payee-text: string,
+    amount-text: string,
+    status-text: string,
+}
+
+export struct DashboardData {
+    cleared-text: string,
+    committed-text: string,
+    projected-text: string,
+    income-text: string,
+    expense-text: string,
+    net-text: string,
+}
+
+export struct StatisticLineItem {
+    label: string,
+    amount-text: string,
+    is-debit: bool,
+}
+
+component AccountRow inherits Rectangle {
+    in property <AccountItem> item;
+    in property <bool> selected;
+    callback clicked <=> area.clicked;
+
+    height: 52px;
+    background: selected ? #2d6cdf : (area.has-hover ? #eef2fb : transparent);
+    border-radius: 6px;
+
+    area := TouchArea {}
+
+    VerticalLayout {
+        padding: 10px;
+        spacing: 2px;
+        alignment: center;
+        Text {
+            text: item.name + (item.is-closed ? " (closed)" : "");
+            color: selected ? white : #1a1a1a;
+            font-weight: 600;
+            overflow: elide;
+        }
+        Text {
+            text: item.balance-text + " " + item.currency;
+            color: selected ? #dbe6fb : #555555;
+            font-size: 13px;
+        }
+    }
+}
+
+component TransactionRow inherits Rectangle {
+    in property <TransactionItem> item;
+    in property <bool> selected;
+    callback clicked <=> area.clicked;
+
+    height: 34px;
+    background: selected ? #dbe6fb : (item.is-remainder ? #f7f7f7 : transparent);
+
+    area := TouchArea {}
+
+    HorizontalLayout {
+        padding-left: item.is-child ? 24px : 8px;
+        padding-right: 8px;
+        spacing: 8px;
+        alignment: start;
+
+        Text { text: item.date-text; width: 90px; vertical-alignment: center; color: #333; }
+        Text {
+            text: item.is-remainder ? "(remainder)" : item.label;
+            width: 260px;
+            vertical-alignment: center;
+            font-italic: item.is-remainder;
+            overflow: elide;
+        }
+        Text { text: item.category-text; width: 140px; vertical-alignment: center; color: #555; overflow: elide; }
+        Text {
+            text: item.amount-text;
+            width: 100px;
+            vertical-alignment: center;
+            horizontal-alignment: right;
+            color: item.is-debit ? #c0392b : #1e824c;
+        }
+        Text { text: item.balance-text; width: 100px; vertical-alignment: center; horizontal-alignment: right; color: #333; }
+    }
+}
+
+component RecurringRuleRow inherits Rectangle {
+    in property <RecurringRuleItem> item;
+    in property <bool> selected;
+    callback clicked <=> area.clicked;
+
+    height: 34px;
+    background: selected ? #dbe6fb : transparent;
+
+    area := TouchArea {}
+
+    HorizontalLayout {
+        padding-left: 8px;
+        padding-right: 8px;
+        spacing: 8px;
+
+        Text { text: item.account-text; width: 130px; vertical-alignment: center; color: #555; overflow: elide; }
+        Text { text: item.label; width: 200px; vertical-alignment: center; overflow: elide; }
+        Text {
+            text: item.amount-text;
+            width: 90px;
+            vertical-alignment: center;
+            horizontal-alignment: right;
+        }
+        Text { text: item.period-text; width: 150px; vertical-alignment: center; color: #555; }
+        Text { text: item.next-due-text; width: 100px; vertical-alignment: center; }
+        Text { text: item.end-text; width: 160px; vertical-alignment: center; color: #555; overflow: elide; }
+    }
+}
+
+component BudgetRow inherits Rectangle {
+    in property <BudgetRowItem> item;
+    in property <bool> editable;
+    in property <bool> show-actual;
+    callback amount-accepted(string);
+
+    height: 34px;
+
+    HorizontalLayout {
+        padding-left: 8px;
+        padding-right: 8px;
+        spacing: 8px;
+
+        Text { text: item.name; width: 220px; vertical-alignment: center; overflow: elide; }
+        if editable: LineEdit {
+            width: 120px;
+            text: item.budgeted-text;
+            accepted(text) => { amount-accepted(text); }
+        }
+        if !editable: Text {
+            text: item.budgeted-text;
+            width: 120px;
+            vertical-alignment: center;
+            horizontal-alignment: right;
+        }
+        if show-actual: Text {
+            text: item.actual-text;
+            width: 120px;
+            vertical-alignment: center;
+            horizontal-alignment: right;
+        }
+        if show-actual: Text {
+            text: item.difference-text;
+            width: 120px;
+            vertical-alignment: center;
+            horizontal-alignment: right;
+            color: item.difference-text.character-count > 0 && item.difference-text.to-float() < 0 ? #c0392b : #1e824c;
+        }
+    }
+}
+
+component ChequebookRow inherits Rectangle {
+    in property <ChequebookItem> item;
+    in property <bool> selected;
+    callback clicked <=> area.clicked;
+
+    height: 44px;
+    background: selected ? #2d6cdf : (area.has-hover ? #eef2fb : transparent);
+    border-radius: 6px;
+
+    area := TouchArea {}
+
+    VerticalLayout {
+        padding: 8px;
+        spacing: 2px;
+        alignment: center;
+        Text {
+            text: item.range-text + " (" + item.count-text + ")";
+            color: selected ? white : #1a1a1a;
+            font-weight: 600;
+        }
+        Text {
+            text: item.reception-text;
+            color: selected ? #dbe6fb : #555555;
+            font-size: 12px;
+        }
+    }
+}
+
+component ChequeRow inherits Rectangle {
+    in property <ChequeItem> item;
+    in property <bool> selected;
+    callback clicked <=> area.clicked;
+
+    height: 34px;
+    background: selected ? #dbe6fb : transparent;
+
+    area := TouchArea {}
+
+    HorizontalLayout {
+        padding-left: 8px;
+        padding-right: 8px;
+        spacing: 8px;
+
+        Text { text: item.number-text; width: 70px; vertical-alignment: center; }
+        Text { text: item.date-text; width: 90px; vertical-alignment: center; color: #555; }
+        Text { text: item.payee-text; width: 200px; vertical-alignment: center; overflow: elide; }
+        Text {
+            text: item.amount-text;
+            width: 100px;
+            vertical-alignment: center;
+            horizontal-alignment: right;
+        }
+        Text { text: item.status-text; width: 100px; vertical-alignment: center; color: #555; }
+    }
+}
+
+component StatTile inherits Rectangle {
+    in property <string> title;
+    in property <string> value;
+    in property <color> value-color: #1a1a1a;
+
+    background: #f5f6fa;
+    border-radius: 8px;
+    min-width: 160px;
+
+    VerticalLayout {
+        padding: 14px;
+        spacing: 6px;
+        Text { text: title; font-size: 13px; color: #666; }
+        Text { text: value; font-size: 22px; font-weight: 700; color: value-color; }
+    }
+}
+
+component StatisticRow inherits Rectangle {
+    in property <StatisticLineItem> item;
+
+    height: 32px;
+
+    HorizontalLayout {
+        padding-left: 8px;
+        padding-right: 8px;
+        spacing: 8px;
+        Text { text: item.label; width: 260px; vertical-alignment: center; overflow: elide; }
+        Text {
+            text: item.amount-text;
+            width: 120px;
+            vertical-alignment: center;
+            horizontal-alignment: right;
+            color: item.is-debit ? #c0392b : #1e824c;
+        }
+    }
+}
+
+component FormOverlay inherits Rectangle {
+    in property <bool> visible-form: false;
+    in property <string> form-title;
+    in property <length> card-width: 380px;
+    visible: visible-form;
+    background: #00000066;
+    x: 0; y: 0;
+    width: 100%; height: 100%;
+
+    TouchArea {}
+
+    Rectangle {
+        x: (parent.width - self.width) / 2;
+        y: (parent.height - self.height) / 2;
+        width: card-width;
+        background: white;
+        border-radius: 8px;
+        drop-shadow-blur: 16px;
+        drop-shadow-color: #00000055;
+        VerticalLayout {
+            padding: 20px;
+            spacing: 12px;
+            Text { text: form-title; font-size: 18px; font-weight: 700; }
+            @children
+        }
+    }
+}
+
+export component MainWindow inherits Window {
+    title: "Accountancy";
+    preferred-width: 1080px;
+    preferred-height: 680px;
+    icon: @image-url("../../resources/icons/accountancy_128.png");
+
+    in-out property <[AccountItem]> accounts: [];
+    in-out property <int> selected-account-index: -1;
+    in-out property <string> selected-account-name: "No account selected";
+    in-out property <string> selected-account-balance-text: "";
+
+    in-out property <[TransactionItem]> transactions: [];
+    in-out property <int> selected-transaction-index: -1;
+
+    in-out property <[string]> category-names: ["Unspecified"];
+
+    in-out property <string> status-message: "";
+    in-out property <string> error-message: "";
+
+    in-out property <bool> account-form-visible: false;
+    in-out property <bool> account-form-is-new: true;
+    in-out property <string> account-form-name: "";
+    in-out property <string> account-form-currency: "EUR";
+    in-out property <string> account-form-iban: "";
+    in-out property <string> account-form-opening-balance: "0";
+
+    in-out property <bool> transaction-form-visible: false;
+    in-out property <bool> transaction-form-is-new: true;
+    in-out property <string> transaction-form-label: "";
+    in-out property <string> transaction-form-date: "";
+    in-out property <string> transaction-form-amount: "";
+    in-out property <int> transaction-form-category-index: 0;
+    in-out property <int> transaction-form-status-index: 1;
+    in-out property <int> transaction-form-cheque-index: 0;
+    in-out property <[string]> cheque-names: ["None"];
+
+    in-out property <string> current-view: "transactions";
+
+    in-out property <[string]> account-names: [];
+
+    in-out property <[RecurringRuleItem]> recurring-rules: [];
+    in-out property <int> selected-recurring-index: -1;
+
+    in-out property <bool> recurring-form-visible: false;
+    in-out property <bool> recurring-form-is-new: true;
+    in-out property <int> recurring-form-account-index: 0;
+    in-out property <string> recurring-form-label: "";
+    in-out property <string> recurring-form-amount: "";
+    in-out property <int> recurring-form-category-index: 0;
+    in-out property <int> recurring-form-period-index: 2;
+    in-out property <string> recurring-form-frequency: "1";
+    in-out property <int> recurring-form-end-mode-index: 0;
+    in-out property <string> recurring-form-end-date: "";
+    in-out property <string> recurring-form-occurrence-count: "";
+    in-out property <string> recurring-form-next-due-date: "";
+
+    in-out property <string> budget-year: "2026";
+    in-out property <int> budget-month-index: 0;
+    in-out property <string> budget-mode: "entry";
+    in-out property <[BudgetRowItem]> budget-rows: [];
+
+    in-out property <[ChequebookItem]> chequebooks: [];
+    in-out property <int> selected-chequebook-index: -1;
+    in-out property <[ChequeItem]> cheques: [];
+    in-out property <int> selected-cheque-index: -1;
+
+    in-out property <bool> chequebook-form-visible: false;
+    in-out property <string> chequebook-form-first-number: "";
+    in-out property <string> chequebook-form-last-number: "";
+    in-out property <string> chequebook-form-reception-date: "";
+
+    in-out property <bool> cheque-form-visible: false;
+    in-out property <string> cheque-form-number-text: "";
+    in-out property <[string]> payee-names: ["Unspecified"];
+    in-out property <int> cheque-form-payee-index: 0;
+    in-out property <string> cheque-form-amount: "0";
+    in-out property <string> cheque-form-date: "";
+    in-out property <int> cheque-form-status-index: 0;
+
+    in-out property <DashboardData> dashboard-data: {
+        cleared-text: "0.00",
+        committed-text: "0.00",
+        projected-text: "0.00",
+        income-text: "0.00",
+        expense-text: "0.00",
+        net-text: "0.00",
+    };
+
+    in-out property <int> statistics-axis-index: 0;
+    in-out property <int> statistics-account-index: 0;
+    in-out property <[string]> statistics-account-names: ["All accounts"];
+    in-out property <string> statistics-start-date: "";
+    in-out property <string> statistics-end-date: "";
+    in-out property <[StatisticLineItem]> statistics-rows: [];
+    in-out property <string> statistics-total-text: "0.00";
+
+    callback account-selected(int);
+    callback add-account-clicked();
+    callback edit-account-clicked();
+    callback close-account-clicked();
+    callback delete-account-clicked();
+    callback save-account-clicked();
+    callback cancel-account-form();
+
+    callback transaction-selected(int);
+    callback add-transaction-clicked();
+    callback edit-transaction-clicked();
+    callback delete-transaction-clicked();
+    callback save-transaction-clicked();
+    callback cancel-transaction-form();
+
+    callback recurring-selected(int);
+    callback add-recurring-clicked();
+    callback edit-recurring-clicked();
+    callback delete-recurring-clicked();
+    callback generate-recurring-clicked();
+    callback save-recurring-clicked();
+    callback cancel-recurring-form();
+
+    callback budget-period-changed();
+    callback budget-mode-selected(string);
+    callback budget-amount-accepted(int, string);
+
+    callback chequebook-selected(int);
+    callback add-chequebook-clicked();
+    callback delete-chequebook-clicked();
+    callback save-chequebook-clicked();
+    callback cancel-chequebook-form();
+
+    callback cheque-selected(int);
+    callback write-cheque-clicked();
+    callback save-cheque-clicked();
+    callback cancel-cheque-form();
+
+    callback refresh-dashboard-clicked();
+    callback statistics-refresh-clicked();
+
+    VerticalLayout {
+        // --- Tab bar ---
+        HorizontalLayout {
+            padding: 8px;
+            spacing: 4px;
+            Button {
+                text: "Transactions";
+                checkable: true;
+                checked: current-view == "transactions";
+                clicked => { current-view = "transactions"; }
+            }
+            Button {
+                text: "Recurring";
+                checkable: true;
+                checked: current-view == "recurring";
+                clicked => { current-view = "recurring"; }
+            }
+            Button {
+                text: "Budget";
+                checkable: true;
+                checked: current-view == "budget";
+                clicked => { current-view = "budget"; }
+            }
+            Button {
+                text: "Cheques";
+                checkable: true;
+                checked: current-view == "cheques";
+                clicked => { current-view = "cheques"; }
+            }
+            Button {
+                text: "Dashboard";
+                checkable: true;
+                checked: current-view == "dashboard";
+                clicked => { current-view = "dashboard"; }
+            }
+            Button {
+                text: "Statistics";
+                checkable: true;
+                checked: current-view == "statistics";
+                clicked => { current-view = "statistics"; }
+            }
+            Rectangle { horizontal-stretch: 1; }
+        }
+
+        if current-view == "transactions": HorizontalLayout {
+            vertical-stretch: 1;
+
+            // --- Left: accounts ---
+            Rectangle {
+                width: 260px;
+                background: #f5f6fa;
+                VerticalLayout {
+                    padding: 10px;
+                    spacing: 8px;
+                    Text { text: "Accounts"; font-size: 16px; font-weight: 700; }
+                    ListView {
+                        vertical-stretch: 1;
+                        for item[i] in accounts: AccountRow {
+                            item: item;
+                            selected: i == selected-account-index;
+                            clicked => { account-selected(i); }
+                        }
+                    }
+                    Button { text: "New account"; clicked => { add-account-clicked(); } }
+                }
+            }
+
+            // --- Right: transactions ---
+            Rectangle {
+                background: white;
+                VerticalLayout {
+                    padding: 10px;
+                    spacing: 8px;
+
+                    HorizontalLayout {
+                        spacing: 12px;
+                        VerticalLayout {
+                            alignment: center;
+                            Text { text: selected-account-name; font-size: 18px; font-weight: 700; }
+                            Text { text: selected-account-balance-text; color: #555; }
+                        }
+                        Rectangle { horizontal-stretch: 1; }
+                        Button { text: "Edit account"; enabled: selected-account-index >= 0; clicked => { edit-account-clicked(); } }
+                        Button { text: "Close account"; enabled: selected-account-index >= 0; clicked => { close-account-clicked(); } }
+                        Button { text: "Delete account"; enabled: selected-account-index >= 0; clicked => { delete-account-clicked(); } }
+                    }
+
+                    HorizontalLayout {
+                        padding-left: 8px;
+                        spacing: 8px;
+                        Text { text: "Date"; width: 90px; font-weight: 600; }
+                        Text { text: "Label"; width: 260px; font-weight: 600; }
+                        Text { text: "Category"; width: 140px; font-weight: 600; }
+                        Text { text: "Amount"; width: 100px; font-weight: 600; horizontal-alignment: right; }
+                        Text { text: "Balance"; width: 100px; font-weight: 600; horizontal-alignment: right; }
+                    }
+
+                    ListView {
+                        vertical-stretch: 1;
+                        for item[i] in transactions: TransactionRow {
+                            item: item;
+                            selected: i == selected-transaction-index;
+                            clicked => { transaction-selected(i); }
+                        }
+                    }
+
+                    HorizontalLayout {
+                        spacing: 8px;
+                        Button { text: "New transaction"; enabled: selected-account-index >= 0; clicked => { add-transaction-clicked(); } }
+                        Button { text: "Edit"; enabled: selected-transaction-index >= 0; clicked => { edit-transaction-clicked(); } }
+                        Button { text: "Delete"; enabled: selected-transaction-index >= 0; clicked => { delete-transaction-clicked(); } }
+                    }
+                }
+            }
+        }
+
+        if current-view == "recurring": Rectangle {
+            vertical-stretch: 1;
+            background: white;
+            VerticalLayout {
+                padding: 10px;
+                spacing: 8px;
+
+                Text { text: "Recurring transactions"; font-size: 18px; font-weight: 700; }
+
+                HorizontalLayout {
+                    padding-left: 8px;
+                    spacing: 8px;
+                    Text { text: "Account"; width: 130px; font-weight: 600; }
+                    Text { text: "Label"; width: 200px; font-weight: 600; }
+                    Text { text: "Amount"; width: 90px; font-weight: 600; horizontal-alignment: right; }
+                    Text { text: "Every"; width: 150px; font-weight: 600; }
+                    Text { text: "Next due"; width: 100px; font-weight: 600; }
+                    Text { text: "Ends"; width: 160px; font-weight: 600; }
+                }
+
+                ListView {
+                    vertical-stretch: 1;
+                    for item[i] in recurring-rules: RecurringRuleRow {
+                        item: item;
+                        selected: i == selected-recurring-index;
+                        clicked => { recurring-selected(i); }
+                    }
+                }
+
+                HorizontalLayout {
+                    spacing: 8px;
+                    Button { text: "New rule"; clicked => { add-recurring-clicked(); } }
+                    Button { text: "Edit"; enabled: selected-recurring-index >= 0; clicked => { edit-recurring-clicked(); } }
+                    Button { text: "Delete"; enabled: selected-recurring-index >= 0; clicked => { delete-recurring-clicked(); } }
+                    Button { text: "Generate due (up to today)"; enabled: selected-recurring-index >= 0; clicked => { generate-recurring-clicked(); } }
+                }
+            }
+        }
+
+        if current-view == "budget": Rectangle {
+            vertical-stretch: 1;
+            background: white;
+            VerticalLayout {
+                padding: 10px;
+                spacing: 8px;
+
+                HorizontalLayout {
+                    spacing: 12px;
+                    Text { text: "Budget"; font-size: 18px; font-weight: 700; vertical-alignment: center; }
+                    Rectangle { horizontal-stretch: 1; }
+                    Text { text: "Year"; vertical-alignment: center; }
+                    LineEdit {
+                        width: 80px;
+                        text <=> budget-year;
+                        accepted => { budget-period-changed(); }
+                    }
+                    Text { text: "Month"; vertical-alignment: center; }
+                    ComboBox {
+                        width: 130px;
+                        model: ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+                        current-index <=> budget-month-index;
+                        selected(value) => { budget-period-changed(); }
+                    }
+                    Button {
+                        text: "Entry";
+                        checkable: true;
+                        checked: budget-mode == "entry";
+                        clicked => { budget-mode = "entry"; budget-mode-selected("entry"); }
+                    }
+                    Button {
+                        text: "Control";
+                        checkable: true;
+                        checked: budget-mode == "control";
+                        clicked => { budget-mode = "control"; budget-mode-selected("control"); }
+                    }
+                }
+
+                HorizontalLayout {
+                    padding-left: 8px;
+                    spacing: 8px;
+                    Text { text: "Budget line"; width: 220px; font-weight: 600; }
+                    Text { text: "Budgeted"; width: 120px; font-weight: 600; horizontal-alignment: right; }
+                    if budget-mode == "control": Text { text: "Actual"; width: 120px; font-weight: 600; horizontal-alignment: right; }
+                    if budget-mode == "control": Text { text: "Difference"; width: 120px; font-weight: 600; horizontal-alignment: right; }
+                }
+
+                ListView {
+                    vertical-stretch: 1;
+                    for item[i] in budget-rows: BudgetRow {
+                        item: item;
+                        editable: budget-mode == "entry";
+                        show-actual: budget-mode == "control";
+                        amount-accepted(text) => { budget-amount-accepted(i, text); }
+                    }
+                }
+            }
+        }
+
+        if current-view == "cheques": HorizontalLayout {
+            vertical-stretch: 1;
+
+            // --- Left: chequebooks ---
+            Rectangle {
+                width: 260px;
+                background: #f5f6fa;
+                VerticalLayout {
+                    padding: 10px;
+                    spacing: 8px;
+                    Text { text: "Chequebooks — " + selected-account-name; font-size: 16px; font-weight: 700; overflow: elide; }
+                    ListView {
+                        vertical-stretch: 1;
+                        for item[i] in chequebooks: ChequebookRow {
+                            item: item;
+                            selected: i == selected-chequebook-index;
+                            clicked => { chequebook-selected(i); }
+                        }
+                    }
+                    HorizontalLayout {
+                        spacing: 8px;
+                        Button { text: "New"; enabled: selected-account-index >= 0; clicked => { add-chequebook-clicked(); } }
+                        Button { text: "Delete"; enabled: selected-chequebook-index >= 0; clicked => { delete-chequebook-clicked(); } }
+                    }
+                }
+            }
+
+            // --- Right: cheques ---
+            Rectangle {
+                background: white;
+                VerticalLayout {
+                    padding: 10px;
+                    spacing: 8px;
+
+                    Text { text: "Cheques"; font-size: 18px; font-weight: 700; }
+
+                    HorizontalLayout {
+                        padding-left: 8px;
+                        spacing: 8px;
+                        Text { text: "Number"; width: 70px; font-weight: 600; }
+                        Text { text: "Date"; width: 90px; font-weight: 600; }
+                        Text { text: "Payee"; width: 200px; font-weight: 600; }
+                        Text { text: "Amount"; width: 100px; font-weight: 600; horizontal-alignment: right; }
+                        Text { text: "Status"; width: 100px; font-weight: 600; }
+                    }
+
+                    ListView {
+                        vertical-stretch: 1;
+                        for item[i] in cheques: ChequeRow {
+                            item: item;
+                            selected: i == selected-cheque-index;
+                            clicked => { cheque-selected(i); }
+                        }
+                    }
+
+                    HorizontalLayout {
+                        spacing: 8px;
+                        Button { text: "Write cheque"; enabled: selected-cheque-index >= 0; clicked => { write-cheque-clicked(); } }
+                    }
+                }
+            }
+        }
+
+        if current-view == "dashboard": Rectangle {
+            vertical-stretch: 1;
+            background: white;
+            VerticalLayout {
+                padding: 16px;
+                spacing: 16px;
+
+                HorizontalLayout {
+                    spacing: 12px;
+                    Text { text: "Dashboard"; font-size: 18px; font-weight: 700; vertical-alignment: center; }
+                    Rectangle { horizontal-stretch: 1; }
+                    Button { text: "Refresh"; clicked => { refresh-dashboard-clicked(); } }
+                }
+
+                Text { text: "Open accounts"; font-weight: 600; color: #666; }
+                HorizontalLayout {
+                    spacing: 12px;
+                    StatTile { title: "Cleared"; value: dashboard-data.cleared-text; }
+                    StatTile { title: "Committed"; value: dashboard-data.committed-text; }
+                    StatTile { title: "Projected"; value: dashboard-data.projected-text; }
+                }
+
+                Text { text: "This month"; font-weight: 600; color: #666; }
+                HorizontalLayout {
+                    spacing: 12px;
+                    StatTile { title: "Income"; value: dashboard-data.income-text; value-color: #1e824c; }
+                    StatTile { title: "Expense"; value: dashboard-data.expense-text; value-color: #c0392b; }
+                    StatTile { title: "Net"; value: dashboard-data.net-text; }
+                }
+
+                Rectangle { vertical-stretch: 1; }
+            }
+        }
+
+        if current-view == "statistics": Rectangle {
+            vertical-stretch: 1;
+            background: white;
+            VerticalLayout {
+                padding: 10px;
+                spacing: 8px;
+
+                HorizontalLayout {
+                    spacing: 12px;
+                    Text { text: "Statistics"; font-size: 18px; font-weight: 700; vertical-alignment: center; }
+                    Rectangle { horizontal-stretch: 1; }
+                    ComboBox {
+                        width: 150px;
+                        model: ["Category", "Tag", "Payment mode", "Payee", "Project", "Budget line"];
+                        current-index <=> statistics-axis-index;
+                        selected(value) => { statistics-refresh-clicked(); }
+                    }
+                    ComboBox {
+                        width: 170px;
+                        model: statistics-account-names;
+                        current-index <=> statistics-account-index;
+                        selected(value) => { statistics-refresh-clicked(); }
+                    }
+                }
+
+                HorizontalLayout {
+                    spacing: 12px;
+                    Text { text: "From"; vertical-alignment: center; }
+                    LineEdit { width: 110px; text <=> statistics-start-date; accepted => { statistics-refresh-clicked(); } }
+                    Text { text: "To"; vertical-alignment: center; }
+                    LineEdit { width: 110px; text <=> statistics-end-date; accepted => { statistics-refresh-clicked(); } }
+                    Button { text: "Refresh"; clicked => { statistics-refresh-clicked(); } }
+                }
+
+                HorizontalLayout {
+                    padding-left: 8px;
+                    spacing: 8px;
+                    Text { text: "Label"; width: 260px; font-weight: 600; }
+                    Text { text: "Total"; width: 120px; font-weight: 600; horizontal-alignment: right; }
+                }
+
+                ListView {
+                    vertical-stretch: 1;
+                    for item in statistics-rows: StatisticRow { item: item; }
+                }
+
+                HorizontalLayout {
+                    padding-left: 8px;
+                    Text { text: "Total"; width: 260px; font-weight: 700; }
+                    Text { text: statistics-total-text; width: 120px; font-weight: 700; horizontal-alignment: right; }
+                }
+            }
+        }
+
+        // --- Info bar ---
+        Rectangle {
+            height: 28px;
+            background: error-message == "" ? #eef2fb : #fbe9e7;
+            HorizontalLayout {
+                padding-left: 10px;
+                alignment: start;
+                Text {
+                    text: error-message == "" ? status-message : error-message;
+                    color: error-message == "" ? #333 : #a02;
+                    vertical-alignment: center;
+                }
+            }
+        }
+    }
+
+    // --- Account form ---
+    FormOverlay {
+        visible-form: account-form-visible;
+        form-title: account-form-is-new ? "New account" : "Edit account";
+
+        Text { text: "Name"; font-size: 12px; color: #666; }
+        LineEdit { text <=> account-form-name; placeholder-text: "e.g. Checking"; }
+        Text { text: "Currency"; font-size: 12px; color: #666; }
+        LineEdit { text <=> account-form-currency; }
+        Text { text: "IBAN"; font-size: 12px; color: #666; }
+        LineEdit { text <=> account-form-iban; }
+        Text { text: "Opening balance"; font-size: 12px; color: #666; }
+        LineEdit { text <=> account-form-opening-balance; }
+        HorizontalLayout {
+            spacing: 8px;
+            Rectangle { horizontal-stretch: 1; }
+            Button { text: "Cancel"; clicked => { cancel-account-form(); } }
+            Button { text: "Save"; primary: true; clicked => { save-account-clicked(); } }
+        }
+    }
+
+    // --- Transaction form ---
+    FormOverlay {
+        visible-form: transaction-form-visible;
+        form-title: transaction-form-is-new ? "New transaction" : "Edit transaction";
+
+        Text { text: "Label"; font-size: 12px; color: #666; }
+        LineEdit { text <=> transaction-form-label; placeholder-text: "e.g. Groceries"; }
+        Text { text: "Date (YYYY-MM-DD)"; font-size: 12px; color: #666; }
+        LineEdit { text <=> transaction-form-date; }
+        Text { text: "Amount (negative = debit)"; font-size: 12px; color: #666; }
+        LineEdit { text <=> transaction-form-amount; }
+        Text { text: "Category"; font-size: 12px; color: #666; }
+        ComboBox { model: category-names; current-index <=> transaction-form-category-index; }
+        Text { text: "Status"; font-size: 12px; color: #666; }
+        ComboBox { model: ["Cleared", "Committed", "Planned"]; current-index <=> transaction-form-status-index; }
+        Text { text: "Cheque"; font-size: 12px; color: #666; }
+        ComboBox { model: cheque-names; current-index <=> transaction-form-cheque-index; }
+        HorizontalLayout {
+            spacing: 8px;
+            Rectangle { horizontal-stretch: 1; }
+            Button { text: "Cancel"; clicked => { cancel-transaction-form(); } }
+            Button { text: "Save"; primary: true; clicked => { save-transaction-clicked(); } }
+        }
+    }
+
+    // --- Recurring rule form ---
+    FormOverlay {
+        visible-form: recurring-form-visible;
+        form-title: recurring-form-is-new ? "New recurring rule" : "Edit recurring rule";
+        card-width: 420px;
+
+        Text { text: "Account"; font-size: 12px; color: #666; }
+        ComboBox { model: account-names; current-index <=> recurring-form-account-index; }
+        Text { text: "Label"; font-size: 12px; color: #666; }
+        LineEdit { text <=> recurring-form-label; placeholder-text: "e.g. Rent"; }
+        Text { text: "Amount (negative = debit)"; font-size: 12px; color: #666; }
+        LineEdit { text <=> recurring-form-amount; }
+        Text { text: "Category"; font-size: 12px; color: #666; }
+        ComboBox { model: category-names; current-index <=> recurring-form-category-index; }
+        Text { text: "Next due date (YYYY-MM-DD)"; font-size: 12px; color: #666; }
+        LineEdit { text <=> recurring-form-next-due-date; enabled: recurring-form-is-new; }
+        HorizontalLayout {
+            spacing: 8px;
+            VerticalLayout {
+                spacing: 4px;
+                Text { text: "Every"; font-size: 12px; color: #666; }
+                LineEdit { text <=> recurring-form-frequency; }
+            }
+            VerticalLayout {
+                spacing: 4px;
+                Text { text: "Period"; font-size: 12px; color: #666; }
+                ComboBox { model: ["Day(s)", "Week(s)", "Month(s)", "Quarter(s)", "Year(s)"]; current-index <=> recurring-form-period-index; }
+            }
+        }
+        Text { text: "Ends"; font-size: 12px; color: #666; }
+        ComboBox { model: ["No limit", "On a date", "After a number of occurrences"]; current-index <=> recurring-form-end-mode-index; }
+        if recurring-form-end-mode-index == 1: LineEdit { text <=> recurring-form-end-date; placeholder-text: "YYYY-MM-DD"; }
+        if recurring-form-end-mode-index == 2: LineEdit { text <=> recurring-form-occurrence-count; placeholder-text: "e.g. 12"; }
+        HorizontalLayout {
+            spacing: 8px;
+            Rectangle { horizontal-stretch: 1; }
+            Button { text: "Cancel"; clicked => { cancel-recurring-form(); } }
+            Button { text: "Save"; primary: true; clicked => { save-recurring-clicked(); } }
+        }
+    }
+
+    // --- New chequebook form ---
+    FormOverlay {
+        visible-form: chequebook-form-visible;
+        form-title: "New chequebook";
+
+        Text { text: "First number"; font-size: 12px; color: #666; }
+        LineEdit { text <=> chequebook-form-first-number; }
+        Text { text: "Last number"; font-size: 12px; color: #666; }
+        LineEdit { text <=> chequebook-form-last-number; }
+        Text { text: "Reception date (YYYY-MM-DD)"; font-size: 12px; color: #666; }
+        LineEdit { text <=> chequebook-form-reception-date; }
+        HorizontalLayout {
+            spacing: 8px;
+            Rectangle { horizontal-stretch: 1; }
+            Button { text: "Cancel"; clicked => { cancel-chequebook-form(); } }
+            Button { text: "Save"; primary: true; clicked => { save-chequebook-clicked(); } }
+        }
+    }
+
+    // --- Write cheque form ---
+    FormOverlay {
+        visible-form: cheque-form-visible;
+        form-title: "Cheque #" + cheque-form-number-text;
+
+        Text { text: "Payee"; font-size: 12px; color: #666; }
+        ComboBox { model: payee-names; current-index <=> cheque-form-payee-index; }
+        Text { text: "Amount"; font-size: 12px; color: #666; }
+        LineEdit { text <=> cheque-form-amount; }
+        Text { text: "Date (YYYY-MM-DD)"; font-size: 12px; color: #666; }
+        LineEdit { text <=> cheque-form-date; }
+        Text { text: "Status"; font-size: 12px; color: #666; }
+        ComboBox { model: ["Available", "Issued", "Cleared", "Cancelled"]; current-index <=> cheque-form-status-index; }
+        HorizontalLayout {
+            spacing: 8px;
+            Rectangle { horizontal-stretch: 1; }
+            Button { text: "Cancel"; clicked => { cancel-cheque-form(); } }
+            Button { text: "Save"; primary: true; clicked => { save-cheque-clicked(); } }
+        }
+    }
+}
