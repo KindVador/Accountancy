@@ -62,10 +62,28 @@ export struct DashboardData {
     net-text: string,
 }
 
+export struct JournalEntryItem {
+    date-text: string,
+    kind-text: string,
+    result-text: string,
+    succeeded: bool,
+}
+
 export struct StatisticLineItem {
     label: string,
     amount-text: string,
     is-debit: bool,
+}
+
+export struct DatabaseItem {
+    name: string,
+    is-current: bool,
+}
+
+export struct AttachmentItem {
+    id: int,
+    name-text: string,
+    size-text: string,
 }
 
 component AccountRow inherits Rectangle {
@@ -296,6 +314,70 @@ component StatisticRow inherits Rectangle {
     }
 }
 
+component JournalRow inherits Rectangle {
+    in property <JournalEntryItem> item;
+
+    height: 30px;
+
+    HorizontalLayout {
+        padding-left: 8px;
+        padding-right: 8px;
+        spacing: 8px;
+        Text { text: item.date-text; width: 100px; vertical-alignment: center; color: #555; }
+        Text { text: item.kind-text; width: 100px; vertical-alignment: center; }
+        Text {
+            text: item.result-text;
+            vertical-alignment: center;
+            color: item.succeeded ? #1e824c : #c0392b;
+        }
+    }
+}
+
+component DatabaseRow inherits Rectangle {
+    in property <DatabaseItem> item;
+    in property <bool> selected;
+    callback clicked <=> area.clicked;
+
+    height: 40px;
+    background: selected ? #2d6cdf : (area.has-hover ? #eef2fb : transparent);
+    border-radius: 6px;
+
+    area := TouchArea {}
+
+    HorizontalLayout {
+        padding: 10px;
+        spacing: 8px;
+        Text {
+            text: item.name + (item.is-current ? " (open)" : "");
+            color: selected ? white : #1a1a1a;
+            font-weight: item.is-current ? 700 : 400;
+            vertical-alignment: center;
+        }
+    }
+}
+
+component AttachmentRow inherits Rectangle {
+    in property <AttachmentItem> item;
+    callback open-clicked <=> open-area.clicked;
+    callback remove-clicked <=> remove-area.clicked;
+
+    height: 28px;
+
+    HorizontalLayout {
+        spacing: 8px;
+        Text { text: item.name-text; horizontal-stretch: 1; vertical-alignment: center; overflow: elide; }
+        Text { text: item.size-text; width: 70px; vertical-alignment: center; color: #555; horizontal-alignment: right; }
+        open-area := TouchArea {
+            width: 40px;
+            Text { text: "Open"; color: #2d6cdf; vertical-alignment: center; horizontal-alignment: center; }
+        }
+        remove-area := TouchArea {
+            width: 50px;
+            Text { text: "Remove"; color: #c0392b; vertical-alignment: center; horizontal-alignment: center; }
+        }
+    }
+}
+
 component FormOverlay inherits Rectangle {
     in property <bool> visible-form: false;
     in property <string> form-title;
@@ -478,6 +560,46 @@ export component MainWindow inherits Window {
     callback cancel-csv-import-form();
     callback confirm-csv-import-clicked();
 
+    in-out property <[JournalEntryItem]> journal-entries: [];
+    in-out property <bool> restore-confirm-visible: false;
+    in-out property <string> restore-confirm-filename: "";
+
+    callback backup-clicked();
+    callback restore-clicked();
+    callback cancel-restore-confirm();
+    callback confirm-restore-clicked();
+
+    in-out property <[string]> orphan-attachment-files: [];
+    callback delete-orphan-file-clicked(string);
+
+    in-out property <[DatabaseItem]> databases: [];
+    in-out property <int> selected-database-index: -1;
+    in-out property <bool> database-form-visible: false;
+    in-out property <string> database-form-title: "New database";
+    in-out property <string> database-form-name: "";
+    in-out property <bool> delete-database-confirm-visible: false;
+    in-out property <string> delete-database-confirm-name: "";
+
+    callback database-selected(int);
+    callback new-database-clicked();
+    callback duplicate-database-clicked();
+    callback open-database-clicked();
+    callback cancel-database-form();
+    callback save-database-form-clicked();
+    callback delete-database-clicked();
+    callback cancel-delete-database-confirm();
+    callback confirm-delete-database-clicked();
+
+    in-out property <[AttachmentItem]> attachments: [];
+    callback attach-file-clicked();
+    callback attachment-open-clicked(int);
+    callback attachment-remove-clicked(int);
+
+    in-out property <int> export-format-index: 0;
+    callback export-transactions-clicked();
+    callback print-transactions-clicked();
+    callback print-bank-details-clicked();
+
     VerticalLayout {
         // --- Tab bar ---
         HorizontalLayout {
@@ -518,6 +640,12 @@ export component MainWindow inherits Window {
                 checkable: true;
                 checked: current-view == "statistics";
                 clicked => { current-view = "statistics"; }
+            }
+            Button {
+                text: "Database";
+                checkable: true;
+                checked: current-view == "database";
+                clicked => { current-view = "database"; }
             }
             Rectangle { horizontal-stretch: 1; }
         }
@@ -592,6 +720,16 @@ export component MainWindow inherits Window {
                         Rectangle { horizontal-stretch: 1; }
                         Button { text: "Import OFX..."; enabled: selected-account-index >= 0; clicked => { import-ofx-clicked(); } }
                         Button { text: "Import CSV..."; enabled: selected-account-index >= 0; clicked => { import-csv-clicked(); } }
+                    }
+
+                    HorizontalLayout {
+                        spacing: 8px;
+                        Text { text: "Export as"; vertical-alignment: center; color: #666; }
+                        ComboBox { width: 90px; model: ["CSV", "TSV", "JSON", "QIF"]; current-index <=> export-format-index; }
+                        Button { text: "Export..."; enabled: selected-account-index >= 0; clicked => { export-transactions-clicked(); } }
+                        Rectangle { horizontal-stretch: 1; }
+                        Button { text: "Print transactions..."; enabled: selected-account-index >= 0; clicked => { print-transactions-clicked(); } }
+                        Button { text: "Print bank details..."; enabled: selected-account-index >= 0; clicked => { print-bank-details-clicked(); } }
                     }
                 }
             }
@@ -788,6 +926,18 @@ export component MainWindow inherits Window {
                     StatTile { title: "Net"; value: dashboard-data.net-text; }
                 }
 
+                HorizontalLayout {
+                    spacing: 12px;
+                    Text { text: "Backup & restore"; font-weight: 600; color: #666; vertical-alignment: center; }
+                    Rectangle { horizontal-stretch: 1; }
+                    Button { text: "Backup now..."; clicked => { backup-clicked(); } }
+                    Button { text: "Restore from backup..."; clicked => { restore-clicked(); } }
+                }
+                ListView {
+                    height: 150px;
+                    for item in journal-entries: JournalRow { item: item; }
+                }
+
                 Rectangle { vertical-stretch: 1; }
             }
         }
@@ -846,6 +996,62 @@ export component MainWindow inherits Window {
             }
         }
 
+        if current-view == "database": HorizontalLayout {
+            vertical-stretch: 1;
+
+            // --- Left: databases ---
+            Rectangle {
+                width: 300px;
+                background: #f5f6fa;
+                VerticalLayout {
+                    padding: 10px;
+                    spacing: 8px;
+                    Text { text: "Databases"; font-size: 16px; font-weight: 700; }
+                    ListView {
+                        vertical-stretch: 1;
+                        for item[i] in databases: DatabaseRow {
+                            item: item;
+                            selected: i == selected-database-index;
+                            clicked => { database-selected(i); }
+                        }
+                    }
+                    Button { text: "New database..."; clicked => { new-database-clicked(); } }
+                    Button { text: "Duplicate..."; enabled: selected-database-index >= 0; clicked => { duplicate-database-clicked(); } }
+                    Button { text: "Open"; enabled: selected-database-index >= 0; clicked => { open-database-clicked(); } }
+                    Button { text: "Delete..."; enabled: selected-database-index >= 0; clicked => { delete-database-clicked(); } }
+                }
+            }
+
+            // --- Right: orphan attachment files ---
+            Rectangle {
+                background: white;
+                VerticalLayout {
+                    padding: 16px;
+                    spacing: 12px;
+                    Text { text: "Orphan attachment files"; font-size: 16px; font-weight: 700; }
+                    Text {
+                        text: "Files present on disk with no attachment record pointing at them.";
+                        color: #666;
+                        wrap: word-wrap;
+                    }
+                    ListView {
+                        vertical-stretch: 1;
+                        for name in orphan-attachment-files: Rectangle {
+                            height: 28px;
+                            HorizontalLayout {
+                                Text { text: name; horizontal-stretch: 1; vertical-alignment: center; overflow: elide; }
+                                TouchArea {
+                                    width: 50px;
+                                    clicked => { delete-orphan-file-clicked(name); }
+                                    Text { text: "Delete"; color: #c0392b; vertical-alignment: center; horizontal-alignment: center; }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
         // --- Info bar ---
         Rectangle {
             height: 28px;
@@ -900,6 +1106,23 @@ export component MainWindow inherits Window {
         ComboBox { model: ["Cleared", "Committed", "Planned"]; current-index <=> transaction-form-status-index; }
         Text { text: "Cheque"; font-size: 12px; color: #666; }
         ComboBox { model: cheque-names; current-index <=> transaction-form-cheque-index; }
+
+        if !transaction-form-is-new: VerticalLayout {
+            spacing: 4px;
+            HorizontalLayout {
+                Text { text: "Attachments"; font-size: 12px; color: #666; vertical-alignment: center; }
+                Rectangle { horizontal-stretch: 1; }
+                Button { text: "Attach file..."; clicked => { attach-file-clicked(); } }
+            }
+            VerticalLayout {
+                for item[i] in attachments: AttachmentRow {
+                    item: item;
+                    open-clicked => { attachment-open-clicked(i); }
+                    remove-clicked => { attachment-remove-clicked(i); }
+                }
+            }
+        }
+
         HorizontalLayout {
             spacing: 8px;
             Rectangle { horizontal-stretch: 1; }
@@ -1056,6 +1279,57 @@ export component MainWindow inherits Window {
             Rectangle { horizontal-stretch: 1; }
             Button { text: "Cancel"; clicked => { cancel-csv-import-form(); } }
             Button { text: "Import"; primary: true; clicked => { confirm-csv-import-clicked(); } }
+        }
+    }
+
+    // --- Restore confirmation ---
+    FormOverlay {
+        visible-form: restore-confirm-visible;
+        form-title: "Restore this backup?";
+
+        Text {
+            text: "This replaces the current database with " + restore-confirm-filename + ". This cannot be undone.";
+            wrap: word-wrap;
+            width: 300px;
+        }
+        HorizontalLayout {
+            spacing: 8px;
+            Rectangle { horizontal-stretch: 1; }
+            Button { text: "Cancel"; clicked => { cancel-restore-confirm(); } }
+            Button { text: "Restore"; primary: true; clicked => { confirm-restore-clicked(); } }
+        }
+    }
+
+    // --- New / duplicate database form ---
+    FormOverlay {
+        visible-form: database-form-visible;
+        form-title: database-form-title;
+
+        Text { text: "Name"; font-size: 12px; color: #666; }
+        LineEdit { text <=> database-form-name; placeholder-text: "e.g. Household"; }
+        HorizontalLayout {
+            spacing: 8px;
+            Rectangle { horizontal-stretch: 1; }
+            Button { text: "Cancel"; clicked => { cancel-database-form(); } }
+            Button { text: "Save"; primary: true; clicked => { save-database-form-clicked(); } }
+        }
+    }
+
+    // --- Delete database confirmation ---
+    FormOverlay {
+        visible-form: delete-database-confirm-visible;
+        form-title: "Delete this database?";
+
+        Text {
+            text: "This permanently deletes \"" + delete-database-confirm-name + "\" and everything in it. This cannot be undone.";
+            wrap: word-wrap;
+            width: 300px;
+        }
+        HorizontalLayout {
+            spacing: 8px;
+            Rectangle { horizontal-stretch: 1; }
+            Button { text: "Cancel"; clicked => { cancel-delete-database-confirm(); } }
+            Button { text: "Delete"; primary: true; clicked => { confirm-delete-database-clicked(); } }
         }
     }
 }

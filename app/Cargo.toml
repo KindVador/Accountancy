@@ -17,6 +17,8 @@ slint = "1.13"
 # Native "open file" dialog for OFX/CSV import - the one bit of OS
 # integration the app layer needs that isn't itself a business rule.
 rfd = "0.15"
+# Opens an attachment with the OS's own default application.
+open = "5"
 
 [build-dependencies]
 slint-build = "1.13"

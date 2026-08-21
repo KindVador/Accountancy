@@ -5,14 +5,20 @@
 //! on its own with `cargo test -p accountancy-core`.
 
 pub mod accounts;
+pub mod app_settings;
+pub mod attachments;
+pub mod backup;
 pub mod budget;
 pub mod cheques;
 pub mod dashboard;
 pub mod dates;
 pub mod db;
 pub mod error;
+pub mod exports;
 pub mod import;
+pub mod journal;
 pub mod money;
+pub mod printing;
 pub mod recurring;
 pub mod reference_lists;
 pub mod statistics;

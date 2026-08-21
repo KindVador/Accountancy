@@ -167,6 +167,33 @@ pub fn migrate(conn: &Connection) -> Result<()> {
             UNIQUE (chequebook_id, number)
         );
         CREATE INDEX IF NOT EXISTS idx_cheques_chequebook ON cheques (chequebook_id);
+
+        -- What happened, and did it work - backup, restore, repair. Lives
+        -- inside the database itself so a restored backup carries its own
+        -- history forward with it; see `journal::record`.
+        CREATE TABLE IF NOT EXISTS operations_log (
+            id          INTEGER PRIMARY KEY,
+            happened_at TEXT NOT NULL,
+            kind        TEXT NOT NULL,
+            succeeded   INTEGER NOT NULL,
+            detail      TEXT
+        );
+
+        -- A file attached to a transaction. `stored_name` is a GUID-based
+        -- name inside the database's own `attachments/` folder - never the
+        -- file's original name, which is kept only for display and re-export.
+        -- Cascades: an attachment cannot outlive the transaction it documents.
+        CREATE TABLE IF NOT EXISTS attachments (
+            id             INTEGER PRIMARY KEY,
+            transaction_id INTEGER NOT NULL REFERENCES transactions (id) ON DELETE CASCADE,
+            stored_name    TEXT NOT NULL UNIQUE,
+            original_name  TEXT NOT NULL,
+            size           INTEGER NOT NULL,
+            mime_type      TEXT NOT NULL,
+            checksum       TEXT NOT NULL,
+            added_at       TEXT NOT NULL
+        );
+        CREATE INDEX IF NOT EXISTS idx_attachments_transaction ON attachments (transaction_id);
         "#,
     )?;
 

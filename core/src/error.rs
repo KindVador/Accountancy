@@ -24,6 +24,12 @@ pub enum CoreError {
     InvalidMonth(i32),
     #[error("{0}")]
     Invalid(String),
+    #[error("archive error: {0}")]
+    Zip(#[from] zip::result::ZipError),
+    #[error("json error: {0}")]
+    Json(#[from] serde_json::Error),
+    #[error("pdf error: {0}")]
+    Pdf(String),
 }
 
 pub type Result<T> = std::result::Result<T, CoreError>;

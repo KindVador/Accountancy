@@ -16,6 +16,18 @@ serde = { version = "1", features = ["derive"] }
 serde_json = "1"
 thiserror = "2"
 time = { version = "0.3", features = ["formatting", "parsing", "macros"] }
+# Backup archive format (core::backup). Deflate only - no need for the
+# encryption or AES feature sets.
+zip = { version = "2", default-features = false, features = ["deflate"] }
+# Attachment checksums (core::attachments) - pure Rust, no C dependency.
+sha2 = "0.10"
+# Attachment internal filenames (core::attachments): a real GUID, not a
+# name derived from the original file.
+uuid = { version = "1", features = ["v4"] }
+# Printing (core::printing): a pure-Rust PDF renderer (its own HTML/CSS
+# layout engine, not the system webview), so a printed statement looks the
+# same on every platform. See docs/architecture.md.
+printpdf = "0.12"
 
 [dev-dependencies]
 tempfile = "3"

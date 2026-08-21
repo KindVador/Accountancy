@@ -3,23 +3,31 @@ slint::include_modules!();
 mod format;
 
 use accountancy_core::accounts::{self, Account, NewAccount};
+use accountancy_core::app_settings;
+use accountancy_core::attachments::{self, Attachment};
+use accountancy_core::backup;
 use accountancy_core::budget;
 use accountancy_core::cheques::{self, Cheque, ChequeStatus, Chequebook, NewChequebook};
 use accountancy_core::dashboard;
 use accountancy_core::dates;
-use accountancy_core::db;
+use accountancy_core::db::{self, DatabaseInfo};
+use accountancy_core::exports;
 use accountancy_core::import::{self, csv, ofx};
+use accountancy_core::journal::{self, OperationKind};
 use accountancy_core::money::Amount;
+use accountancy_core::printing;
 use accountancy_core::recurring::{self, EndMode, NewRecurringRule, Period, RecurringRule};
 use accountancy_core::reference_lists::{self, Category, NamedItem, ReferenceKind};
 use accountancy_core::statistics::{self, Axis};
 use accountancy_core::transactions::{self, NewTransaction, Status, Transaction};
 use slint::{ComponentHandle, ModelRc, SharedString, VecModel};
 use std::cell::RefCell;
+use std::path::{Path, PathBuf};
 use std::rc::Rc;
 
 struct AppState {
     db: db::Database,
+    database_folder: PathBuf,
     accounts_cache: Vec<Account>,
     transactions_cache: Vec<Transaction>,
     categories_cache: Vec<Category>,
@@ -29,6 +37,8 @@ struct AppState {
     chequebooks_cache: Vec<Chequebook>,
     cheques_cache: Vec<Cheque>,
     cheque_option_ids: Vec<i64>,
+    databases_cache: Vec<DatabaseInfo>,
+    attachments_cache: Vec<Attachment>,
     selected_account_id: Option<i64>,
     selected_chequebook_id: Option<i64>,
     editing_account_id: Option<i64>,
@@ -36,14 +46,41 @@ struct AppState {
     editing_recurring_id: Option<i64>,
     editing_cheque_id: Option<i64>,
     pending_csv_content: Option<String>,
+    pending_restore_path: Option<PathBuf>,
+    pending_duplicate_source: Option<PathBuf>,
+    pending_delete_database: Option<DatabaseInfo>,
+}
+
+fn database_name_from_folder(folder: &Path) -> String {
+    folder
+        .file_name()
+        .map(|n| n.to_string_lossy().to_string())
+        .unwrap_or_else(|| "default".to_string())
+}
+
+/// The database to open at startup: the one remembered from last time, if
+/// it still exists, otherwise a fresh "default" - so a deleted or renamed
+/// database never resurrects itself under the name it used to have.
+fn resolve_startup_database_folder() -> PathBuf {
+    let root = db::databases_root();
+    let settings = app_settings::load();
+    if let Some(name) = &settings.last_database
+        && let Ok(list) = db::list(&root)
+        && let Some(info) = list.iter().find(|d| &d.name == name)
+    {
+        return info.folder.clone();
+    }
+    root.join("default")
 }
 
 fn main() -> Result<(), slint::PlatformError> {
-    let folder = db::databases_root().join("default");
+    let folder = resolve_startup_database_folder();
     let database = db::open(&folder).expect("failed to open the database");
+    app_settings::record_opened(&database_name_from_folder(&folder));
 
     let state = Rc::new(RefCell::new(AppState {
         db: database,
+        database_folder: folder,
         accounts_cache: Vec::new(),
         transactions_cache: Vec::new(),
         categories_cache: Vec::new(),
@@ -53,6 +90,8 @@ fn main() -> Result<(), slint::PlatformError> {
         chequebooks_cache: Vec::new(),
         cheques_cache: Vec::new(),
         cheque_option_ids: Vec::new(),
+        databases_cache: Vec::new(),
+        attachments_cache: Vec::new(),
         selected_account_id: None,
         selected_chequebook_id: None,
         editing_account_id: None,
@@ -60,6 +99,9 @@ fn main() -> Result<(), slint::PlatformError> {
         editing_recurring_id: None,
         editing_cheque_id: None,
         pending_csv_content: None,
+        pending_restore_path: None,
+        pending_duplicate_source: None,
+        pending_delete_database: None,
     }));
 
     let ui = MainWindow::new()?;
@@ -69,16 +111,7 @@ fn main() -> Result<(), slint::PlatformError> {
     ui.set_statistics_start_date(month_start.into());
     ui.set_statistics_end_date(month_end.into());
 
-    refresh_categories(&ui, &state);
-    refresh_payees(&ui, &state);
-    refresh_accounts(&ui, &state);
-    refresh_transactions(&ui, &state);
-    refresh_recurring(&ui, &state);
-    refresh_budget(&ui, &state);
-    refresh_chequebooks(&ui, &state);
-    refresh_cheques(&ui, &state);
-    refresh_dashboard(&ui, &state);
-    refresh_statistics(&ui, &state);
+    refresh_everything(&ui, &state);
 
     wire_account_callbacks(&ui, &state);
     wire_transaction_callbacks(&ui, &state);
@@ -88,6 +121,10 @@ fn main() -> Result<(), slint::PlatformError> {
     wire_dashboard_callbacks(&ui, &state);
     wire_statistics_callbacks(&ui, &state);
     wire_import_callbacks(&ui, &state);
+    wire_backup_callbacks(&ui, &state);
+    wire_attachment_callbacks(&ui, &state);
+    wire_database_callbacks(&ui, &state);
+    wire_export_callbacks(&ui, &state);
 
     ui.run()
 }
@@ -455,6 +492,32 @@ fn refresh_dashboard(ui: &MainWindow, state: &Rc<RefCell<AppState>>) {
         expense_text: format::amount(data.current_month_expense).into(),
         net_text: format::amount(data.current_month_net()).into(),
     });
+
+    let entries = {
+        let st = state.borrow();
+        journal::list(st.db.connection(), 20).unwrap_or_default()
+    };
+    let items: Vec<JournalEntryItem> = entries.iter().map(to_journal_item).collect();
+    ui.set_journal_entries(ModelRc::new(VecModel::from(items)));
+}
+
+fn journal_kind_label(kind: OperationKind) -> &'static str {
+    match kind {
+        OperationKind::Backup => "Backup",
+        OperationKind::Restore => "Restore",
+        OperationKind::Repair => "Repair",
+    }
+}
+
+fn to_journal_item(entry: &journal::LogEntry) -> JournalEntryItem {
+    let outcome = if entry.succeeded { "OK" } else { "Failed" };
+    let detail = entry.detail.as_deref().unwrap_or("");
+    JournalEntryItem {
+        date_text: entry.happened_at.clone().into(),
+        kind_text: journal_kind_label(entry.kind).into(),
+        result_text: format!("{outcome} - {detail}").into(),
+        succeeded: entry.succeeded,
+    }
 }
 
 fn refresh_statistics(ui: &MainWindow, state: &Rc<RefCell<AppState>>) {
@@ -488,6 +551,62 @@ fn refresh_statistics(ui: &MainWindow, state: &Rc<RefCell<AppState>>) {
         .collect();
     ui.set_statistics_rows(ModelRc::new(VecModel::from(items)));
     ui.set_statistics_total_text(format::amount(total).into());
+}
+
+fn refresh_databases(ui: &MainWindow, state: &Rc<RefCell<AppState>>) {
+    let root = db::databases_root();
+    let list = db::list(&root).unwrap_or_default();
+    let current_folder = state.borrow().database_folder.clone();
+
+    let items: Vec<DatabaseItem> = list
+        .iter()
+        .map(|d| DatabaseItem {
+            name: d.name.clone().into(),
+            is_current: d.folder == current_folder,
+        })
+        .collect();
+    ui.set_databases(ModelRc::new(VecModel::from(items)));
+    ui.set_selected_database_index(-1);
+
+    state.borrow_mut().databases_cache = list;
+}
+
+fn format_size(bytes: i64) -> SharedString {
+    let size = bytes as f64;
+    if size < 1024.0 {
+        format!("{bytes} B").into()
+    } else if size < 1024.0 * 1024.0 {
+        format!("{:.1} KB", size / 1024.0).into()
+    } else {
+        format!("{:.1} MB", size / (1024.0 * 1024.0)).into()
+    }
+}
+
+fn refresh_orphan_attachments(ui: &MainWindow, state: &Rc<RefCell<AppState>>) {
+    let orphans = {
+        let st = state.borrow();
+        attachments::orphan_files(&st.db).unwrap_or_default()
+    };
+    let items: Vec<SharedString> = orphans.into_iter().map(SharedString::from).collect();
+    ui.set_orphan_attachment_files(ModelRc::new(VecModel::from(items)));
+}
+
+fn refresh_attachments(ui: &MainWindow, state: &Rc<RefCell<AppState>>, transaction_id: i64) {
+    let list = {
+        let st = state.borrow();
+        attachments::list_for_transaction(st.db.connection(), transaction_id).unwrap_or_default()
+    };
+    let items: Vec<AttachmentItem> = list
+        .iter()
+        .map(|a| AttachmentItem {
+            id: a.id as i32,
+            name_text: a.original_name.clone().into(),
+            size_text: format_size(a.size),
+        })
+        .collect();
+    ui.set_attachments(ModelRc::new(VecModel::from(items)));
+
+    state.borrow_mut().attachments_cache = list;
 }
 
 fn refresh_recurring(ui: &MainWindow, state: &Rc<RefCell<AppState>>) {
@@ -835,6 +954,7 @@ fn wire_transaction_callbacks(ui: &MainWindow, state: &Rc<RefCell<AppState>>) {
             ui.set_transaction_form_category_index(0);
             ui.set_transaction_form_status_index(1);
             ui.set_transaction_form_cheque_index(0);
+            ui.set_attachments(ModelRc::new(VecModel::from(Vec::<AttachmentItem>::new())));
             ui.set_transaction_form_visible(true);
         });
     }
@@ -862,6 +982,7 @@ fn wire_transaction_callbacks(ui: &MainWindow, state: &Rc<RefCell<AppState>>) {
             ui.set_transaction_form_category_index(category_index_for(&state, tx.category_id));
             ui.set_transaction_form_status_index(status_to_index(tx.status));
             ui.set_transaction_form_cheque_index(cheque_option_index_for(&state, tx.check_id));
+            refresh_attachments(&ui, &state, tx.id);
             ui.set_transaction_form_visible(true);
         });
     }
@@ -1623,6 +1744,513 @@ fn wire_import_callbacks(ui: &MainWindow, state: &Rc<RefCell<AppState>>) {
                     refresh_transactions(&ui, &state);
                     refresh_accounts(&ui, &state);
                 }
+                Err(e) => report_error(&ui, e),
+            }
+        });
+    }
+}
+
+fn refresh_everything(ui: &MainWindow, state: &Rc<RefCell<AppState>>) {
+    refresh_categories(ui, state);
+    refresh_payees(ui, state);
+    refresh_accounts(ui, state);
+    refresh_transactions(ui, state);
+    refresh_recurring(ui, state);
+    refresh_budget(ui, state);
+    refresh_chequebooks(ui, state);
+    refresh_cheques(ui, state);
+    refresh_dashboard(ui, state);
+    refresh_statistics(ui, state);
+    refresh_databases(ui, state);
+    refresh_orphan_attachments(ui, state);
+}
+
+fn wire_backup_callbacks(ui: &MainWindow, state: &Rc<RefCell<AppState>>) {
+    {
+        let ui_weak = ui.as_weak();
+        let state = state.clone();
+        ui.on_backup_clicked(move || {
+            let ui = ui_weak.upgrade().unwrap();
+            let default_name = format!("accountancy-backup-{}.zip", accountancy_core::today());
+            let Some(path) = rfd::FileDialog::new()
+                .set_file_name(&default_name)
+                .add_filter("Zip", &["zip"])
+                .save_file()
+            else {
+                return;
+            };
+
+            let result = {
+                let st = state.borrow();
+                backup::create(&st.db, &path)
+            };
+            match result {
+                Ok(()) => report_success(&ui, &format!("Backup saved to {}", path.display())),
+                Err(e) => report_error(&ui, e),
+            }
+            refresh_dashboard(&ui, &state);
+        });
+    }
+
+    {
+        let ui_weak = ui.as_weak();
+        let state = state.clone();
+        ui.on_restore_clicked(move || {
+            let ui = ui_weak.upgrade().unwrap();
+            let Some(path) = rfd::FileDialog::new()
+                .add_filter("Zip", &["zip"])
+                .pick_file()
+            else {
+                return;
+            };
+            let filename = path
+                .file_name()
+                .map(|n| n.to_string_lossy().to_string())
+                .unwrap_or_default();
+
+            state.borrow_mut().pending_restore_path = Some(path);
+            ui.set_restore_confirm_filename(filename.into());
+            ui.set_restore_confirm_visible(true);
+        });
+    }
+
+    {
+        let ui_weak = ui.as_weak();
+        let state = state.clone();
+        ui.on_cancel_restore_confirm(move || {
+            ui_weak
+                .upgrade()
+                .unwrap()
+                .set_restore_confirm_visible(false);
+            state.borrow_mut().pending_restore_path = None;
+        });
+    }
+
+    {
+        let ui_weak = ui.as_weak();
+        let state = state.clone();
+        ui.on_confirm_restore_clicked(move || {
+            let ui = ui_weak.upgrade().unwrap();
+            let Some(zip_path) = state.borrow_mut().pending_restore_path.take() else {
+                return;
+            };
+            let folder = state.borrow().database_folder.clone();
+
+            // Release the current connection before touching the folder on
+            // disk - an in-memory database is a cheap, harmless placeholder.
+            state.borrow_mut().db =
+                db::open_in_memory().expect("an in-memory database always opens");
+
+            let restore_result = backup::restore(&zip_path, &folder);
+            let database =
+                db::open(&folder).expect("reopening the database folder always succeeds");
+
+            let succeeded = restore_result.is_ok();
+            let detail = match &restore_result {
+                Ok(()) => format!("restored from {}", zip_path.display()),
+                Err(e) => e.to_string(),
+            };
+            let _ = journal::record(
+                database.connection(),
+                OperationKind::Restore,
+                succeeded,
+                Some(&detail),
+            );
+            state.borrow_mut().db = database;
+            state.borrow_mut().selected_account_id = None;
+
+            ui.set_restore_confirm_visible(false);
+            match restore_result {
+                Ok(()) => report_success(&ui, "Database restored."),
+                Err(e) => report_error(&ui, e),
+            }
+
+            refresh_everything(&ui, &state);
+        });
+    }
+}
+
+fn wire_attachment_callbacks(ui: &MainWindow, state: &Rc<RefCell<AppState>>) {
+    {
+        let ui_weak = ui.as_weak();
+        let state = state.clone();
+        ui.on_attach_file_clicked(move || {
+            let ui = ui_weak.upgrade().unwrap();
+            let Some(transaction_id) = state.borrow().editing_transaction_id else {
+                return;
+            };
+            let Some(path) = rfd::FileDialog::new().pick_file() else {
+                return;
+            };
+
+            let result = {
+                let st = state.borrow();
+                attachments::attach(&st.db, transaction_id, &path)
+            };
+            match result {
+                Ok(_) => {
+                    report_success(&ui, "File attached.");
+                    refresh_attachments(&ui, &state, transaction_id);
+                }
+                Err(e) => report_error(&ui, e),
+            }
+        });
+    }
+
+    {
+        let ui_weak = ui.as_weak();
+        let state = state.clone();
+        ui.on_attachment_open_clicked(move |index| {
+            let ui = ui_weak.upgrade().unwrap();
+            let Some(attachment) = state
+                .borrow()
+                .attachments_cache
+                .get(index as usize)
+                .cloned()
+            else {
+                return;
+            };
+            let path = {
+                let st = state.borrow();
+                attachments::path_on_disk(&st.db, &attachment)
+            };
+            if let Err(e) = open::that(&path) {
+                report_error(&ui, e);
+            }
+        });
+    }
+
+    {
+        let ui_weak = ui.as_weak();
+        let state = state.clone();
+        ui.on_attachment_remove_clicked(move |index| {
+            let ui = ui_weak.upgrade().unwrap();
+            let Some(attachment) = state
+                .borrow()
+                .attachments_cache
+                .get(index as usize)
+                .cloned()
+            else {
+                return;
+            };
+
+            let result = {
+                let st = state.borrow();
+                attachments::detach(&st.db, attachment.id)
+            };
+            match result {
+                Ok(()) => {
+                    report_success(&ui, "Attachment removed.");
+                    refresh_attachments(&ui, &state, attachment.transaction_id);
+                }
+                Err(e) => report_error(&ui, e),
+            }
+        });
+    }
+
+    {
+        let ui_weak = ui.as_weak();
+        let state = state.clone();
+        ui.on_delete_orphan_file_clicked(move |name| {
+            let ui = ui_weak.upgrade().unwrap();
+            let result = {
+                let st = state.borrow();
+                attachments::delete_orphan_file(&st.db, &name)
+            };
+            match result {
+                Ok(()) => {
+                    report_success(&ui, "File deleted.");
+                    refresh_orphan_attachments(&ui, &state);
+                }
+                Err(e) => report_error(&ui, e),
+            }
+        });
+    }
+}
+
+fn wire_database_callbacks(ui: &MainWindow, state: &Rc<RefCell<AppState>>) {
+    {
+        let ui_weak = ui.as_weak();
+        ui.on_database_selected(move |index| {
+            ui_weak
+                .upgrade()
+                .unwrap()
+                .set_selected_database_index(index);
+        });
+    }
+
+    {
+        let ui_weak = ui.as_weak();
+        let state = state.clone();
+        ui.on_new_database_clicked(move || {
+            let ui = ui_weak.upgrade().unwrap();
+            state.borrow_mut().pending_duplicate_source = None;
+            ui.set_database_form_title("New database".into());
+            ui.set_database_form_name("".into());
+            ui.set_database_form_visible(true);
+        });
+    }
+
+    {
+        let ui_weak = ui.as_weak();
+        let state = state.clone();
+        ui.on_duplicate_database_clicked(move || {
+            let ui = ui_weak.upgrade().unwrap();
+            let index = ui.get_selected_database_index();
+            if index < 0 {
+                return;
+            }
+            let Some(info) = state.borrow().databases_cache.get(index as usize).cloned() else {
+                return;
+            };
+
+            state.borrow_mut().pending_duplicate_source = Some(info.folder);
+            ui.set_database_form_title(format!("Duplicate \"{}\"", info.name).into());
+            ui.set_database_form_name(format!("{} copy", info.name).into());
+            ui.set_database_form_visible(true);
+        });
+    }
+
+    {
+        let ui_weak = ui.as_weak();
+        let state = state.clone();
+        ui.on_cancel_database_form(move || {
+            ui_weak.upgrade().unwrap().set_database_form_visible(false);
+            state.borrow_mut().pending_duplicate_source = None;
+        });
+    }
+
+    {
+        let ui_weak = ui.as_weak();
+        let state = state.clone();
+        ui.on_save_database_form_clicked(move || {
+            let ui = ui_weak.upgrade().unwrap();
+            let name = ui.get_database_form_name().to_string();
+            let root = db::databases_root();
+            let source = state.borrow_mut().pending_duplicate_source.take();
+
+            let result = match &source {
+                Some(src) => db::duplicate(&root, src, &name),
+                None => db::create(&root, &name),
+            };
+            match result {
+                Ok(_) => {
+                    report_success(&ui, "Database saved.");
+                    ui.set_database_form_visible(false);
+                    refresh_databases(&ui, &state);
+                }
+                Err(e) => report_error(&ui, e),
+            }
+        });
+    }
+
+    {
+        let ui_weak = ui.as_weak();
+        let state = state.clone();
+        ui.on_open_database_clicked(move || {
+            let ui = ui_weak.upgrade().unwrap();
+            let index = ui.get_selected_database_index();
+            if index < 0 {
+                return;
+            }
+            let Some(info) = state.borrow().databases_cache.get(index as usize).cloned() else {
+                return;
+            };
+            if info.folder == state.borrow().database_folder {
+                report_error(&ui, "That database is already open.");
+                return;
+            }
+
+            // Release the current connection before touching the folder on
+            // disk - an in-memory database is a cheap, harmless placeholder.
+            state.borrow_mut().db =
+                db::open_in_memory().expect("an in-memory database always opens");
+            let database =
+                db::open(&info.folder).expect("opening a listed database folder always succeeds");
+            {
+                let mut st = state.borrow_mut();
+                st.db = database;
+                st.database_folder = info.folder.clone();
+                st.selected_account_id = None;
+            }
+            app_settings::record_opened(&info.name);
+
+            report_success(&ui, &format!("Opened \"{}\".", info.name));
+            refresh_everything(&ui, &state);
+        });
+    }
+
+    {
+        let ui_weak = ui.as_weak();
+        let state = state.clone();
+        ui.on_delete_database_clicked(move || {
+            let ui = ui_weak.upgrade().unwrap();
+            let index = ui.get_selected_database_index();
+            if index < 0 {
+                return;
+            }
+            let Some(info) = state.borrow().databases_cache.get(index as usize).cloned() else {
+                return;
+            };
+            if info.folder == state.borrow().database_folder {
+                report_error(&ui, "Switch to another database before deleting this one.");
+                return;
+            }
+
+            ui.set_delete_database_confirm_name(info.name.clone().into());
+            state.borrow_mut().pending_delete_database = Some(info);
+            ui.set_delete_database_confirm_visible(true);
+        });
+    }
+
+    {
+        let ui_weak = ui.as_weak();
+        let state = state.clone();
+        ui.on_cancel_delete_database_confirm(move || {
+            ui_weak
+                .upgrade()
+                .unwrap()
+                .set_delete_database_confirm_visible(false);
+            state.borrow_mut().pending_delete_database = None;
+        });
+    }
+
+    {
+        let ui_weak = ui.as_weak();
+        let state = state.clone();
+        ui.on_confirm_delete_database_clicked(move || {
+            let ui = ui_weak.upgrade().unwrap();
+            let Some(info) = state.borrow_mut().pending_delete_database.take() else {
+                return;
+            };
+
+            let result = db::delete(&info.folder);
+            ui.set_delete_database_confirm_visible(false);
+            match result {
+                Ok(()) => {
+                    report_success(&ui, "Database deleted.");
+                    refresh_databases(&ui, &state);
+                }
+                Err(e) => report_error(&ui, e),
+            }
+        });
+    }
+}
+
+fn export_format_extension(index: i32) -> &'static str {
+    match index {
+        1 => "tsv",
+        2 => "json",
+        3 => "qif",
+        _ => "csv",
+    }
+}
+
+fn wire_export_callbacks(ui: &MainWindow, state: &Rc<RefCell<AppState>>) {
+    {
+        let ui_weak = ui.as_weak();
+        let state = state.clone();
+        ui.on_export_transactions_clicked(move || {
+            let ui = ui_weak.upgrade().unwrap();
+            let Some(account_id) = state.borrow().selected_account_id else {
+                return;
+            };
+
+            let extension = export_format_extension(ui.get_export_format_index());
+            let Some(path) = rfd::FileDialog::new()
+                .set_file_name(format!("transactions.{extension}"))
+                .add_filter(extension, &[extension])
+                .save_file()
+            else {
+                return;
+            };
+
+            let lines = {
+                let st = state.borrow();
+                exports::export_lines(st.db.connection(), account_id)
+            };
+            let lines = match lines {
+                Ok(lines) => lines,
+                Err(e) => {
+                    report_error(&ui, e);
+                    return;
+                }
+            };
+
+            let content = match ui.get_export_format_index() {
+                1 => Ok(exports::to_tsv(&lines)),
+                2 => exports::to_json(&lines),
+                3 => Ok(exports::to_qif(&lines)),
+                _ => Ok(exports::to_csv(&lines)),
+            };
+            let content = match content {
+                Ok(text) => text,
+                Err(e) => {
+                    report_error(&ui, e);
+                    return;
+                }
+            };
+
+            match std::fs::write(&path, content) {
+                Ok(()) => report_success(&ui, &format!("Exported to {}", path.display())),
+                Err(e) => report_error(&ui, e),
+            }
+        });
+    }
+
+    {
+        let ui_weak = ui.as_weak();
+        let state = state.clone();
+        ui.on_print_transactions_clicked(move || {
+            let ui = ui_weak.upgrade().unwrap();
+            let Some(account_id) = state.borrow().selected_account_id else {
+                return;
+            };
+            let Some(path) = rfd::FileDialog::new()
+                .set_file_name("transactions.pdf")
+                .add_filter("PDF", &["pdf"])
+                .save_file()
+            else {
+                return;
+            };
+
+            let result = {
+                let st = state.borrow();
+                accounts::get(st.db.connection(), account_id).and_then(|account| {
+                    exports::export_lines(st.db.connection(), account_id)
+                        .and_then(|lines| printing::transaction_list_pdf(&account, &lines, &path))
+                })
+            };
+            match result {
+                Ok(()) => report_success(&ui, &format!("Printed to {}", path.display())),
+                Err(e) => report_error(&ui, e),
+            }
+        });
+    }
+
+    {
+        let ui_weak = ui.as_weak();
+        let state = state.clone();
+        ui.on_print_bank_details_clicked(move || {
+            let ui = ui_weak.upgrade().unwrap();
+            let Some(account_id) = state.borrow().selected_account_id else {
+                return;
+            };
+            let Some(path) = rfd::FileDialog::new()
+                .set_file_name("bank-details.pdf")
+                .add_filter("PDF", &["pdf"])
+                .save_file()
+            else {
+                return;
+            };
+
+            let result = {
+                let st = state.borrow();
+                accounts::get(st.db.connection(), account_id)
+                    .and_then(|account| printing::bank_details_pdf(&account, &path))
+            };
+            match result {
+                Ok(()) => report_success(&ui, &format!("Printed to {}", path.display())),
                 Err(e) => report_error(&ui, e),
             }
         });
