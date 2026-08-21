@@ -11,6 +11,7 @@ pub mod dashboard;
 pub mod dates;
 pub mod db;
 pub mod error;
+pub mod import;
 pub mod money;
 pub mod recurring;
 pub mod reference_lists;

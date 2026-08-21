@@ -1,4 +1,4 @@
-import { Button, LineEdit, ComboBox, ListView, VerticalBox, HorizontalBox, ScrollView } from "std-widgets.slint";
+import { Button, LineEdit, ComboBox, CheckBox, ListView, VerticalBox, HorizontalBox, ScrollView } from "std-widgets.slint";
 
 export struct AccountItem {
     id: int,
@@ -458,8 +458,25 @@ export component MainWindow inherits Window {
     callback save-cheque-clicked();
     callback cancel-cheque-form();
 
+    in-out property <bool> csv-import-form-visible: false;
+    in-out property <string> csv-preview-text: "";
+    in-out property <string> csv-delimiter: ",";
+    in-out property <bool> csv-has-header: true;
+    in-out property <string> csv-date-column: "0";
+    in-out property <int> csv-date-order-index: 0;
+    in-out property <string> csv-label-column: "1";
+    in-out property <string> csv-amount-column: "2";
+    in-out property <string> csv-debit-column: "";
+    in-out property <string> csv-credit-column: "";
+    in-out property <string> csv-reference-column: "";
+
     callback refresh-dashboard-clicked();
     callback statistics-refresh-clicked();
+
+    callback import-ofx-clicked();
+    callback import-csv-clicked();
+    callback cancel-csv-import-form();
+    callback confirm-csv-import-clicked();
 
     VerticalLayout {
         // --- Tab bar ---
@@ -572,6 +589,9 @@ export component MainWindow inherits Window {
                         Button { text: "New transaction"; enabled: selected-account-index >= 0; clicked => { add-transaction-clicked(); } }
                         Button { text: "Edit"; enabled: selected-transaction-index >= 0; clicked => { edit-transaction-clicked(); } }
                         Button { text: "Delete"; enabled: selected-transaction-index >= 0; clicked => { delete-transaction-clicked(); } }
+                        Rectangle { horizontal-stretch: 1; }
+                        Button { text: "Import OFX..."; enabled: selected-account-index >= 0; clicked => { import-ofx-clicked(); } }
+                        Button { text: "Import CSV..."; enabled: selected-account-index >= 0; clicked => { import-csv-clicked(); } }
                     }
                 }
             }
@@ -966,6 +986,76 @@ export component MainWindow inherits Window {
             Rectangle { horizontal-stretch: 1; }
             Button { text: "Cancel"; clicked => { cancel-cheque-form(); } }
             Button { text: "Save"; primary: true; clicked => { save-cheque-clicked(); } }
+        }
+    }
+
+    // --- CSV import mapping form ---
+    FormOverlay {
+        visible-form: csv-import-form-visible;
+        form-title: "Import CSV";
+        card-width: 460px;
+
+        Text { text: "First lines of the file:"; font-size: 12px; color: #666; }
+        Text { text: csv-preview-text; font-size: 11px; font-family: "monospace"; wrap: word-wrap; }
+
+        HorizontalLayout {
+            spacing: 8px;
+            VerticalLayout {
+                spacing: 4px;
+                Text { text: "Delimiter"; font-size: 12px; color: #666; }
+                LineEdit { text <=> csv-delimiter; }
+            }
+            VerticalLayout {
+                spacing: 4px;
+                Text { text: "Date order"; font-size: 12px; color: #666; }
+                ComboBox { model: ["Year-Month-Day", "Day-Month-Year", "Month-Day-Year"]; current-index <=> csv-date-order-index; }
+            }
+        }
+        CheckBox { text: "First line is a header"; checked <=> csv-has-header; }
+
+        Text { text: "Column numbers below are 0-based (first column is 0)."; font-size: 11px; color: #999; }
+        HorizontalLayout {
+            spacing: 8px;
+            VerticalLayout {
+                spacing: 4px;
+                Text { text: "Date column"; font-size: 12px; color: #666; }
+                LineEdit { text <=> csv-date-column; }
+            }
+            VerticalLayout {
+                spacing: 4px;
+                Text { text: "Label column"; font-size: 12px; color: #666; }
+                LineEdit { text <=> csv-label-column; }
+            }
+            VerticalLayout {
+                spacing: 4px;
+                Text { text: "Reference column"; font-size: 12px; color: #666; }
+                LineEdit { text <=> csv-reference-column; }
+            }
+        }
+        Text { text: "Either an amount column, or separate debit/credit columns:"; font-size: 11px; color: #999; }
+        HorizontalLayout {
+            spacing: 8px;
+            VerticalLayout {
+                spacing: 4px;
+                Text { text: "Amount column"; font-size: 12px; color: #666; }
+                LineEdit { text <=> csv-amount-column; }
+            }
+            VerticalLayout {
+                spacing: 4px;
+                Text { text: "Debit column"; font-size: 12px; color: #666; }
+                LineEdit { text <=> csv-debit-column; }
+            }
+            VerticalLayout {
+                spacing: 4px;
+                Text { text: "Credit column"; font-size: 12px; color: #666; }
+                LineEdit { text <=> csv-credit-column; }
+            }
+        }
+        HorizontalLayout {
+            spacing: 8px;
+            Rectangle { horizontal-stretch: 1; }
+            Button { text: "Cancel"; clicked => { cancel-csv-import-form(); } }
+            Button { text: "Import"; primary: true; clicked => { confirm-csv-import-clicked(); } }
         }
     }
 }

@@ -8,6 +8,7 @@ use accountancy_core::cheques::{self, Cheque, ChequeStatus, Chequebook, NewChequ
 use accountancy_core::dashboard;
 use accountancy_core::dates;
 use accountancy_core::db;
+use accountancy_core::import::{self, csv, ofx};
 use accountancy_core::money::Amount;
 use accountancy_core::recurring::{self, EndMode, NewRecurringRule, Period, RecurringRule};
 use accountancy_core::reference_lists::{self, Category, NamedItem, ReferenceKind};
@@ -34,6 +35,7 @@ struct AppState {
     editing_transaction_id: Option<i64>,
     editing_recurring_id: Option<i64>,
     editing_cheque_id: Option<i64>,
+    pending_csv_content: Option<String>,
 }
 
 fn main() -> Result<(), slint::PlatformError> {
@@ -57,6 +59,7 @@ fn main() -> Result<(), slint::PlatformError> {
         editing_transaction_id: None,
         editing_recurring_id: None,
         editing_cheque_id: None,
+        pending_csv_content: None,
     }));
 
     let ui = MainWindow::new()?;
@@ -84,6 +87,7 @@ fn main() -> Result<(), slint::PlatformError> {
     wire_cheque_callbacks(&ui, &state);
     wire_dashboard_callbacks(&ui, &state);
     wire_statistics_callbacks(&ui, &state);
+    wire_import_callbacks(&ui, &state);
 
     ui.run()
 }
@@ -238,6 +242,30 @@ fn axis_from_index(index: i32) -> Axis {
         5 => Axis::BudgetLine,
         _ => Axis::Category,
     }
+}
+
+fn csv_date_order_from_index(index: i32) -> csv::DateOrder {
+    match index {
+        1 => csv::DateOrder::DayMonthYear,
+        2 => csv::DateOrder::MonthDayYear,
+        _ => csv::DateOrder::YearMonthDay,
+    }
+}
+
+fn parse_column_index(text: &str) -> Option<usize> {
+    let trimmed = text.trim();
+    if trimmed.is_empty() {
+        None
+    } else {
+        trimmed.parse().ok()
+    }
+}
+
+fn import_summary_message(summary: import::ImportSummary) -> String {
+    format!(
+        "{} transaction(s) imported, {} already on file.",
+        summary.imported, summary.skipped_duplicates
+    )
 }
 
 // --- Refreshing the UI from the database ---
@@ -1461,4 +1489,142 @@ fn wire_statistics_callbacks(ui: &MainWindow, state: &Rc<RefCell<AppState>>) {
     ui.on_statistics_refresh_clicked(move || {
         refresh_statistics(&ui_weak.upgrade().unwrap(), &state);
     });
+}
+
+fn wire_import_callbacks(ui: &MainWindow, state: &Rc<RefCell<AppState>>) {
+    {
+        let ui_weak = ui.as_weak();
+        let state = state.clone();
+        ui.on_import_ofx_clicked(move || {
+            let ui = ui_weak.upgrade().unwrap();
+            let Some(account_id) = state.borrow().selected_account_id else {
+                return;
+            };
+            let Some(path) = rfd::FileDialog::new()
+                .add_filter("OFX", &["ofx", "qfx"])
+                .pick_file()
+            else {
+                return;
+            };
+
+            let content = match std::fs::read_to_string(&path) {
+                Ok(c) => c,
+                Err(e) => {
+                    report_error(&ui, e);
+                    return;
+                }
+            };
+            let parsed = ofx::parse(&content);
+            if parsed.is_empty() {
+                report_error(&ui, "No transactions found in that file.");
+                return;
+            }
+
+            let result = {
+                let st = state.borrow();
+                import::import(st.db.connection(), account_id, &parsed)
+            };
+            match result {
+                Ok(summary) => {
+                    report_success(&ui, &import_summary_message(summary));
+                    refresh_transactions(&ui, &state);
+                    refresh_accounts(&ui, &state);
+                }
+                Err(e) => report_error(&ui, e),
+            }
+        });
+    }
+
+    {
+        let ui_weak = ui.as_weak();
+        let state = state.clone();
+        ui.on_import_csv_clicked(move || {
+            let ui = ui_weak.upgrade().unwrap();
+            if state.borrow().selected_account_id.is_none() {
+                return;
+            }
+            let Some(path) = rfd::FileDialog::new()
+                .add_filter("CSV", &["csv", "txt"])
+                .pick_file()
+            else {
+                return;
+            };
+
+            let content = match std::fs::read_to_string(&path) {
+                Ok(c) => c,
+                Err(e) => {
+                    report_error(&ui, e);
+                    return;
+                }
+            };
+
+            let preview: String = content.lines().take(3).collect::<Vec<_>>().join("\n");
+            ui.set_csv_preview_text(preview.into());
+            state.borrow_mut().pending_csv_content = Some(content);
+            ui.set_csv_import_form_visible(true);
+        });
+    }
+
+    {
+        let ui_weak = ui.as_weak();
+        let state = state.clone();
+        ui.on_cancel_csv_import_form(move || {
+            ui_weak
+                .upgrade()
+                .unwrap()
+                .set_csv_import_form_visible(false);
+            state.borrow_mut().pending_csv_content = None;
+        });
+    }
+
+    {
+        let ui_weak = ui.as_weak();
+        let state = state.clone();
+        ui.on_confirm_csv_import_clicked(move || {
+            let ui = ui_weak.upgrade().unwrap();
+            let Some(account_id) = state.borrow().selected_account_id else {
+                return;
+            };
+            let Some(content) = state.borrow().pending_csv_content.clone() else {
+                return;
+            };
+
+            let Some(date_column) = parse_column_index(&ui.get_csv_date_column()) else {
+                report_error(&ui, "Date column must be a number.");
+                return;
+            };
+            let mapping = csv::ColumnMapping {
+                delimiter: ui.get_csv_delimiter().chars().next().unwrap_or(','),
+                has_header: ui.get_csv_has_header(),
+                date_column,
+                date_order: csv_date_order_from_index(ui.get_csv_date_order_index()),
+                label_column: parse_column_index(&ui.get_csv_label_column()),
+                amount_column: parse_column_index(&ui.get_csv_amount_column()),
+                debit_column: parse_column_index(&ui.get_csv_debit_column()),
+                credit_column: parse_column_index(&ui.get_csv_credit_column()),
+                reference_column: parse_column_index(&ui.get_csv_reference_column()),
+            };
+
+            let parsed = csv::parse(&content, &mapping);
+            if parsed.is_empty() {
+                report_error(&ui, "No transactions could be read with these settings.");
+                return;
+            }
+
+            let result = {
+                let st = state.borrow();
+                import::import(st.db.connection(), account_id, &parsed)
+            };
+            match result {
+                Ok(summary) => {
+                    report_success(&ui, &import_summary_message(summary));
+                    ui.set_csv_import_form_visible(false);
+                    state.borrow_mut().pending_csv_content = None;
+                    refresh_transactions(&ui, &state);
+                    refresh_accounts(&ui, &state);
+                }
+                Err(e) => report_error(&ui, e),
+            }
+        });
+    }
 }
