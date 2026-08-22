@@ -12,7 +12,7 @@ use accountancy_core::dashboard;
 use accountancy_core::dates;
 use accountancy_core::db::{self, DatabaseInfo};
 use accountancy_core::exports;
-use accountancy_core::import::{self, csv, ofx};
+use accountancy_core::import::{self, csv, excel, ofx};
 use accountancy_core::journal::{self, OperationKind};
 use accountancy_core::money::Amount;
 use accountancy_core::printing;
@@ -46,6 +46,7 @@ struct AppState {
     editing_recurring_id: Option<i64>,
     editing_cheque_id: Option<i64>,
     pending_csv_content: Option<String>,
+    pending_excel_path: Option<PathBuf>,
     pending_restore_path: Option<PathBuf>,
     pending_duplicate_source: Option<PathBuf>,
     pending_delete_database: Option<DatabaseInfo>,
@@ -99,12 +100,21 @@ fn main() -> Result<(), slint::PlatformError> {
         editing_recurring_id: None,
         editing_cheque_id: None,
         pending_csv_content: None,
+        pending_excel_path: None,
         pending_restore_path: None,
         pending_duplicate_source: None,
         pending_delete_database: None,
     }));
 
     let ui = MainWindow::new()?;
+
+    let language = app_settings::load()
+        .language
+        .unwrap_or_else(|| "en".to_string());
+    if slint::select_bundled_translation(&language).is_ok() {
+        ui.set_current_language(language.into());
+    }
+
     ui.set_budget_year(accountancy_core::today()[..4].into());
     let (month_start, month_end) =
         dates::month_bounds(dates::parse(&accountancy_core::today()).unwrap());
@@ -125,6 +135,7 @@ fn main() -> Result<(), slint::PlatformError> {
     wire_attachment_callbacks(&ui, &state);
     wire_database_callbacks(&ui, &state);
     wire_export_callbacks(&ui, &state);
+    wire_language_callbacks(&ui, &state);
 
     ui.run()
 }
@@ -229,15 +240,15 @@ fn cheque_status_label(status: ChequeStatus) -> &'static str {
     }
 }
 
-fn payee_name(payees: &[NamedItem], payee_id: i64) -> String {
+fn payee_name(payees: &[NamedItem], payee_id: i64, unspecified: &str) -> String {
     if payee_id == 0 {
-        "Unspecified".to_string()
+        unspecified.to_string()
     } else {
         payees
             .iter()
             .find(|p| p.id == payee_id)
             .map(|p| p.name.clone())
-            .unwrap_or_else(|| "Unspecified".to_string())
+            .unwrap_or_else(|| unspecified.to_string())
     }
 }
 
@@ -250,22 +261,22 @@ fn to_chequebook_item(book: &Chequebook) -> ChequebookItem {
     }
 }
 
-fn to_cheque_item(cheque: &Cheque, payees: &[NamedItem]) -> ChequeItem {
+fn to_cheque_item(cheque: &Cheque, payees: &[NamedItem], unspecified: &str) -> ChequeItem {
     ChequeItem {
         id: cheque.id as i32,
         number_text: cheque.number.to_string().into(),
         date_text: cheque.date.clone().unwrap_or_default().into(),
-        payee_text: payee_name(payees, cheque.payee_id).into(),
+        payee_text: payee_name(payees, cheque.payee_id, unspecified).into(),
         amount_text: format::amount(cheque.amount).into(),
         status_text: cheque_status_label(cheque.status).into(),
     }
 }
 
-fn cheque_label(cheque: &Cheque, payees: &[NamedItem]) -> String {
+fn cheque_label(cheque: &Cheque, payees: &[NamedItem], unspecified: &str) -> String {
     format!(
         "#{} - {} ({})",
         cheque.number,
-        payee_name(payees, cheque.payee_id),
+        payee_name(payees, cheque.payee_id, unspecified),
         cheque_status_label(cheque.status)
     )
 }
@@ -322,7 +333,7 @@ fn refresh_accounts(ui: &MainWindow, state: &Rc<RefCell<AppState>>) {
         .collect();
     ui.set_account_names(ModelRc::new(VecModel::from(names.clone())));
 
-    let mut names_with_all: Vec<SharedString> = vec!["All accounts".into()];
+    let mut names_with_all: Vec<SharedString> = vec![ui.get_all_accounts_label()];
     names_with_all.extend(names);
     ui.set_statistics_account_names(ModelRc::new(VecModel::from(names_with_all)));
 
@@ -347,15 +358,16 @@ fn refresh_transactions(ui: &MainWindow, state: &Rc<RefCell<AppState>>) {
     };
 
     let categories = state.borrow().categories_cache.clone();
+    let unspecified = ui.get_unspecified_label().to_string();
     let category_name = |id: i64| -> String {
         if id == 0 {
-            "Unspecified".to_string()
+            unspecified.clone()
         } else {
             categories
                 .iter()
                 .find(|c| c.id == id)
                 .map(|c| c.name.clone())
-                .unwrap_or_else(|| "Unspecified".to_string())
+                .unwrap_or_else(|| unspecified.clone())
         }
     };
 
@@ -384,7 +396,7 @@ fn refresh_transactions(ui: &MainWindow, state: &Rc<RefCell<AppState>>) {
             );
         }
         None => {
-            ui.set_selected_account_name("No account selected".into());
+            ui.set_selected_account_name("".into());
             ui.set_selected_account_balance_text("".into());
         }
     }
@@ -404,11 +416,12 @@ fn refresh_transaction_cheque_options(ui: &MainWindow, state: &Rc<RefCell<AppSta
         None => Vec::new(),
     };
 
-    let mut names: Vec<SharedString> = vec!["None".into()];
+    let unspecified = ui.get_unspecified_label().to_string();
+    let mut names: Vec<SharedString> = vec![ui.get_none_label()];
     names.extend(
         cheques
             .iter()
-            .map(|c| SharedString::from(cheque_label(c, &payees))),
+            .map(|c| SharedString::from(cheque_label(c, &payees, &unspecified))),
     );
     ui.set_cheque_names(ModelRc::new(VecModel::from(names)));
 
@@ -421,7 +434,7 @@ fn refresh_categories(ui: &MainWindow, state: &Rc<RefCell<AppState>>) {
         reference_lists::list_categories(st.db.connection()).unwrap_or_default()
     };
 
-    let mut names: Vec<SharedString> = vec!["Unspecified".into()];
+    let mut names: Vec<SharedString> = vec![ui.get_unspecified_label()];
     names.extend(list.iter().map(|c| SharedString::from(c.name.clone())));
     ui.set_category_names(ModelRc::new(VecModel::from(names)));
 
@@ -434,7 +447,7 @@ fn refresh_payees(ui: &MainWindow, state: &Rc<RefCell<AppState>>) {
         reference_lists::list(st.db.connection(), ReferenceKind::Payee).unwrap_or_default()
     };
 
-    let mut names: Vec<SharedString> = vec!["Unspecified".into()];
+    let mut names: Vec<SharedString> = vec![ui.get_unspecified_label()];
     names.extend(list.iter().map(|p| SharedString::from(p.name.clone())));
     ui.set_payee_names(ModelRc::new(VecModel::from(names)));
 
@@ -471,7 +484,11 @@ fn refresh_cheques(ui: &MainWindow, state: &Rc<RefCell<AppState>>) {
         None => Vec::new(),
     };
 
-    let items: Vec<ChequeItem> = list.iter().map(|c| to_cheque_item(c, &payees)).collect();
+    let unspecified = ui.get_unspecified_label().to_string();
+    let items: Vec<ChequeItem> = list
+        .iter()
+        .map(|c| to_cheque_item(c, &payees, &unspecified))
+        .collect();
     ui.set_cheques(ModelRc::new(VecModel::from(items)));
     ui.set_selected_cheque_index(-1);
 
@@ -1748,6 +1765,108 @@ fn wire_import_callbacks(ui: &MainWindow, state: &Rc<RefCell<AppState>>) {
             }
         });
     }
+
+    {
+        let ui_weak = ui.as_weak();
+        let state = state.clone();
+        ui.on_import_excel_clicked(move || {
+            let ui = ui_weak.upgrade().unwrap();
+            if state.borrow().selected_account_id.is_none() {
+                return;
+            }
+            let Some(path) = rfd::FileDialog::new()
+                .add_filter("Excel/OpenDocument", &["xlsx", "xls", "xlsb", "ods"])
+                .pick_file()
+            else {
+                return;
+            };
+
+            let preview = match excel::preview_rows(&path, 5) {
+                Ok(rows) => rows,
+                Err(e) => {
+                    report_error(&ui, e);
+                    return;
+                }
+            };
+            let preview_text = preview
+                .iter()
+                .map(|row| row.join(" | "))
+                .collect::<Vec<_>>()
+                .join("\n");
+
+            ui.set_excel_preview_text(preview_text.into());
+            state.borrow_mut().pending_excel_path = Some(path);
+            ui.set_excel_import_form_visible(true);
+        });
+    }
+
+    {
+        let ui_weak = ui.as_weak();
+        let state = state.clone();
+        ui.on_cancel_excel_import_form(move || {
+            ui_weak
+                .upgrade()
+                .unwrap()
+                .set_excel_import_form_visible(false);
+            state.borrow_mut().pending_excel_path = None;
+        });
+    }
+
+    {
+        let ui_weak = ui.as_weak();
+        let state = state.clone();
+        ui.on_confirm_excel_import_clicked(move || {
+            let ui = ui_weak.upgrade().unwrap();
+            let Some(account_id) = state.borrow().selected_account_id else {
+                return;
+            };
+            let Some(path) = state.borrow().pending_excel_path.clone() else {
+                return;
+            };
+
+            let Some(date_column) = parse_column_index(&ui.get_excel_date_column()) else {
+                report_error(&ui, "Date column must be a number.");
+                return;
+            };
+            let mapping = excel::ColumnMapping {
+                has_header: ui.get_excel_has_header(),
+                date_column,
+                date_order: csv_date_order_from_index(ui.get_excel_date_order_index()),
+                label_column: parse_column_index(&ui.get_excel_label_column()),
+                amount_column: parse_column_index(&ui.get_excel_amount_column()),
+                debit_column: parse_column_index(&ui.get_excel_debit_column()),
+                credit_column: parse_column_index(&ui.get_excel_credit_column()),
+                reference_column: parse_column_index(&ui.get_excel_reference_column()),
+            };
+
+            let parsed = match excel::parse(&path, &mapping) {
+                Ok(rows) => rows,
+                Err(e) => {
+                    report_error(&ui, e);
+                    return;
+                }
+            };
+            if parsed.is_empty() {
+                report_error(&ui, "No transactions could be read with these settings.");
+                return;
+            }
+
+            let result = {
+                let st = state.borrow();
+                import::import(st.db.connection(), account_id, &parsed)
+            };
+            match result {
+                Ok(summary) => {
+                    report_success(&ui, &import_summary_message(summary));
+                    ui.set_excel_import_form_visible(false);
+                    state.borrow_mut().pending_excel_path = None;
+                    refresh_transactions(&ui, &state);
+                    refresh_accounts(&ui, &state);
+                }
+                Err(e) => report_error(&ui, e),
+            }
+        });
+    }
 }
 
 fn refresh_everything(ui: &MainWindow, state: &Rc<RefCell<AppState>>) {
@@ -1985,7 +2104,8 @@ fn wire_database_callbacks(ui: &MainWindow, state: &Rc<RefCell<AppState>>) {
         ui.on_new_database_clicked(move || {
             let ui = ui_weak.upgrade().unwrap();
             state.borrow_mut().pending_duplicate_source = None;
-            ui.set_database_form_title("New database".into());
+            ui.set_database_form_mode("new".into());
+            ui.set_database_form_source_name("".into());
             ui.set_database_form_name("".into());
             ui.set_database_form_visible(true);
         });
@@ -2005,8 +2125,11 @@ fn wire_database_callbacks(ui: &MainWindow, state: &Rc<RefCell<AppState>>) {
             };
 
             state.borrow_mut().pending_duplicate_source = Some(info.folder);
-            ui.set_database_form_title(format!("Duplicate \"{}\"", info.name).into());
-            ui.set_database_form_name(format!("{} copy", info.name).into());
+            ui.set_database_form_mode("duplicate".into());
+            ui.set_database_form_source_name(info.name.clone().into());
+            ui.set_database_form_name(
+                format!("{} {}", info.name, ui.get_copy_suffix_label()).into(),
+            );
             ui.set_database_form_visible(true);
         });
     }
@@ -2255,4 +2378,20 @@ fn wire_export_callbacks(ui: &MainWindow, state: &Rc<RefCell<AppState>>) {
             }
         });
     }
+}
+
+fn wire_language_callbacks(ui: &MainWindow, state: &Rc<RefCell<AppState>>) {
+    let ui_weak = ui.as_weak();
+    let state = state.clone();
+    ui.on_language_selected(move |language| {
+        let ui = ui_weak.upgrade().unwrap();
+        if slint::select_bundled_translation(&language).is_err() {
+            return;
+        }
+        app_settings::record_language(&language);
+        // The static UI text re-renders on its own; everything Rust
+        // composed from a translated label (list prefixes, cheque/period
+        // labels) needs to be rebuilt against the newly active language.
+        refresh_everything(&ui, &state);
+    });
 }

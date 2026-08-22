@@ -1,7 +1,7 @@
-//! Bank statement import. OFX and CSV parsing each produce a plain list of
-//! [`ImportedTransaction`]; [`import`] is the single pipeline that writes
-//! them into an account, deduplicating on the bank's own transaction id
-//! when one is available. Reconciliation only ever needs that one rule:
+//! Bank statement import. OFX, CSV and Excel parsing each produce a plain
+//! list of [`ImportedTransaction`]; [`import`] is the single pipeline that
+//! writes them into an account, deduplicating on the bank's own transaction
+//! id when one is available. Reconciliation only ever needs that one rule:
 //! never re-import the same statement line twice.
 
 use crate::accounts;
@@ -9,6 +9,69 @@ use crate::error::Result;
 use crate::money::Amount;
 use crate::transactions::Status;
 use rusqlite::{Connection, params};
+
+/// How the three date components are ordered in a source column - a bank's
+/// own choice, not something CSV or Excel encode. Shared by `csv` and
+/// `excel`, since a spreadsheet exported "as text" has exactly the same
+/// ambiguity a CSV file does.
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub enum DateOrder {
+    YearMonthDay,
+    DayMonthYear,
+    MonthDayYear,
+}
+
+/// Parses a `raw` date built only from digits and separators (`/`, `-`,
+/// `.`, whitespace...) according to `order`. A two-digit year is read as
+/// 20xx.
+fn parse_date_field(raw: &str, order: DateOrder) -> Option<String> {
+    let parts: Vec<&str> = raw
+        .split(|c: char| !c.is_ascii_digit())
+        .filter(|s| !s.is_empty())
+        .collect();
+    if parts.len() != 3 {
+        return None;
+    }
+    let (year_part, month_part, day_part) = match order {
+        DateOrder::YearMonthDay => (parts[0], parts[1], parts[2]),
+        DateOrder::DayMonthYear => (parts[2], parts[1], parts[0]),
+        DateOrder::MonthDayYear => (parts[2], parts[0], parts[1]),
+    };
+    let mut year: i32 = year_part.parse().ok()?;
+    if year_part.len() <= 2 {
+        year += 2000;
+    }
+    let month: u32 = month_part.parse().ok()?;
+    let day: u32 = day_part.parse().ok()?;
+    if !(1..=12).contains(&month) || !(1..=31).contains(&day) {
+        return None;
+    }
+    Some(format!("{year:04}-{month:02}-{day:02}"))
+}
+
+/// Reads an amount from either a single signed column or a pair of
+/// debit/credit columns - the two shapes real bank exports come in, for
+/// CSV and Excel alike.
+fn amount_from_columns(
+    field: impl Fn(usize) -> String,
+    amount_column: Option<usize>,
+    debit_column: Option<usize>,
+    credit_column: Option<usize>,
+) -> Option<Amount> {
+    if let Some(col) = amount_column {
+        return Amount::parse(&field(col)).ok();
+    }
+    let debit = debit_column
+        .and_then(|c| Amount::parse(&field(c)).ok())
+        .unwrap_or(Amount::ZERO);
+    let credit = credit_column
+        .and_then(|c| Amount::parse(&field(c)).ok())
+        .unwrap_or(Amount::ZERO);
+    if debit == Amount::ZERO && credit == Amount::ZERO {
+        return None;
+    }
+    Some(credit - debit.abs())
+}
 
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub struct ImportedTransaction {
@@ -166,15 +229,9 @@ pub mod ofx {
 /// amount column, or separate debit/credit columns - and a handful of date
 /// orderings, since which one a given bank uses isn't standard.
 pub mod csv {
-    use super::ImportedTransaction;
-    use crate::money::Amount;
+    use super::{ImportedTransaction, amount_from_columns, parse_date_field};
 
-    #[derive(Debug, Clone, Copy, PartialEq, Eq)]
-    pub enum DateOrder {
-        YearMonthDay,
-        DayMonthYear,
-        MonthDayYear,
-    }
+    pub use super::DateOrder;
 
     #[derive(Debug, Clone)]
     pub struct ColumnMapping {
@@ -208,18 +265,23 @@ pub mod csv {
 
     fn parse_line(line: &str, mapping: &ColumnMapping) -> Option<ImportedTransaction> {
         let fields = split_line(line, mapping.delimiter);
-        let field = |index: usize| fields.get(index).map(String::as_str).unwrap_or("");
+        let field = |index: usize| fields.get(index).cloned().unwrap_or_default();
 
-        let date = parse_date(field(mapping.date_column), mapping.date_order)?;
-        let amount = read_amount(&fields, mapping)?;
+        let date = parse_date_field(&field(mapping.date_column), mapping.date_order)?;
+        let amount = amount_from_columns(
+            field,
+            mapping.amount_column,
+            mapping.debit_column,
+            mapping.credit_column,
+        )?;
         let label = mapping
             .label_column
-            .map(|c| field(c).to_string())
+            .map(field)
             .filter(|s| !s.is_empty())
             .unwrap_or_else(|| "Imported transaction".to_string());
         let fit_id = mapping
             .reference_column
-            .map(|c| field(c).to_string())
+            .map(field)
             .filter(|s| !s.is_empty());
 
         Some(ImportedTransaction {
@@ -229,25 +291,6 @@ pub mod csv {
             label,
             memo: None,
         })
-    }
-
-    fn read_amount(fields: &[String], mapping: &ColumnMapping) -> Option<Amount> {
-        let field = |index: usize| fields.get(index).map(String::as_str).unwrap_or("");
-        if let Some(col) = mapping.amount_column {
-            return Amount::parse(field(col)).ok();
-        }
-        let debit = mapping
-            .debit_column
-            .and_then(|c| Amount::parse(field(c)).ok())
-            .unwrap_or(Amount::ZERO);
-        let credit = mapping
-            .credit_column
-            .and_then(|c| Amount::parse(field(c)).ok())
-            .unwrap_or(Amount::ZERO);
-        if debit == Amount::ZERO && credit == Amount::ZERO {
-            return None;
-        }
-        Some(credit - debit.abs())
     }
 
     /// A small quoted-field splitter: handles `"a, b"` and a doubled `""`
@@ -282,30 +325,152 @@ pub mod csv {
         fields.push(current.trim().to_string());
         fields
     }
+}
 
-    fn parse_date(raw: &str, order: DateOrder) -> Option<String> {
-        let parts: Vec<&str> = raw
-            .split(|c: char| !c.is_ascii_digit())
-            .filter(|s| !s.is_empty())
-            .collect();
-        if parts.len() != 3 {
-            return None;
-        }
-        let (year_part, month_part, day_part) = match order {
-            DateOrder::YearMonthDay => (parts[0], parts[1], parts[2]),
-            DateOrder::DayMonthYear => (parts[2], parts[1], parts[0]),
-            DateOrder::MonthDayYear => (parts[2], parts[0], parts[1]),
+/// Excel/OpenDocument import (`.xls`, `.xlsx`, `.xlsb`, `.ods`): the same
+/// column-mapping idea as `csv`, applied to the first worksheet's cells
+/// instead of delimited text. Cell values that already carry a real type
+/// (a date cell, a numeric amount cell) are read as that type rather than
+/// through their displayed text, since a spreadsheet's own formatting can't
+/// be relied on to round-trip through a string cleanly.
+pub mod excel {
+    use super::{ImportedTransaction, amount_from_columns, parse_date_field};
+    use crate::error::{CoreError, Result};
+    use crate::money::Amount;
+    use calamine::{Data, ExcelDateTime, ExcelDateTimeType, Reader, open_workbook_auto};
+    use std::path::Path;
+
+    pub use super::DateOrder;
+
+    #[derive(Debug, Clone)]
+    pub struct ColumnMapping {
+        pub has_header: bool,
+        pub date_column: usize,
+        pub date_order: DateOrder,
+        pub label_column: Option<usize>,
+        pub amount_column: Option<usize>,
+        pub debit_column: Option<usize>,
+        pub credit_column: Option<usize>,
+        pub reference_column: Option<usize>,
+    }
+
+    fn open_first_sheet(path: &Path) -> Result<Vec<Vec<Data>>> {
+        let mut workbook =
+            open_workbook_auto(path).map_err(|e| CoreError::Invalid(e.to_string()))?;
+        let range = match workbook.worksheet_range_at(0) {
+            Some(Ok(range)) => range,
+            Some(Err(e)) => return Err(CoreError::Invalid(e.to_string())),
+            None => return Err(CoreError::Invalid("the workbook has no worksheets".into())),
         };
-        let mut year: i32 = year_part.parse().ok()?;
-        if year_part.len() <= 2 {
-            year += 2000;
+        Ok(range.rows().map(|row| row.to_vec()).collect())
+    }
+
+    /// The first `limit` rows of the first worksheet, as plain text - for
+    /// showing the user what's in the file before they pick column numbers.
+    pub fn preview_rows(path: &Path, limit: usize) -> Result<Vec<Vec<String>>> {
+        let rows = open_first_sheet(path)?;
+        Ok(rows
+            .into_iter()
+            .take(limit)
+            .map(|row| row.iter().map(cell_to_string).collect())
+            .collect())
+    }
+
+    pub fn parse(path: &Path, mapping: &ColumnMapping) -> Result<Vec<ImportedTransaction>> {
+        let rows = open_first_sheet(path)?;
+        let rows = if mapping.has_header {
+            rows.into_iter().skip(1).collect()
+        } else {
+            rows
+        };
+
+        Ok(rows
+            .iter()
+            .filter_map(|row| parse_row(row, mapping))
+            .collect())
+    }
+
+    fn parse_row(row: &[Data], mapping: &ColumnMapping) -> Option<ImportedTransaction> {
+        let cell = |index: usize| row.get(index);
+        let field = |index: usize| cell(index).map(cell_to_string).unwrap_or_default();
+
+        let date = cell(mapping.date_column).and_then(|c| cell_to_date(c, mapping.date_order))?;
+        let amount =
+            cell_to_amount(cell(mapping.amount_column.unwrap_or(usize::MAX))).or_else(|| {
+                amount_from_columns(
+                    field,
+                    mapping.amount_column,
+                    mapping.debit_column,
+                    mapping.credit_column,
+                )
+            })?;
+        let label = mapping
+            .label_column
+            .map(field)
+            .filter(|s| !s.is_empty())
+            .unwrap_or_else(|| "Imported transaction".to_string());
+        let fit_id = mapping
+            .reference_column
+            .map(field)
+            .filter(|s| !s.is_empty());
+
+        Some(ImportedTransaction {
+            date,
+            amount,
+            fit_id,
+            label,
+            memo: None,
+        })
+    }
+
+    fn cell_to_string(cell: &Data) -> String {
+        match cell {
+            Data::Empty => String::new(),
+            Data::String(s) => s.clone(),
+            Data::Int(i) => i.to_string(),
+            Data::Float(f) => {
+                if f.fract() == 0.0 {
+                    format!("{}", *f as i64)
+                } else {
+                    f.to_string()
+                }
+            }
+            Data::Bool(b) => b.to_string(),
+            Data::DateTimeIso(s) | Data::DurationIso(s) => s.clone(),
+            Data::DateTime(dt) => dt.to_string(),
+            Data::Error(e) => format!("{e:?}"),
         }
-        let month: u32 = month_part.parse().ok()?;
-        let day: u32 = day_part.parse().ok()?;
-        if !(1..=12).contains(&month) || !(1..=31).contains(&day) {
-            return None;
+    }
+
+    /// A date column's cell is read as a date whenever it plausibly is one:
+    /// a genuine date-typed cell, or - since Excel doesn't require a cell
+    /// to carry a date *format* to hold a date *serial* - a bare number in
+    /// the range real Excel dates fall in (1900 through ~2100). Anything
+    /// else falls back to parsing its displayed text with `date_order`.
+    fn cell_to_date(cell: &Data, order: DateOrder) -> Option<String> {
+        match cell {
+            Data::DateTime(dt) => Some(ymd(dt.to_ymd_hms_milli())),
+            Data::Float(serial) if (1.0..80_000.0).contains(serial) => Some(ymd(
+                ExcelDateTime::new(*serial, ExcelDateTimeType::DateTime, false).to_ymd_hms_milli(),
+            )),
+            _ => parse_date_field(&cell_to_string(cell), order),
         }
-        Some(format!("{year:04}-{month:02}-{day:02}"))
+    }
+
+    fn ymd((year, month, day, ..): (u16, u8, u8, u8, u8, u8, u16)) -> String {
+        format!("{year:04}-{month:02}-{day:02}")
+    }
+
+    /// Reads a genuinely numeric cell directly, without round-tripping
+    /// through its displayed text - avoids float-formatting surprises on
+    /// large amounts. Returns `None` for anything that isn't a plain
+    /// number, so callers fall back to `amount_from_columns`.
+    fn cell_to_amount(cell: Option<&Data>) -> Option<Amount> {
+        match cell? {
+            Data::Int(i) => Some(Amount::from_micros(i * 1_000_000)),
+            Data::Float(f) => Some(Amount::from_micros((f * 1_000_000.0).round() as i64)),
+            _ => None,
+        }
     }
 }
 
@@ -479,5 +644,72 @@ mod tests {
                 .len(),
             2
         );
+    }
+
+    fn write_sample_xlsx(path: &std::path::Path) {
+        use rust_xlsxwriter::{ExcelDateTime, Workbook};
+
+        let mut workbook = Workbook::new();
+        let sheet = workbook.add_worksheet();
+        sheet.write(0, 0, "Date").unwrap();
+        sheet.write(0, 1, "Label").unwrap();
+        sheet.write(0, 2, "Amount").unwrap();
+        sheet.write(0, 3, "Reference").unwrap();
+
+        sheet
+            .write(1, 0, ExcelDateTime::from_ymd(2026, 3, 5).unwrap())
+            .unwrap();
+        sheet.write(1, 1, "Supermarket").unwrap();
+        sheet.write(1, 2, -45.67).unwrap();
+        sheet.write(1, 3, "ref-001").unwrap();
+
+        sheet.write(2, 0, "01/03/2026").unwrap();
+        sheet.write(2, 1, "Salary").unwrap();
+        sheet.write(2, 2, 2000).unwrap();
+        sheet.write(2, 3, "ref-002").unwrap();
+
+        workbook.save(path).unwrap();
+    }
+
+    #[test]
+    fn excel_reads_a_real_date_cell_and_a_numeric_amount_cell() {
+        let dir = tempfile::tempdir().unwrap();
+        let path = dir.path().join("statement.xlsx");
+        write_sample_xlsx(&path);
+
+        let mapping = excel::ColumnMapping {
+            has_header: true,
+            date_column: 0,
+            date_order: excel::DateOrder::DayMonthYear,
+            label_column: Some(1),
+            amount_column: Some(2),
+            debit_column: None,
+            credit_column: None,
+            reference_column: Some(3),
+        };
+
+        let transactions = excel::parse(&path, &mapping).unwrap();
+        assert_eq!(transactions.len(), 2);
+        assert_eq!(transactions[0].date, "2026-03-05");
+        assert_eq!(transactions[0].label, "Supermarket");
+        assert_eq!(transactions[0].amount, Amount::parse("-45.67").unwrap());
+        assert_eq!(transactions[0].fit_id.as_deref(), Some("ref-001"));
+
+        // Second row's date is a text cell in a different format - still
+        // parsed via the same date-order rule as a real date cell.
+        assert_eq!(transactions[1].date, "2026-03-01");
+        assert_eq!(transactions[1].amount, Amount::parse("2000").unwrap());
+    }
+
+    #[test]
+    fn excel_preview_rows_shows_cell_text() {
+        let dir = tempfile::tempdir().unwrap();
+        let path = dir.path().join("statement.xlsx");
+        write_sample_xlsx(&path);
+
+        let preview = excel::preview_rows(&path, 2).unwrap();
+        assert_eq!(preview.len(), 2);
+        assert_eq!(preview[0], vec!["Date", "Label", "Amount", "Reference"]);
+        assert_eq!(preview[1][1], "Supermarket");
     }
 }

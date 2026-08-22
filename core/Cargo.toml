@@ -28,6 +28,11 @@ uuid = { version = "1", features = ["v4"] }
 # layout engine, not the system webview), so a printed statement looks the
 # same on every platform. See docs/architecture.md.
 printpdf = "0.12"
+# Excel/OpenDocument statement import (core::import::excel) - pure Rust.
+calamine = "0.36"
 
 [dev-dependencies]
 tempfile = "3"
+# Only to build a test fixture .xlsx for core::import::excel's tests -
+# calamine itself is read-only.
+rust_xlsxwriter = "0.98"

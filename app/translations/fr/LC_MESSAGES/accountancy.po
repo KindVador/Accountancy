@@ -1,0 +1,655 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: accountancy\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: fr\n"
+
+msgctxt "AccountRow"
+msgid "{} (closed)"
+msgstr "{} (clôturé)"
+
+msgctxt "TransactionRow"
+msgid "(remainder)"
+msgstr "(complément)"
+
+msgctxt "ChequebookRow"
+msgid "{} ({})"
+msgstr "{} ({})"
+
+msgctxt "DatabaseRow"
+msgid "{} (open)"
+msgstr "{} (ouverte)"
+
+msgctxt "AttachmentRow"
+msgid "Open"
+msgstr "Ouvrir"
+
+msgctxt "AttachmentRow"
+msgid "Remove"
+msgstr "Retirer"
+
+msgctxt "MainWindow"
+msgid "No account selected"
+msgstr "Aucun compte sélectionné"
+
+msgctxt "MainWindow"
+msgid "Unspecified"
+msgstr "Non précisé"
+
+msgctxt "MainWindow"
+msgid "None"
+msgstr "Aucun"
+
+msgctxt "MainWindow"
+msgid "All accounts"
+msgstr "Tous les comptes"
+
+msgctxt "MainWindow"
+msgid "copy"
+msgstr "copie"
+
+msgctxt "MainWindow"
+msgid "Transactions"
+msgstr "Opérations"
+
+msgctxt "MainWindow"
+msgid "Recurring"
+msgstr "Récurrentes"
+
+msgctxt "MainWindow"
+msgid "Budget"
+msgstr "Budget"
+
+msgctxt "MainWindow"
+msgid "Cheques"
+msgstr "Chèques"
+
+msgctxt "MainWindow"
+msgid "Dashboard"
+msgstr "Tableau de bord"
+
+msgctxt "MainWindow"
+msgid "Statistics"
+msgstr "Statistiques"
+
+msgctxt "MainWindow"
+msgid "Database"
+msgstr "Base de données"
+
+msgctxt "MainWindow"
+msgid "Accounts"
+msgstr "Comptes"
+
+msgctxt "MainWindow"
+msgid "New account"
+msgstr "Nouveau compte"
+
+msgctxt "MainWindow"
+msgid "Edit account"
+msgstr "Modifier le compte"
+
+msgctxt "MainWindow"
+msgid "Close account"
+msgstr "Clôturer le compte"
+
+msgctxt "MainWindow"
+msgid "Delete account"
+msgstr "Supprimer le compte"
+
+msgctxt "MainWindow"
+msgid "Date"
+msgstr "Date"
+
+msgctxt "MainWindow"
+msgid "Label"
+msgstr "Libellé"
+
+msgctxt "MainWindow"
+msgid "Category"
+msgstr "Catégorie"
+
+msgctxt "MainWindow"
+msgid "Amount"
+msgstr "Montant"
+
+msgctxt "MainWindow"
+msgid "Balance"
+msgstr "Solde"
+
+msgctxt "MainWindow"
+msgid "New transaction"
+msgstr "Nouvelle opération"
+
+msgctxt "MainWindow"
+msgid "Edit"
+msgstr "Modifier"
+
+msgctxt "MainWindow"
+msgid "Delete"
+msgstr "Supprimer"
+
+msgctxt "MainWindow"
+msgid "Import OFX..."
+msgstr "Importer OFX..."
+
+msgctxt "MainWindow"
+msgid "Import CSV..."
+msgstr "Importer CSV..."
+
+msgctxt "MainWindow"
+msgid "Import Excel..."
+msgstr "Importer Excel..."
+
+msgctxt "MainWindow"
+msgid "Export as"
+msgstr "Exporter au format"
+
+msgctxt "MainWindow"
+msgid "Export..."
+msgstr "Exporter..."
+
+msgctxt "MainWindow"
+msgid "Print transactions..."
+msgstr "Imprimer les opérations..."
+
+msgctxt "MainWindow"
+msgid "Print bank details..."
+msgstr "Imprimer le RIB..."
+
+msgctxt "MainWindow"
+msgid "Recurring transactions"
+msgstr "Opérations récurrentes"
+
+msgctxt "MainWindow"
+msgid "Chequebooks — {}"
+msgstr "Chéquiers — {}"
+
+msgctxt "MainWindow"
+msgid "Account"
+msgstr "Compte"
+
+msgctxt "MainWindow"
+msgid "Every"
+msgstr "Tous les"
+
+msgctxt "MainWindow"
+msgid "Next due"
+msgstr "Prochaine échéance"
+
+msgctxt "MainWindow"
+msgid "Ends"
+msgstr "Fin"
+
+msgctxt "MainWindow"
+msgid "New rule"
+msgstr "Nouvelle règle"
+
+msgctxt "MainWindow"
+msgid "Generate due (up to today)"
+msgstr "Générer les échéances (jusqu'à aujourd'hui)"
+
+msgctxt "MainWindow"
+msgid "Year"
+msgstr "Année"
+
+msgctxt "MainWindow"
+msgid "Month"
+msgstr "Mois"
+
+msgctxt "MainWindow"
+msgid "January"
+msgstr "Janvier"
+
+msgctxt "MainWindow"
+msgid "February"
+msgstr "Février"
+
+msgctxt "MainWindow"
+msgid "March"
+msgstr "Mars"
+
+msgctxt "MainWindow"
+msgid "April"
+msgstr "Avril"
+
+msgctxt "MainWindow"
+msgid "May"
+msgstr "Mai"
+
+msgctxt "MainWindow"
+msgid "June"
+msgstr "Juin"
+
+msgctxt "MainWindow"
+msgid "July"
+msgstr "Juillet"
+
+msgctxt "MainWindow"
+msgid "August"
+msgstr "Août"
+
+msgctxt "MainWindow"
+msgid "September"
+msgstr "Septembre"
+
+msgctxt "MainWindow"
+msgid "October"
+msgstr "Octobre"
+
+msgctxt "MainWindow"
+msgid "November"
+msgstr "Novembre"
+
+msgctxt "MainWindow"
+msgid "December"
+msgstr "Décembre"
+
+msgctxt "MainWindow"
+msgid "Entry"
+msgstr "Saisie"
+
+msgctxt "MainWindow"
+msgid "Control"
+msgstr "Contrôle"
+
+msgctxt "MainWindow"
+msgid "Budget line"
+msgstr "Poste budgétaire"
+
+msgctxt "MainWindow"
+msgid "Budgeted"
+msgstr "Budgété"
+
+msgctxt "MainWindow"
+msgid "Actual"
+msgstr "Réalisé"
+
+msgctxt "MainWindow"
+msgid "Difference"
+msgstr "Écart"
+
+msgctxt "MainWindow"
+msgid "New"
+msgstr "Nouveau"
+
+msgctxt "MainWindow"
+msgid "Number"
+msgstr "Numéro"
+
+msgctxt "MainWindow"
+msgid "Payee"
+msgstr "Tiers"
+
+msgctxt "MainWindow"
+msgid "Status"
+msgstr "Statut"
+
+msgctxt "MainWindow"
+msgid "Write cheque"
+msgstr "Renseigner le chèque"
+
+msgctxt "MainWindow"
+msgid "Refresh"
+msgstr "Actualiser"
+
+msgctxt "MainWindow"
+msgid "Open accounts"
+msgstr "Comptes ouverts"
+
+msgctxt "MainWindow"
+msgid "Cleared"
+msgstr "Pointé"
+
+msgctxt "MainWindow"
+msgid "Committed"
+msgstr "Engagé"
+
+msgctxt "MainWindow"
+msgid "Projected"
+msgstr "Prévisionnel"
+
+msgctxt "MainWindow"
+msgid "This month"
+msgstr "Ce mois-ci"
+
+msgctxt "MainWindow"
+msgid "Income"
+msgstr "Recettes"
+
+msgctxt "MainWindow"
+msgid "Expense"
+msgstr "Dépenses"
+
+msgctxt "MainWindow"
+msgid "Net"
+msgstr "Net"
+
+msgctxt "MainWindow"
+msgid "Backup & restore"
+msgstr "Sauvegarde et restauration"
+
+msgctxt "MainWindow"
+msgid "Backup now..."
+msgstr "Sauvegarder maintenant..."
+
+msgctxt "MainWindow"
+msgid "Restore from backup..."
+msgstr "Restaurer une sauvegarde..."
+
+msgctxt "MainWindow"
+msgid "Tag"
+msgstr "Affectation"
+
+msgctxt "MainWindow"
+msgid "Payment mode"
+msgstr "Mode de paiement"
+
+msgctxt "MainWindow"
+msgid "Project"
+msgstr "Projet"
+
+msgctxt "MainWindow"
+msgid "From"
+msgstr "Du"
+
+msgctxt "MainWindow"
+msgid "To"
+msgstr "Au"
+
+msgctxt "MainWindow"
+msgid "Total"
+msgstr "Total"
+
+msgctxt "MainWindow"
+msgid "Databases"
+msgstr "Bases de données"
+
+msgctxt "MainWindow"
+msgid "New database..."
+msgstr "Nouvelle base..."
+
+msgctxt "MainWindow"
+msgid "Duplicate..."
+msgstr "Dupliquer..."
+
+msgctxt "MainWindow"
+msgid "Open"
+msgstr "Ouvrir"
+
+msgctxt "MainWindow"
+msgid "Delete..."
+msgstr "Supprimer..."
+
+msgctxt "MainWindow"
+msgid "Orphan attachment files"
+msgstr "Fichiers joints orphelins"
+
+msgctxt "MainWindow"
+msgid "Files present on disk with no attachment record pointing at them."
+msgstr "Fichiers présents sur le disque sans pièce jointe correspondante en base."
+
+msgctxt "MainWindow"
+msgid "Name"
+msgstr "Nom"
+
+msgctxt "MainWindow"
+msgid "e.g. Checking"
+msgstr "p. ex. Compte courant"
+
+msgctxt "MainWindow"
+msgid "Currency"
+msgstr "Devise"
+
+msgctxt "MainWindow"
+msgid "IBAN"
+msgstr "IBAN"
+
+msgctxt "MainWindow"
+msgid "Opening balance"
+msgstr "Solde initial"
+
+msgctxt "MainWindow"
+msgid "Cancel"
+msgstr "Annuler"
+
+msgctxt "MainWindow"
+msgid "Save"
+msgstr "Enregistrer"
+
+msgctxt "MainWindow"
+msgid "Edit transaction"
+msgstr "Modifier l'opération"
+
+msgctxt "MainWindow"
+msgid "e.g. Groceries"
+msgstr "p. ex. Courses"
+
+msgctxt "MainWindow"
+msgid "Date (YYYY-MM-DD)"
+msgstr "Date (AAAA-MM-JJ)"
+
+msgctxt "MainWindow"
+msgid "Amount (negative = debit)"
+msgstr "Montant (négatif = débit)"
+
+msgctxt "MainWindow"
+msgid "Planned"
+msgstr "Prévu"
+
+msgctxt "MainWindow"
+msgid "Cheque"
+msgstr "Chèque"
+
+msgctxt "MainWindow"
+msgid "Attachments"
+msgstr "Pièces jointes"
+
+msgctxt "MainWindow"
+msgid "Attach file..."
+msgstr "Joindre un fichier..."
+
+msgctxt "MainWindow"
+msgid "New recurring rule"
+msgstr "Nouvelle règle récurrente"
+
+msgctxt "MainWindow"
+msgid "Edit recurring rule"
+msgstr "Modifier la règle récurrente"
+
+msgctxt "MainWindow"
+msgid "e.g. Rent"
+msgstr "p. ex. Loyer"
+
+msgctxt "MainWindow"
+msgid "Next due date (YYYY-MM-DD)"
+msgstr "Prochaine échéance (AAAA-MM-JJ)"
+
+msgctxt "MainWindow"
+msgid "Period"
+msgstr "Période"
+
+msgctxt "MainWindow"
+msgid "Day(s)"
+msgstr "Jour(s)"
+
+msgctxt "MainWindow"
+msgid "Week(s)"
+msgstr "Semaine(s)"
+
+msgctxt "MainWindow"
+msgid "Month(s)"
+msgstr "Mois"
+
+msgctxt "MainWindow"
+msgid "Quarter(s)"
+msgstr "Trimestre(s)"
+
+msgctxt "MainWindow"
+msgid "Year(s)"
+msgstr "Année(s)"
+
+msgctxt "MainWindow"
+msgid "No limit"
+msgstr "Sans limite"
+
+msgctxt "MainWindow"
+msgid "On a date"
+msgstr "À une date"
+
+msgctxt "MainWindow"
+msgid "After a number of occurrences"
+msgstr "Après un nombre d'occurrences"
+
+msgctxt "MainWindow"
+msgid "YYYY-MM-DD"
+msgstr "AAAA-MM-JJ"
+
+msgctxt "MainWindow"
+msgid "e.g. 12"
+msgstr "p. ex. 12"
+
+msgctxt "MainWindow"
+msgid "New chequebook"
+msgstr "Nouveau chéquier"
+
+msgctxt "MainWindow"
+msgid "First number"
+msgstr "Premier numéro"
+
+msgctxt "MainWindow"
+msgid "Last number"
+msgstr "Dernier numéro"
+
+msgctxt "MainWindow"
+msgid "Reception date (YYYY-MM-DD)"
+msgstr "Date de réception (AAAA-MM-JJ)"
+
+msgctxt "MainWindow"
+msgid "Cheque #{}"
+msgstr "Chèque n°{}"
+
+msgctxt "MainWindow"
+msgid "Available"
+msgstr "Disponible"
+
+msgctxt "MainWindow"
+msgid "Issued"
+msgstr "Émis"
+
+msgctxt "MainWindow"
+msgid "Cancelled"
+msgstr "Annulé"
+
+msgctxt "MainWindow"
+msgid "Import CSV"
+msgstr "Importer un CSV"
+
+msgctxt "MainWindow"
+msgid "First lines of the file:"
+msgstr "Premières lignes du fichier :"
+
+msgctxt "MainWindow"
+msgid "Delimiter"
+msgstr "Délimiteur"
+
+msgctxt "MainWindow"
+msgid "Date order"
+msgstr "Ordre de la date"
+
+msgctxt "MainWindow"
+msgid "Year-Month-Day"
+msgstr "Année-Mois-Jour"
+
+msgctxt "MainWindow"
+msgid "Day-Month-Year"
+msgstr "Jour-Mois-Année"
+
+msgctxt "MainWindow"
+msgid "Month-Day-Year"
+msgstr "Mois-Jour-Année"
+
+msgctxt "MainWindow"
+msgid "First line is a header"
+msgstr "La première ligne est un en-tête"
+
+msgctxt "MainWindow"
+msgid "Column numbers below are 0-based (first column is 0)."
+msgstr "Les numéros de colonnes ci-dessous commencent à 0 (la première colonne est 0)."
+
+msgctxt "MainWindow"
+msgid "Date column"
+msgstr "Colonne de la date"
+
+msgctxt "MainWindow"
+msgid "Label column"
+msgstr "Colonne du libellé"
+
+msgctxt "MainWindow"
+msgid "Reference column"
+msgstr "Colonne de référence"
+
+msgctxt "MainWindow"
+msgid "Either an amount column, or separate debit/credit columns:"
+msgstr "Soit une colonne de montant, soit des colonnes débit/crédit séparées :"
+
+msgctxt "MainWindow"
+msgid "Amount column"
+msgstr "Colonne du montant"
+
+msgctxt "MainWindow"
+msgid "Debit column"
+msgstr "Colonne débit"
+
+msgctxt "MainWindow"
+msgid "Credit column"
+msgstr "Colonne crédit"
+
+msgctxt "MainWindow"
+msgid "Import"
+msgstr "Importer"
+
+msgctxt "MainWindow"
+msgid "Import Excel"
+msgstr "Importer un fichier Excel"
+
+msgctxt "MainWindow"
+msgid "First rows of the file:"
+msgstr "Premières lignes du fichier :"
+
+msgctxt "MainWindow"
+msgid "First row is a header"
+msgstr "La première ligne est un en-tête"
+
+msgctxt "MainWindow"
+msgid "Restore this backup?"
+msgstr "Restaurer cette sauvegarde ?"
+
+msgctxt "MainWindow"
+msgid "This replaces the current database with {}. This cannot be undone."
+msgstr "Ceci remplace la base actuelle par {}. Cette action est irréversible."
+
+msgctxt "MainWindow"
+msgid "Restore"
+msgstr "Restaurer"
+
+msgctxt "MainWindow"
+msgid "New database"
+msgstr "Nouvelle base"
+
+msgctxt "MainWindow"
+msgid "Duplicate \"{}\""
+msgstr "Dupliquer « {} »"
+
+msgctxt "MainWindow"
+msgid "e.g. Household"
+msgstr "p. ex. Famille"
+
+msgctxt "MainWindow"
+msgid "Delete this database?"
+msgstr "Supprimer cette base ?"
+
+msgctxt "MainWindow"
+msgid "This permanently deletes \"{}\" and everything in it. This cannot be undone."
+msgstr "Ceci supprime définitivement « {} » et tout son contenu. Cette action est irréversible."

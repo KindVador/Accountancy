@@ -102,7 +102,7 @@ component AccountRow inherits Rectangle {
         spacing: 2px;
         alignment: center;
         Text {
-            text: item.name + (item.is-closed ? " (closed)" : "");
+            text: item.is-closed ? @tr("{} (closed)", item.name) : item.name;
             color: selected ? white : #1a1a1a;
             font-weight: 600;
             overflow: elide;
@@ -133,7 +133,7 @@ component TransactionRow inherits Rectangle {
 
         Text { text: item.date-text; width: 90px; vertical-alignment: center; color: #333; }
         Text {
-            text: item.is-remainder ? "(remainder)" : item.label;
+            text: item.is-remainder ? @tr("(remainder)") : item.label;
             width: 260px;
             vertical-alignment: center;
             font-italic: item.is-remainder;
@@ -237,7 +237,7 @@ component ChequebookRow inherits Rectangle {
         spacing: 2px;
         alignment: center;
         Text {
-            text: item.range-text + " (" + item.count-text + ")";
+            text: @tr("{} ({})", item.range-text, item.count-text);
             color: selected ? white : #1a1a1a;
             font-weight: 600;
         }
@@ -348,7 +348,7 @@ component DatabaseRow inherits Rectangle {
         padding: 10px;
         spacing: 8px;
         Text {
-            text: item.name + (item.is-current ? " (open)" : "");
+            text: item.is-current ? @tr("{} (open)", item.name) : item.name;
             color: selected ? white : #1a1a1a;
             font-weight: item.is-current ? 700 : 400;
             vertical-alignment: center;
@@ -369,11 +369,11 @@ component AttachmentRow inherits Rectangle {
         Text { text: item.size-text; width: 70px; vertical-alignment: center; color: #555; horizontal-alignment: right; }
         open-area := TouchArea {
             width: 40px;
-            Text { text: "Open"; color: #2d6cdf; vertical-alignment: center; horizontal-alignment: center; }
+            Text { text: @tr("Open"); color: #2d6cdf; vertical-alignment: center; horizontal-alignment: center; }
         }
         remove-area := TouchArea {
             width: 50px;
-            Text { text: "Remove"; color: #c0392b; vertical-alignment: center; horizontal-alignment: center; }
+            Text { text: @tr("Remove"); color: #c0392b; vertical-alignment: center; horizontal-alignment: center; }
         }
     }
 }
@@ -414,13 +414,15 @@ export component MainWindow inherits Window {
 
     in-out property <[AccountItem]> accounts: [];
     in-out property <int> selected-account-index: -1;
-    in-out property <string> selected-account-name: "No account selected";
+    in-out property <string> selected-account-name: "";
     in-out property <string> selected-account-balance-text: "";
+    in-out property <string> no-account-selected-label: @tr("No account selected");
 
     in-out property <[TransactionItem]> transactions: [];
     in-out property <int> selected-transaction-index: -1;
 
-    in-out property <[string]> category-names: ["Unspecified"];
+    in-out property <[string]> category-names: [];
+    in-out property <string> unspecified-label: @tr("Unspecified");
 
     in-out property <string> status-message: "";
     in-out property <string> error-message: "";
@@ -440,9 +442,11 @@ export component MainWindow inherits Window {
     in-out property <int> transaction-form-category-index: 0;
     in-out property <int> transaction-form-status-index: 1;
     in-out property <int> transaction-form-cheque-index: 0;
-    in-out property <[string]> cheque-names: ["None"];
+    in-out property <[string]> cheque-names: [];
+    in-out property <string> none-label: @tr("None");
 
     in-out property <string> current-view: "transactions";
+    in-out property <string> current-language: "en";
 
     in-out property <[string]> account-names: [];
 
@@ -479,7 +483,7 @@ export component MainWindow inherits Window {
 
     in-out property <bool> cheque-form-visible: false;
     in-out property <string> cheque-form-number-text: "";
-    in-out property <[string]> payee-names: ["Unspecified"];
+    in-out property <[string]> payee-names: [];
     in-out property <int> cheque-form-payee-index: 0;
     in-out property <string> cheque-form-amount: "0";
     in-out property <string> cheque-form-date: "";
@@ -496,7 +500,8 @@ export component MainWindow inherits Window {
 
     in-out property <int> statistics-axis-index: 0;
     in-out property <int> statistics-account-index: 0;
-    in-out property <[string]> statistics-account-names: ["All accounts"];
+    in-out property <[string]> statistics-account-names: [];
+    in-out property <string> all-accounts-label: @tr("All accounts");
     in-out property <string> statistics-start-date: "";
     in-out property <string> statistics-end-date: "";
     in-out property <[StatisticLineItem]> statistics-rows: [];
@@ -552,6 +557,20 @@ export component MainWindow inherits Window {
     in-out property <string> csv-credit-column: "";
     in-out property <string> csv-reference-column: "";
 
+    in-out property <bool> excel-import-form-visible: false;
+    in-out property <string> excel-preview-text: "";
+    in-out property <bool> excel-has-header: true;
+    in-out property <int> excel-date-order-index: 0;
+    in-out property <string> excel-date-column: "0";
+    in-out property <string> excel-label-column: "1";
+    in-out property <string> excel-amount-column: "2";
+    in-out property <string> excel-debit-column: "";
+    in-out property <string> excel-credit-column: "";
+    in-out property <string> excel-reference-column: "";
+    callback import-excel-clicked();
+    callback cancel-excel-import-form();
+    callback confirm-excel-import-clicked();
+
     callback refresh-dashboard-clicked();
     callback statistics-refresh-clicked();
 
@@ -575,8 +594,10 @@ export component MainWindow inherits Window {
     in-out property <[DatabaseItem]> databases: [];
     in-out property <int> selected-database-index: -1;
     in-out property <bool> database-form-visible: false;
-    in-out property <string> database-form-title: "New database";
+    in-out property <string> database-form-mode: "new";
+    in-out property <string> database-form-source-name: "";
     in-out property <string> database-form-name: "";
+    in-out property <string> copy-suffix-label: @tr("copy");
     in-out property <bool> delete-database-confirm-visible: false;
     in-out property <string> delete-database-confirm-name: "";
 
@@ -600,54 +621,68 @@ export component MainWindow inherits Window {
     callback print-transactions-clicked();
     callback print-bank-details-clicked();
 
+    callback language-selected(string);
+
     VerticalLayout {
         // --- Tab bar ---
         HorizontalLayout {
             padding: 8px;
             spacing: 4px;
             Button {
-                text: "Transactions";
+                text: @tr("Transactions");
                 checkable: true;
                 checked: current-view == "transactions";
                 clicked => { current-view = "transactions"; }
             }
             Button {
-                text: "Recurring";
+                text: @tr("Recurring");
                 checkable: true;
                 checked: current-view == "recurring";
                 clicked => { current-view = "recurring"; }
             }
             Button {
-                text: "Budget";
+                text: @tr("Budget");
                 checkable: true;
                 checked: current-view == "budget";
                 clicked => { current-view = "budget"; }
             }
             Button {
-                text: "Cheques";
+                text: @tr("Cheques");
                 checkable: true;
                 checked: current-view == "cheques";
                 clicked => { current-view = "cheques"; }
             }
             Button {
-                text: "Dashboard";
+                text: @tr("Dashboard");
                 checkable: true;
                 checked: current-view == "dashboard";
                 clicked => { current-view = "dashboard"; }
             }
             Button {
-                text: "Statistics";
+                text: @tr("Statistics");
                 checkable: true;
                 checked: current-view == "statistics";
                 clicked => { current-view = "statistics"; }
             }
             Button {
-                text: "Database";
+                text: @tr("Database");
                 checkable: true;
                 checked: current-view == "database";
                 clicked => { current-view = "database"; }
             }
             Rectangle { horizontal-stretch: 1; }
+            Button {
+                text: "FR";
+                checkable: true;
+                checked: current-language == "fr";
+                clicked => { current-language = "fr"; language-selected("fr"); }
+            }
+            Button {
+                text: "EN";
+                checkable: true;
+                checked: current-language == "en";
+                clicked => { current-language = "en"; language-selected("en"); }
+            }
         }
 
         if current-view == "transactions": HorizontalLayout {
@@ -660,7 +695,7 @@ export component MainWindow inherits Window {
                 VerticalLayout {
                     padding: 10px;
                     spacing: 8px;
-                    Text { text: "Accounts"; font-size: 16px; font-weight: 700; }
+                    Text { text: @tr("Accounts"); font-size: 16px; font-weight: 700; }
                     ListView {
                         vertical-stretch: 1;
                         for item[i] in accounts: AccountRow {
@@ -669,7 +704,7 @@ export component MainWindow inherits Window {
                             clicked => { account-selected(i); }
                         }
                     }
-                    Button { text: "New account"; clicked => { add-account-clicked(); } }
+                    Button { text: @tr("New account"); clicked => { add-account-clicked(); } }
                 }
             }
 
@@ -684,23 +719,23 @@ export component MainWindow inherits Window {
                         spacing: 12px;
                         VerticalLayout {
                             alignment: center;
-                            Text { text: selected-account-name; font-size: 18px; font-weight: 700; }
+                            Text { text: selected-account-index >= 0 ? selected-account-name : no-account-selected-label; font-size: 18px; font-weight: 700; }
                             Text { text: selected-account-balance-text; color: #555; }
                         }
                         Rectangle { horizontal-stretch: 1; }
-                        Button { text: "Edit account"; enabled: selected-account-index >= 0; clicked => { edit-account-clicked(); } }
-                        Button { text: "Close account"; enabled: selected-account-index >= 0; clicked => { close-account-clicked(); } }
-                        Button { text: "Delete account"; enabled: selected-account-index >= 0; clicked => { delete-account-clicked(); } }
+                        Button { text: @tr("Edit account"); enabled: selected-account-index >= 0; clicked => { edit-account-clicked(); } }
+                        Button { text: @tr("Close account"); enabled: selected-account-index >= 0; clicked => { close-account-clicked(); } }
+                        Button { text: @tr("Delete account"); enabled: selected-account-index >= 0; clicked => { delete-account-clicked(); } }
                     }
 
                     HorizontalLayout {
                         padding-left: 8px;
                         spacing: 8px;
-                        Text { text: "Date"; width: 90px; font-weight: 600; }
-                        Text { text: "Label"; width: 260px; font-weight: 600; }
-                        Text { text: "Category"; width: 140px; font-weight: 600; }
-                        Text { text: "Amount"; width: 100px; font-weight: 600; horizontal-alignment: right; }
-                        Text { text: "Balance"; width: 100px; font-weight: 600; horizontal-alignment: right; }
+                        Text { text: @tr("Date"); width: 90px; font-weight: 600; }
+                        Text { text: @tr("Label"); width: 260px; font-weight: 600; }
+                        Text { text: @tr("Category"); width: 140px; font-weight: 600; }
+                        Text { text: @tr("Amount"); width: 100px; font-weight: 600; horizontal-alignment: right; }
+                        Text { text: @tr("Balance"); width: 100px; font-weight: 600; horizontal-alignment: right; }
                     }
 
                     ListView {
@@ -714,22 +749,23 @@ export component MainWindow inherits Window {
 
                     HorizontalLayout {
                         spacing: 8px;
-                        Button { text: "New transaction"; enabled: selected-account-index >= 0; clicked => { add-transaction-clicked(); } }
-                        Button { text: "Edit"; enabled: selected-transaction-index >= 0; clicked => { edit-transaction-clicked(); } }
-                        Button { text: "Delete"; enabled: selected-transaction-index >= 0; clicked => { delete-transaction-clicked(); } }
+                        Button { text: @tr("New transaction"); enabled: selected-account-index >= 0; clicked => { add-transaction-clicked(); } }
+                        Button { text: @tr("Edit"); enabled: selected-transaction-index >= 0; clicked => { edit-transaction-clicked(); } }
+                        Button { text: @tr("Delete"); enabled: selected-transaction-index >= 0; clicked => { delete-transaction-clicked(); } }
                         Rectangle { horizontal-stretch: 1; }
-                        Button { text: "Import OFX..."; enabled: selected-account-index >= 0; clicked => { import-ofx-clicked(); } }
-                        Button { text: "Import CSV..."; enabled: selected-account-index >= 0; clicked => { import-csv-clicked(); } }
+                        Button { text: @tr("Import OFX..."); enabled: selected-account-index >= 0; clicked => { import-ofx-clicked(); } }
+                        Button { text: @tr("Import CSV..."); enabled: selected-account-index >= 0; clicked => { import-csv-clicked(); } }
+                        Button { text: @tr("Import Excel..."); enabled: selected-account-index >= 0; clicked => { import-excel-clicked(); } }
                     }
 
                     HorizontalLayout {
                         spacing: 8px;
-                        Text { text: "Export as"; vertical-alignment: center; color: #666; }
+                        Text { text: @tr("Export as"); vertical-alignment: center; color: #666; }
                         ComboBox { width: 90px; model: ["CSV", "TSV", "JSON", "QIF"]; current-index <=> export-format-index; }
-                        Button { text: "Export..."; enabled: selected-account-index >= 0; clicked => { export-transactions-clicked(); } }
+                        Button { text: @tr("Export..."); enabled: selected-account-index >= 0; clicked => { export-transactions-clicked(); } }
                         Rectangle { horizontal-stretch: 1; }
-                        Button { text: "Print transactions..."; enabled: selected-account-index >= 0; clicked => { print-transactions-clicked(); } }
-                        Button { text: "Print bank details..."; enabled: selected-account-index >= 0; clicked => { print-bank-details-clicked(); } }
+                        Button { text: @tr("Print transactions..."); enabled: selected-account-index >= 0; clicked => { print-transactions-clicked(); } }
+                        Button { text: @tr("Print bank details..."); enabled: selected-account-index >= 0; clicked => { print-bank-details-clicked(); } }
                     }
                 }
             }
@@ -742,17 +778,17 @@ export component MainWindow inherits Window {
                 padding: 10px;
                 spacing: 8px;
 
-                Text { text: "Recurring transactions"; font-size: 18px; font-weight: 700; }
+                Text { text: @tr("Recurring transactions"); font-size: 18px; font-weight: 700; }
 
                 HorizontalLayout {
                     padding-left: 8px;
                     spacing: 8px;
-                    Text { text: "Account"; width: 130px; font-weight: 600; }
-                    Text { text: "Label"; width: 200px; font-weight: 600; }
-                    Text { text: "Amount"; width: 90px; font-weight: 600; horizontal-alignment: right; }
-                    Text { text: "Every"; width: 150px; font-weight: 600; }
-                    Text { text: "Next due"; width: 100px; font-weight: 600; }
-                    Text { text: "Ends"; width: 160px; font-weight: 600; }
+                    Text { text: @tr("Account"); width: 130px; font-weight: 600; }
+                    Text { text: @tr("Label"); width: 200px; font-weight: 600; }
+                    Text { text: @tr("Amount"); width: 90px; font-weight: 600; horizontal-alignment: right; }
+                    Text { text: @tr("Every"); width: 150px; font-weight: 600; }
+                    Text { text: @tr("Next due"); width: 100px; font-weight: 600; }
+                    Text { text: @tr("Ends"); width: 160px; font-weight: 600; }
                 }
 
                 ListView {
@@ -766,10 +802,10 @@ export component MainWindow inherits Window {
 
                 HorizontalLayout {
                     spacing: 8px;
-                    Button { text: "New rule"; clicked => { add-recurring-clicked(); } }
-                    Button { text: "Edit"; enabled: selected-recurring-index >= 0; clicked => { edit-recurring-clicked(); } }
-                    Button { text: "Delete"; enabled: selected-recurring-index >= 0; clicked => { delete-recurring-clicked(); } }
-                    Button { text: "Generate due (up to today)"; enabled: selected-recurring-index >= 0; clicked => { generate-recurring-clicked(); } }
+                    Button { text: @tr("New rule"); clicked => { add-recurring-clicked(); } }
+                    Button { text: @tr("Edit"); enabled: selected-recurring-index >= 0; clicked => { edit-recurring-clicked(); } }
+                    Button { text: @tr("Delete"); enabled: selected-recurring-index >= 0; clicked => { delete-recurring-clicked(); } }
+                    Button { text: @tr("Generate due (up to today)"); enabled: selected-recurring-index >= 0; clicked => { generate-recurring-clicked(); } }
                 }
             }
         }
@@ -783,29 +819,33 @@ export component MainWindow inherits Window {
 
                 HorizontalLayout {
                     spacing: 12px;
-                    Text { text: "Budget"; font-size: 18px; font-weight: 700; vertical-alignment: center; }
+                    Text { text: @tr("Budget"); font-size: 18px; font-weight: 700; vertical-alignment: center; }
                     Rectangle { horizontal-stretch: 1; }
-                    Text { text: "Year"; vertical-alignment: center; }
+                    Text { text: @tr("Year"); vertical-alignment: center; }
                     LineEdit {
                         width: 80px;
                         text <=> budget-year;
                         accepted => { budget-period-changed(); }
                     }
-                    Text { text: "Month"; vertical-alignment: center; }
+                    Text { text: @tr("Month"); vertical-alignment: center; }
                     ComboBox {
                         width: 130px;
-                        model: ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+                        model: [
+                            @tr("January"), @tr("February"), @tr("March"), @tr("April"),
+                            @tr("May"), @tr("June"), @tr("July"), @tr("August"),
+                            @tr("September"), @tr("October"), @tr("November"), @tr("December"),
+                        ];
                         current-index <=> budget-month-index;
                         selected(value) => { budget-period-changed(); }
                     }
                     Button {
-                        text: "Entry";
+                        text: @tr("Entry");
                         checkable: true;
                         checked: budget-mode == "entry";
                         clicked => { budget-mode = "entry"; budget-mode-selected("entry"); }
                     }
                     Button {
-                        text: "Control";
+                        text: @tr("Control");
                         checkable: true;
                         checked: budget-mode == "control";
                         clicked => { budget-mode = "control"; budget-mode-selected("control"); }
@@ -815,10 +855,10 @@ export component MainWindow inherits Window {
                 HorizontalLayout {
                     padding-left: 8px;
                     spacing: 8px;
-                    Text { text: "Budget line"; width: 220px; font-weight: 600; }
-                    Text { text: "Budgeted"; width: 120px; font-weight: 600; horizontal-alignment: right; }
-                    if budget-mode == "control": Text { text: "Actual"; width: 120px; font-weight: 600; horizontal-alignment: right; }
-                    if budget-mode == "control": Text { text: "Difference"; width: 120px; font-weight: 600; horizontal-alignment: right; }
+                    Text { text: @tr("Budget line"); width: 220px; font-weight: 600; }
+                    Text { text: @tr("Budgeted"); width: 120px; font-weight: 600; horizontal-alignment: right; }
+                    if budget-mode == "control": Text { text: @tr("Actual"); width: 120px; font-weight: 600; horizontal-alignment: right; }
+                    if budget-mode == "control": Text { text: @tr("Difference"); width: 120px; font-weight: 600; horizontal-alignment: right; }
                 }
 
                 ListView {
@@ -843,7 +883,12 @@ export component MainWindow inherits Window {
                 VerticalLayout {
                     padding: 10px;
                     spacing: 8px;
-                    Text { text: "Chequebooks — " + selected-account-name; font-size: 16px; font-weight: 700; overflow: elide; }
+                    Text {
+                        text: @tr("Chequebooks — {}", selected-account-index >= 0 ? selected-account-name : no-account-selected-label);
+                        font-size: 16px;
+                        font-weight: 700;
+                        overflow: elide;
+                    }
                     ListView {
                         vertical-stretch: 1;
                         for item[i] in chequebooks: ChequebookRow {
@@ -854,8 +899,8 @@ export component MainWindow inherits Window {
                     }
                     HorizontalLayout {
                         spacing: 8px;
-                        Button { text: "New"; enabled: selected-account-index >= 0; clicked => { add-chequebook-clicked(); } }
-                        Button { text: "Delete"; enabled: selected-chequebook-index >= 0; clicked => { delete-chequebook-clicked(); } }
+                        Button { text: @tr("New"); enabled: selected-account-index >= 0; clicked => { add-chequebook-clicked(); } }
+                        Button { text: @tr("Delete"); enabled: selected-chequebook-index >= 0; clicked => { delete-chequebook-clicked(); } }
                     }
                 }
             }
@@ -867,16 +912,16 @@ export component MainWindow inherits Window {
                     padding: 10px;
                     spacing: 8px;
 
-                    Text { text: "Cheques"; font-size: 18px; font-weight: 700; }
+                    Text { text: @tr("Cheques"); font-size: 18px; font-weight: 700; }
 
                     HorizontalLayout {
                         padding-left: 8px;
                         spacing: 8px;
-                        Text { text: "Number"; width: 70px; font-weight: 600; }
-                        Text { text: "Date"; width: 90px; font-weight: 600; }
-                        Text { text: "Payee"; width: 200px; font-weight: 600; }
-                        Text { text: "Amount"; width: 100px; font-weight: 600; horizontal-alignment: right; }
-                        Text { text: "Status"; width: 100px; font-weight: 600; }
+                        Text { text: @tr("Number"); width: 70px; font-weight: 600; }
+                        Text { text: @tr("Date"); width: 90px; font-weight: 600; }
+                        Text { text: @tr("Payee"); width: 200px; font-weight: 600; }
+                        Text { text: @tr("Amount"); width: 100px; font-weight: 600; horizontal-alignment: right; }
+                        Text { text: @tr("Status"); width: 100px; font-weight: 600; }
                     }
 
                     ListView {
@@ -890,7 +935,7 @@ export component MainWindow inherits Window {
 
                     HorizontalLayout {
                         spacing: 8px;
-                        Button { text: "Write cheque"; enabled: selected-cheque-index >= 0; clicked => { write-cheque-clicked(); } }
+                        Button { text: @tr("Write cheque"); enabled: selected-cheque-index >= 0; clicked => { write-cheque-clicked(); } }
                     }
                 }
             }
@@ -905,33 +950,33 @@ export component MainWindow inherits Window {
 
                 HorizontalLayout {
                     spacing: 12px;
-                    Text { text: "Dashboard"; font-size: 18px; font-weight: 700; vertical-alignment: center; }
+                    Text { text: @tr("Dashboard"); font-size: 18px; font-weight: 700; vertical-alignment: center; }
                     Rectangle { horizontal-stretch: 1; }
-                    Button { text: "Refresh"; clicked => { refresh-dashboard-clicked(); } }
+                    Button { text: @tr("Refresh"); clicked => { refresh-dashboard-clicked(); } }
                 }
 
-                Text { text: "Open accounts"; font-weight: 600; color: #666; }
+                Text { text: @tr("Open accounts"); font-weight: 600; color: #666; }
                 HorizontalLayout {
                     spacing: 12px;
-                    StatTile { title: "Cleared"; value: dashboard-data.cleared-text; }
-                    StatTile { title: "Committed"; value: dashboard-data.committed-text; }
-                    StatTile { title: "Projected"; value: dashboard-data.projected-text; }
+                    StatTile { title: @tr("Cleared"); value: dashboard-data.cleared-text; }
+                    StatTile { title: @tr("Committed"); value: dashboard-data.committed-text; }
+                    StatTile { title: @tr("Projected"); value: dashboard-data.projected-text; }
                 }
 
-                Text { text: "This month"; font-weight: 600; color: #666; }
+                Text { text: @tr("This month"); font-weight: 600; color: #666; }
                 HorizontalLayout {
                     spacing: 12px;
-                    StatTile { title: "Income"; value: dashboard-data.income-text; value-color: #1e824c; }
-                    StatTile { title: "Expense"; value: dashboard-data.expense-text; value-color: #c0392b; }
-                    StatTile { title: "Net"; value: dashboard-data.net-text; }
+                    StatTile { title: @tr("Income"); value: dashboard-data.income-text; value-color: #1e824c; }
+                    StatTile { title: @tr("Expense"); value: dashboard-data.expense-text; value-color: #c0392b; }
+                    StatTile { title: @tr("Net"); value: dashboard-data.net-text; }
                 }
 
                 HorizontalLayout {
                     spacing: 12px;
-                    Text { text: "Backup & restore"; font-weight: 600; color: #666; vertical-alignment: center; }
+                    Text { text: @tr("Backup & restore"); font-weight: 600; color: #666; vertical-alignment: center; }
                     Rectangle { horizontal-stretch: 1; }
-                    Button { text: "Backup now..."; clicked => { backup-clicked(); } }
-                    Button { text: "Restore from backup..."; clicked => { restore-clicked(); } }
+                    Button { text: @tr("Backup now..."); clicked => { backup-clicked(); } }
+                    Button { text: @tr("Restore from backup..."); clicked => { restore-clicked(); } }
                 }
                 ListView {
                     height: 150px;
@@ -951,11 +996,11 @@ export component MainWindow inherits Window {
 
                 HorizontalLayout {
                     spacing: 12px;
-                    Text { text: "Statistics"; font-size: 18px; font-weight: 700; vertical-alignment: center; }
+                    Text { text: @tr("Statistics"); font-size: 18px; font-weight: 700; vertical-alignment: center; }
                     Rectangle { horizontal-stretch: 1; }
                     ComboBox {
                         width: 150px;
-                        model: ["Category", "Tag", "Payment mode", "Payee", "Project", "Budget line"];
+                        model: [@tr("Category"), @tr("Tag"), @tr("Payment mode"), @tr("Payee"), @tr("Project"), @tr("Budget line")];
                         current-index <=> statistics-axis-index;
                         selected(value) => { statistics-refresh-clicked(); }
                     }
@@ -969,18 +1014,18 @@ export component MainWindow inherits Window {
 
                 HorizontalLayout {
                     spacing: 12px;
-                    Text { text: "From"; vertical-alignment: center; }
+                    Text { text: @tr("From"); vertical-alignment: center; }
                     LineEdit { width: 110px; text <=> statistics-start-date; accepted => { statistics-refresh-clicked(); } }
-                    Text { text: "To"; vertical-alignment: center; }
+                    Text { text: @tr("To"); vertical-alignment: center; }
                     LineEdit { width: 110px; text <=> statistics-end-date; accepted => { statistics-refresh-clicked(); } }
-                    Button { text: "Refresh"; clicked => { statistics-refresh-clicked(); } }
+                    Button { text: @tr("Refresh"); clicked => { statistics-refresh-clicked(); } }
                 }
 
                 HorizontalLayout {
                     padding-left: 8px;
                     spacing: 8px;
-                    Text { text: "Label"; width: 260px; font-weight: 600; }
-                    Text { text: "Total"; width: 120px; font-weight: 600; horizontal-alignment: right; }
+                    Text { text: @tr("Label"); width: 260px; font-weight: 600; }
+                    Text { text: @tr("Total"); width: 120px; font-weight: 600; horizontal-alignment: right; }
                 }
 
                 ListView {
@@ -990,7 +1035,7 @@ export component MainWindow inherits Window {
 
                 HorizontalLayout {
                     padding-left: 8px;
-                    Text { text: "Total"; width: 260px; font-weight: 700; }
+                    Text { text: @tr("Total"); width: 260px; font-weight: 700; }
                     Text { text: statistics-total-text; width: 120px; font-weight: 700; horizontal-alignment: right; }
                 }
             }
@@ -1006,7 +1051,7 @@ export component MainWindow inherits Window {
                 VerticalLayout {
                     padding: 10px;
                     spacing: 8px;
-                    Text { text: "Databases"; font-size: 16px; font-weight: 700; }
+                    Text { text: @tr("Databases"); font-size: 16px; font-weight: 700; }
                     ListView {
                         vertical-stretch: 1;
                         for item[i] in databases: DatabaseRow {
@@ -1015,10 +1060,10 @@ export component MainWindow inherits Window {
                             clicked => { database-selected(i); }
                         }
                     }
-                    Button { text: "New database..."; clicked => { new-database-clicked(); } }
-                    Button { text: "Duplicate..."; enabled: selected-database-index >= 0; clicked => { duplicate-database-clicked(); } }
-                    Button { text: "Open"; enabled: selected-database-index >= 0; clicked => { open-database-clicked(); } }
-                    Button { text: "Delete..."; enabled: selected-database-index >= 0; clicked => { delete-database-clicked(); } }
+                    Button { text: @tr("New database..."); clicked => { new-database-clicked(); } }
+                    Button { text: @tr("Duplicate..."); enabled: selected-database-index >= 0; clicked => { duplicate-database-clicked(); } }
+                    Button { text: @tr("Open"); enabled: selected-database-index >= 0; clicked => { open-database-clicked(); } }
+                    Button { text: @tr("Delete..."); enabled: selected-database-index >= 0; clicked => { delete-database-clicked(); } }
                 }
             }
 
@@ -1028,9 +1073,9 @@ export component MainWindow inherits Window {
                 VerticalLayout {
                     padding: 16px;
                     spacing: 12px;
-                    Text { text: "Orphan attachment files"; font-size: 16px; font-weight: 700; }
+                    Text { text: @tr("Orphan attachment files"); font-size: 16px; font-weight: 700; }
                     Text {
-                        text: "Files present on disk with no attachment record pointing at them.";
+                        text: @tr("Files present on disk with no attachment record pointing at them.");
                         color: #666;
                         wrap: word-wrap;
                     }
@@ -1043,7 +1088,7 @@ export component MainWindow inherits Window {
                                 TouchArea {
                                     width: 50px;
                                     clicked => { delete-orphan-file-clicked(name); }
-                                    Text { text: "Delete"; color: #c0392b; vertical-alignment: center; horizontal-alignment: center; }
+                                    Text { text: @tr("Delete"); color: #c0392b; vertical-alignment: center; horizontal-alignment: center; }
                                 }
                             }
                         }
@@ -1071,48 +1116,48 @@ export component MainWindow inherits Window {
     // --- Account form ---
     FormOverlay {
         visible-form: account-form-visible;
-        form-title: account-form-is-new ? "New account" : "Edit account";
+        form-title: account-form-is-new ? @tr("New account") : @tr("Edit account");
 
-        Text { text: "Name"; font-size: 12px; color: #666; }
-        LineEdit { text <=> account-form-name; placeholder-text: "e.g. Checking"; }
-        Text { text: "Currency"; font-size: 12px; color: #666; }
+        Text { text: @tr("Name"); font-size: 12px; color: #666; }
+        LineEdit { text <=> account-form-name; placeholder-text: @tr("e.g. Checking"); }
+        Text { text: @tr("Currency"); font-size: 12px; color: #666; }
         LineEdit { text <=> account-form-currency; }
-        Text { text: "IBAN"; font-size: 12px; color: #666; }
+        Text { text: @tr("IBAN"); font-size: 12px; color: #666; }
         LineEdit { text <=> account-form-iban; }
-        Text { text: "Opening balance"; font-size: 12px; color: #666; }
+        Text { text: @tr("Opening balance"); font-size: 12px; color: #666; }
         LineEdit { text <=> account-form-opening-balance; }
         HorizontalLayout {
             spacing: 8px;
             Rectangle { horizontal-stretch: 1; }
-            Button { text: "Cancel"; clicked => { cancel-account-form(); } }
-            Button { text: "Save"; primary: true; clicked => { save-account-clicked(); } }
+            Button { text: @tr("Cancel"); clicked => { cancel-account-form(); } }
+            Button { text: @tr("Save"); primary: true; clicked => { save-account-clicked(); } }
         }
     }
 
     // --- Transaction form ---
     FormOverlay {
         visible-form: transaction-form-visible;
-        form-title: transaction-form-is-new ? "New transaction" : "Edit transaction";
+        form-title: transaction-form-is-new ? @tr("New transaction") : @tr("Edit transaction");
 
-        Text { text: "Label"; font-size: 12px; color: #666; }
-        LineEdit { text <=> transaction-form-label; placeholder-text: "e.g. Groceries"; }
-        Text { text: "Date (YYYY-MM-DD)"; font-size: 12px; color: #666; }
+        Text { text: @tr("Label"); font-size: 12px; color: #666; }
+        LineEdit { text <=> transaction-form-label; placeholder-text: @tr("e.g. Groceries"); }
+        Text { text: @tr("Date (YYYY-MM-DD)"); font-size: 12px; color: #666; }
         LineEdit { text <=> transaction-form-date; }
-        Text { text: "Amount (negative = debit)"; font-size: 12px; color: #666; }
+        Text { text: @tr("Amount (negative = debit)"); font-size: 12px; color: #666; }
         LineEdit { text <=> transaction-form-amount; }
-        Text { text: "Category"; font-size: 12px; color: #666; }
+        Text { text: @tr("Category"); font-size: 12px; color: #666; }
         ComboBox { model: category-names; current-index <=> transaction-form-category-index; }
-        Text { text: "Status"; font-size: 12px; color: #666; }
-        ComboBox { model: ["Cleared", "Committed", "Planned"]; current-index <=> transaction-form-status-index; }
-        Text { text: "Cheque"; font-size: 12px; color: #666; }
+        Text { text: @tr("Status"); font-size: 12px; color: #666; }
+        ComboBox { model: [@tr("Cleared"), @tr("Committed"), @tr("Planned")]; current-index <=> transaction-form-status-index; }
+        Text { text: @tr("Cheque"); font-size: 12px; color: #666; }
         ComboBox { model: cheque-names; current-index <=> transaction-form-cheque-index; }
 
         if !transaction-form-is-new: VerticalLayout {
             spacing: 4px;
             HorizontalLayout {
-                Text { text: "Attachments"; font-size: 12px; color: #666; vertical-alignment: center; }
+                Text { text: @tr("Attachments"); font-size: 12px; color: #666; vertical-alignment: center; }
                 Rectangle { horizontal-stretch: 1; }
-                Button { text: "Attach file..."; clicked => { attach-file-clicked(); } }
+                Button { text: @tr("Attach file..."); clicked => { attach-file-clicked(); } }
             }
             VerticalLayout {
                 for item[i] in attachments: AttachmentRow {
@@ -1126,210 +1171,284 @@ export component MainWindow inherits Window {
         HorizontalLayout {
             spacing: 8px;
             Rectangle { horizontal-stretch: 1; }
-            Button { text: "Cancel"; clicked => { cancel-transaction-form(); } }
-            Button { text: "Save"; primary: true; clicked => { save-transaction-clicked(); } }
+            Button { text: @tr("Cancel"); clicked => { cancel-transaction-form(); } }
+            Button { text: @tr("Save"); primary: true; clicked => { save-transaction-clicked(); } }
         }
     }
 
     // --- Recurring rule form ---
     FormOverlay {
         visible-form: recurring-form-visible;
-        form-title: recurring-form-is-new ? "New recurring rule" : "Edit recurring rule";
+        form-title: recurring-form-is-new ? @tr("New recurring rule") : @tr("Edit recurring rule");
         card-width: 420px;
 
-        Text { text: "Account"; font-size: 12px; color: #666; }
+        Text { text: @tr("Account"); font-size: 12px; color: #666; }
         ComboBox { model: account-names; current-index <=> recurring-form-account-index; }
-        Text { text: "Label"; font-size: 12px; color: #666; }
-        LineEdit { text <=> recurring-form-label; placeholder-text: "e.g. Rent"; }
-        Text { text: "Amount (negative = debit)"; font-size: 12px; color: #666; }
+        Text { text: @tr("Label"); font-size: 12px; color: #666; }
+        LineEdit { text <=> recurring-form-label; placeholder-text: @tr("e.g. Rent"); }
+        Text { text: @tr("Amount (negative = debit)"); font-size: 12px; color: #666; }
         LineEdit { text <=> recurring-form-amount; }
-        Text { text: "Category"; font-size: 12px; color: #666; }
+        Text { text: @tr("Category"); font-size: 12px; color: #666; }
         ComboBox { model: category-names; current-index <=> recurring-form-category-index; }
-        Text { text: "Next due date (YYYY-MM-DD)"; font-size: 12px; color: #666; }
+        Text { text: @tr("Next due date (YYYY-MM-DD)"); font-size: 12px; color: #666; }
         LineEdit { text <=> recurring-form-next-due-date; enabled: recurring-form-is-new; }
         HorizontalLayout {
             spacing: 8px;
             VerticalLayout {
                 spacing: 4px;
-                Text { text: "Every"; font-size: 12px; color: #666; }
+                Text { text: @tr("Every"); font-size: 12px; color: #666; }
                 LineEdit { text <=> recurring-form-frequency; }
             }
             VerticalLayout {
                 spacing: 4px;
-                Text { text: "Period"; font-size: 12px; color: #666; }
-                ComboBox { model: ["Day(s)", "Week(s)", "Month(s)", "Quarter(s)", "Year(s)"]; current-index <=> recurring-form-period-index; }
+                Text { text: @tr("Period"); font-size: 12px; color: #666; }
+                ComboBox {
+                    model: [@tr("Day(s)"), @tr("Week(s)"), @tr("Month(s)"), @tr("Quarter(s)"), @tr("Year(s)")];
+                    current-index <=> recurring-form-period-index;
+                }
             }
         }
-        Text { text: "Ends"; font-size: 12px; color: #666; }
-        ComboBox { model: ["No limit", "On a date", "After a number of occurrences"]; current-index <=> recurring-form-end-mode-index; }
-        if recurring-form-end-mode-index == 1: LineEdit { text <=> recurring-form-end-date; placeholder-text: "YYYY-MM-DD"; }
-        if recurring-form-end-mode-index == 2: LineEdit { text <=> recurring-form-occurrence-count; placeholder-text: "e.g. 12"; }
+        Text { text: @tr("Ends"); font-size: 12px; color: #666; }
+        ComboBox {
+            model: [@tr("No limit"), @tr("On a date"), @tr("After a number of occurrences")];
+            current-index <=> recurring-form-end-mode-index;
+        }
+        if recurring-form-end-mode-index == 1: LineEdit { text <=> recurring-form-end-date; placeholder-text: @tr("YYYY-MM-DD"); }
+        if recurring-form-end-mode-index == 2: LineEdit { text <=> recurring-form-occurrence-count; placeholder-text: @tr("e.g. 12"); }
         HorizontalLayout {
             spacing: 8px;
             Rectangle { horizontal-stretch: 1; }
-            Button { text: "Cancel"; clicked => { cancel-recurring-form(); } }
-            Button { text: "Save"; primary: true; clicked => { save-recurring-clicked(); } }
+            Button { text: @tr("Cancel"); clicked => { cancel-recurring-form(); } }
+            Button { text: @tr("Save"); primary: true; clicked => { save-recurring-clicked(); } }
         }
     }
 
     // --- New chequebook form ---
     FormOverlay {
         visible-form: chequebook-form-visible;
-        form-title: "New chequebook";
+        form-title: @tr("New chequebook");
 
-        Text { text: "First number"; font-size: 12px; color: #666; }
+        Text { text: @tr("First number"); font-size: 12px; color: #666; }
         LineEdit { text <=> chequebook-form-first-number; }
-        Text { text: "Last number"; font-size: 12px; color: #666; }
+        Text { text: @tr("Last number"); font-size: 12px; color: #666; }
         LineEdit { text <=> chequebook-form-last-number; }
-        Text { text: "Reception date (YYYY-MM-DD)"; font-size: 12px; color: #666; }
+        Text { text: @tr("Reception date (YYYY-MM-DD)"); font-size: 12px; color: #666; }
         LineEdit { text <=> chequebook-form-reception-date; }
         HorizontalLayout {
             spacing: 8px;
             Rectangle { horizontal-stretch: 1; }
-            Button { text: "Cancel"; clicked => { cancel-chequebook-form(); } }
-            Button { text: "Save"; primary: true; clicked => { save-chequebook-clicked(); } }
+            Button { text: @tr("Cancel"); clicked => { cancel-chequebook-form(); } }
+            Button { text: @tr("Save"); primary: true; clicked => { save-chequebook-clicked(); } }
         }
     }
 
     // --- Write cheque form ---
     FormOverlay {
         visible-form: cheque-form-visible;
-        form-title: "Cheque #" + cheque-form-number-text;
+        form-title: @tr("Cheque #{}", cheque-form-number-text);
 
-        Text { text: "Payee"; font-size: 12px; color: #666; }
+        Text { text: @tr("Payee"); font-size: 12px; color: #666; }
         ComboBox { model: payee-names; current-index <=> cheque-form-payee-index; }
-        Text { text: "Amount"; font-size: 12px; color: #666; }
+        Text { text: @tr("Amount"); font-size: 12px; color: #666; }
         LineEdit { text <=> cheque-form-amount; }
-        Text { text: "Date (YYYY-MM-DD)"; font-size: 12px; color: #666; }
+        Text { text: @tr("Date (YYYY-MM-DD)"); font-size: 12px; color: #666; }
         LineEdit { text <=> cheque-form-date; }
-        Text { text: "Status"; font-size: 12px; color: #666; }
-        ComboBox { model: ["Available", "Issued", "Cleared", "Cancelled"]; current-index <=> cheque-form-status-index; }
+        Text { text: @tr("Status"); font-size: 12px; color: #666; }
+        ComboBox {
+            model: [@tr("Available"), @tr("Issued"), @tr("Cleared"), @tr("Cancelled")];
+            current-index <=> cheque-form-status-index;
+        }
         HorizontalLayout {
             spacing: 8px;
             Rectangle { horizontal-stretch: 1; }
-            Button { text: "Cancel"; clicked => { cancel-cheque-form(); } }
-            Button { text: "Save"; primary: true; clicked => { save-cheque-clicked(); } }
+            Button { text: @tr("Cancel"); clicked => { cancel-cheque-form(); } }
+            Button { text: @tr("Save"); primary: true; clicked => { save-cheque-clicked(); } }
         }
     }
 
     // --- CSV import mapping form ---
     FormOverlay {
         visible-form: csv-import-form-visible;
-        form-title: "Import CSV";
+        form-title: @tr("Import CSV");
         card-width: 460px;
 
-        Text { text: "First lines of the file:"; font-size: 12px; color: #666; }
+        Text { text: @tr("First lines of the file:"); font-size: 12px; color: #666; }
         Text { text: csv-preview-text; font-size: 11px; font-family: "monospace"; wrap: word-wrap; }
 
         HorizontalLayout {
             spacing: 8px;
             VerticalLayout {
                 spacing: 4px;
-                Text { text: "Delimiter"; font-size: 12px; color: #666; }
+                Text { text: @tr("Delimiter"); font-size: 12px; color: #666; }
                 LineEdit { text <=> csv-delimiter; }
             }
             VerticalLayout {
                 spacing: 4px;
-                Text { text: "Date order"; font-size: 12px; color: #666; }
-                ComboBox { model: ["Year-Month-Day", "Day-Month-Year", "Month-Day-Year"]; current-index <=> csv-date-order-index; }
+                Text { text: @tr("Date order"); font-size: 12px; color: #666; }
+                ComboBox {
+                    model: [@tr("Year-Month-Day"), @tr("Day-Month-Year"), @tr("Month-Day-Year")];
+                    current-index <=> csv-date-order-index;
+                }
             }
         }
-        CheckBox { text: "First line is a header"; checked <=> csv-has-header; }
+        CheckBox { text: @tr("First line is a header"); checked <=> csv-has-header; }
 
-        Text { text: "Column numbers below are 0-based (first column is 0)."; font-size: 11px; color: #999; }
+        Text { text: @tr("Column numbers below are 0-based (first column is 0)."); font-size: 11px; color: #999; }
         HorizontalLayout {
             spacing: 8px;
             VerticalLayout {
                 spacing: 4px;
-                Text { text: "Date column"; font-size: 12px; color: #666; }
+                Text { text: @tr("Date column"); font-size: 12px; color: #666; }
                 LineEdit { text <=> csv-date-column; }
             }
             VerticalLayout {
                 spacing: 4px;
-                Text { text: "Label column"; font-size: 12px; color: #666; }
+                Text { text: @tr("Label column"); font-size: 12px; color: #666; }
                 LineEdit { text <=> csv-label-column; }
             }
             VerticalLayout {
                 spacing: 4px;
-                Text { text: "Reference column"; font-size: 12px; color: #666; }
+                Text { text: @tr("Reference column"); font-size: 12px; color: #666; }
                 LineEdit { text <=> csv-reference-column; }
             }
         }
-        Text { text: "Either an amount column, or separate debit/credit columns:"; font-size: 11px; color: #999; }
+        Text { text: @tr("Either an amount column, or separate debit/credit columns:"); font-size: 11px; color: #999; }
         HorizontalLayout {
             spacing: 8px;
             VerticalLayout {
                 spacing: 4px;
-                Text { text: "Amount column"; font-size: 12px; color: #666; }
+                Text { text: @tr("Amount column"); font-size: 12px; color: #666; }
                 LineEdit { text <=> csv-amount-column; }
             }
             VerticalLayout {
                 spacing: 4px;
-                Text { text: "Debit column"; font-size: 12px; color: #666; }
+                Text { text: @tr("Debit column"); font-size: 12px; color: #666; }
                 LineEdit { text <=> csv-debit-column; }
             }
             VerticalLayout {
                 spacing: 4px;
-                Text { text: "Credit column"; font-size: 12px; color: #666; }
+                Text { text: @tr("Credit column"); font-size: 12px; color: #666; }
                 LineEdit { text <=> csv-credit-column; }
             }
         }
         HorizontalLayout {
             spacing: 8px;
             Rectangle { horizontal-stretch: 1; }
-            Button { text: "Cancel"; clicked => { cancel-csv-import-form(); } }
-            Button { text: "Import"; primary: true; clicked => { confirm-csv-import-clicked(); } }
+            Button { text: @tr("Cancel"); clicked => { cancel-csv-import-form(); } }
+            Button { text: @tr("Import"); primary: true; clicked => { confirm-csv-import-clicked(); } }
+        }
+    }
+
+    // --- Excel import mapping form ---
+    FormOverlay {
+        visible-form: excel-import-form-visible;
+        form-title: @tr("Import Excel");
+        card-width: 460px;
+
+        Text { text: @tr("First rows of the file:"); font-size: 12px; color: #666; }
+        Text { text: excel-preview-text; font-size: 11px; font-family: "monospace"; wrap: word-wrap; }
+
+        Text { text: @tr("Date order"); font-size: 12px; color: #666; }
+        ComboBox {
+            model: [@tr("Year-Month-Day"), @tr("Day-Month-Year"), @tr("Month-Day-Year")];
+            current-index <=> excel-date-order-index;
+        }
+        CheckBox { text: @tr("First row is a header"); checked <=> excel-has-header; }
+
+        Text { text: @tr("Column numbers below are 0-based (first column is 0)."); font-size: 11px; color: #999; }
+        HorizontalLayout {
+            spacing: 8px;
+            VerticalLayout {
+                spacing: 4px;
+                Text { text: @tr("Date column"); font-size: 12px; color: #666; }
+                LineEdit { text <=> excel-date-column; }
+            }
+            VerticalLayout {
+                spacing: 4px;
+                Text { text: @tr("Label column"); font-size: 12px; color: #666; }
+                LineEdit { text <=> excel-label-column; }
+            }
+            VerticalLayout {
+                spacing: 4px;
+                Text { text: @tr("Reference column"); font-size: 12px; color: #666; }
+                LineEdit { text <=> excel-reference-column; }
+            }
+        }
+        Text { text: @tr("Either an amount column, or separate debit/credit columns:"); font-size: 11px; color: #999; }
+        HorizontalLayout {
+            spacing: 8px;
+            VerticalLayout {
+                spacing: 4px;
+                Text { text: @tr("Amount column"); font-size: 12px; color: #666; }
+                LineEdit { text <=> excel-amount-column; }
+            }
+            VerticalLayout {
+                spacing: 4px;
+                Text { text: @tr("Debit column"); font-size: 12px; color: #666; }
+                LineEdit { text <=> excel-debit-column; }
+            }
+            VerticalLayout {
+                spacing: 4px;
+                Text { text: @tr("Credit column"); font-size: 12px; color: #666; }
+                LineEdit { text <=> excel-credit-column; }
+            }
+        }
+        HorizontalLayout {
+            spacing: 8px;
+            Rectangle { horizontal-stretch: 1; }
+            Button { text: @tr("Cancel"); clicked => { cancel-excel-import-form(); } }
+            Button { text: @tr("Import"); primary: true; clicked => { confirm-excel-import-clicked(); } }
         }
     }
 
     // --- Restore confirmation ---
     FormOverlay {
         visible-form: restore-confirm-visible;
-        form-title: "Restore this backup?";
+        form-title: @tr("Restore this backup?");
 
         Text {
-            text: "This replaces the current database with " + restore-confirm-filename + ". This cannot be undone.";
+            text: @tr("This replaces the current database with {}. This cannot be undone.", restore-confirm-filename);
             wrap: word-wrap;
             width: 300px;
         }
         HorizontalLayout {
             spacing: 8px;
             Rectangle { horizontal-stretch: 1; }
-            Button { text: "Cancel"; clicked => { cancel-restore-confirm(); } }
-            Button { text: "Restore"; primary: true; clicked => { confirm-restore-clicked(); } }
+            Button { text: @tr("Cancel"); clicked => { cancel-restore-confirm(); } }
+            Button { text: @tr("Restore"); primary: true; clicked => { confirm-restore-clicked(); } }
         }
     }
 
     // --- New / duplicate database form ---
     FormOverlay {
         visible-form: database-form-visible;
-        form-title: database-form-title;
+        form-title: database-form-mode == "duplicate" ? @tr("Duplicate \"{}\"", database-form-source-name) : @tr("New database");
 
-        Text { text: "Name"; font-size: 12px; color: #666; }
-        LineEdit { text <=> database-form-name; placeholder-text: "e.g. Household"; }
+        Text { text: @tr("Name"); font-size: 12px; color: #666; }
+        LineEdit { text <=> database-form-name; placeholder-text: @tr("e.g. Household"); }
         HorizontalLayout {
             spacing: 8px;
             Rectangle { horizontal-stretch: 1; }
-            Button { text: "Cancel"; clicked => { cancel-database-form(); } }
-            Button { text: "Save"; primary: true; clicked => { save-database-form-clicked(); } }
+            Button { text: @tr("Cancel"); clicked => { cancel-database-form(); } }
+            Button { text: @tr("Save"); primary: true; clicked => { save-database-form-clicked(); } }
         }
     }
 
     // --- Delete database confirmation ---
     FormOverlay {
         visible-form: delete-database-confirm-visible;
-        form-title: "Delete this database?";
+        form-title: @tr("Delete this database?");
 
         Text {
-            text: "This permanently deletes \"" + delete-database-confirm-name + "\" and everything in it. This cannot be undone.";
+            text: @tr("This permanently deletes \"{}\" and everything in it. This cannot be undone.", delete-database-confirm-name);
             wrap: word-wrap;
             width: 300px;
         }
         HorizontalLayout {
             spacing: 8px;
             Rectangle { horizontal-stretch: 1; }
-            Button { text: "Cancel"; clicked => { cancel-delete-database-confirm(); } }
-            Button { text: "Delete"; primary: true; clicked => { confirm-delete-database-clicked(); } }
+            Button { text: @tr("Cancel"); clicked => { cancel-delete-database-confirm(); } }
+            Button { text: @tr("Delete"); primary: true; clicked => { confirm-delete-database-clicked(); } }
         }
     }
 }

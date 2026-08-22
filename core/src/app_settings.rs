@@ -13,6 +13,11 @@ pub struct AppSettings {
     pub last_database: Option<String>,
     #[serde(default)]
     pub recent_databases: Vec<String>,
+    /// The bundled-translation locale to select at startup (`"fr"`, or
+    /// `None`/`"en"` for the source language). See `PROMPT.md`'s
+    /// internationalization requirement.
+    #[serde(default)]
+    pub language: Option<String>,
 }
 
 const MAX_RECENT: usize = 5;
@@ -69,6 +74,14 @@ pub fn record_opened(name: &str) {
     let _ = save(&settings);
 }
 
+/// Records the chosen translation locale for the next launch.
+/// Best-effort, same reasoning as `record_opened`.
+pub fn record_language(language: &str) {
+    let mut settings = load();
+    settings.language = Some(language.to_string());
+    let _ = save(&settings);
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -81,6 +94,7 @@ mod tests {
         let settings = AppSettings {
             last_database: Some("Household".into()),
             recent_databases: vec!["Household".into()],
+            language: Some("fr".into()),
         };
         save_to(&path, &settings).unwrap();
 
