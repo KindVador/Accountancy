@@ -653,3 +653,15 @@ msgstr "Supprimer cette base ?"
 msgctxt "MainWindow"
 msgid "This permanently deletes \"{}\" and everything in it. This cannot be undone."
 msgstr "Ceci supprime définitivement « {} » et tout son contenu. Cette action est irréversible."
+
+msgctxt "MainWindow"
+msgid "Table"
+msgstr "Tableau"
+
+msgctxt "MainWindow"
+msgid "Chart"
+msgstr "Graphique"
+
+msgctxt "MainWindow"
+msgid "Select a single account to see its balance evolution."
+msgstr "Sélectionnez un compte unique pour voir l'évolution de son solde."

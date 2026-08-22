@@ -6,6 +6,7 @@ use accountancy_core::accounts::{self, Account, NewAccount};
 use accountancy_core::app_settings;
 use accountancy_core::attachments::{self, Attachment};
 use accountancy_core::backup;
+use accountancy_core::balance_curve::{self, BalancePoint};
 use accountancy_core::budget;
 use accountancy_core::cheques::{self, Cheque, ChequeStatus, Chequebook, NewChequebook};
 use accountancy_core::dashboard;
@@ -568,6 +569,78 @@ fn refresh_statistics(ui: &MainWindow, state: &Rc<RefCell<AppState>>) {
         .collect();
     ui.set_statistics_rows(ModelRc::new(VecModel::from(items)));
     ui.set_statistics_total_text(format::amount(total).into());
+
+    match account_id {
+        Some(id) => {
+            let mut points = {
+                let st = state.borrow();
+                balance_curve::balance_curve(st.db.connection(), id, &start, &end)
+                    .unwrap_or_default()
+            };
+            if let Some(last) = points.last()
+                && last.date < end
+            {
+                points.push(BalancePoint {
+                    date: end.clone(),
+                    balance: last.balance,
+                });
+            }
+            let (path, min, max) = chart_path_data(&points);
+            ui.set_statistics_chart_has_data(true);
+            ui.set_statistics_chart_path_data(path.into());
+            ui.set_statistics_chart_min_text(format::amount(min).into());
+            ui.set_statistics_chart_max_text(format::amount(max).into());
+        }
+        None => {
+            ui.set_statistics_chart_has_data(false);
+            ui.set_statistics_chart_path_data(SharedString::default());
+            ui.set_statistics_chart_min_text(SharedString::default());
+            ui.set_statistics_chart_max_text(SharedString::default());
+        }
+    }
+}
+
+/// Turns a balance curve into an SVG path command string within a fixed
+/// 1000x300 coordinate space (matching the `Path`'s `viewbox-*` properties
+/// in `app-window.slint`), so the chart never needs recomputing on resize.
+/// Points are placed on the x-axis proportionally to elapsed days, not by
+/// index, so a gap between transactions renders as a flat stretch rather
+/// than being compressed away. Returns the path along with the min and max
+/// balance reached, for the chart's axis labels.
+fn chart_path_data(points: &[BalancePoint]) -> (String, Amount, Amount) {
+    if points.is_empty() {
+        return (String::new(), Amount::ZERO, Amount::ZERO);
+    }
+
+    let min = points.iter().map(|p| p.balance).min().unwrap();
+    let max = points.iter().map(|p| p.balance).max().unwrap();
+    let range = (max - min).micros().max(1) as f64;
+
+    let days: Vec<i64> = points
+        .iter()
+        .map(|p| {
+            dates::parse(&p.date)
+                .map(|d| d.to_julian_day() as i64)
+                .unwrap_or(0)
+        })
+        .collect();
+    let first_day = days[0];
+    let total_days = (days[days.len() - 1] - first_day).max(1) as f64;
+
+    const X0: f64 = 10.0;
+    const X1: f64 = 990.0;
+    const Y_TOP: f64 = 10.0;
+    const Y_BOTTOM: f64 = 290.0;
+
+    let mut command = String::new();
+    for (i, point) in points.iter().enumerate() {
+        let x = X0 + (days[i] - first_day) as f64 / total_days * (X1 - X0);
+        let balance_fraction = (point.balance - min).micros() as f64 / range;
+        let y = Y_BOTTOM - balance_fraction * (Y_BOTTOM - Y_TOP);
+        command.push_str(if i == 0 { "M " } else { "L " });
+        command.push_str(&format!("{x:.1} {y:.1} "));
+    }
+    (command, min, max)
 }
 
 fn refresh_databases(ui: &MainWindow, state: &Rc<RefCell<AppState>>) {
@@ -1622,11 +1695,21 @@ fn wire_dashboard_callbacks(ui: &MainWindow, state: &Rc<RefCell<AppState>>) {
 }
 
 fn wire_statistics_callbacks(ui: &MainWindow, state: &Rc<RefCell<AppState>>) {
-    let ui_weak = ui.as_weak();
-    let state = state.clone();
-    ui.on_statistics_refresh_clicked(move || {
-        refresh_statistics(&ui_weak.upgrade().unwrap(), &state);
-    });
+    {
+        let ui_weak = ui.as_weak();
+        let state = state.clone();
+        ui.on_statistics_refresh_clicked(move || {
+            refresh_statistics(&ui_weak.upgrade().unwrap(), &state);
+        });
+    }
+
+    {
+        let ui_weak = ui.as_weak();
+        let state = state.clone();
+        ui.on_statistics_mode_selected(move |_mode| {
+            refresh_statistics(&ui_weak.upgrade().unwrap(), &state);
+        });
+    }
 }
 
 fn wire_import_callbacks(ui: &MainWindow, state: &Rc<RefCell<AppState>>) {

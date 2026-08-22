@@ -8,6 +8,7 @@ pub mod accounts;
 pub mod app_settings;
 pub mod attachments;
 pub mod backup;
+pub mod balance_curve;
 pub mod budget;
 pub mod cheques;
 pub mod dashboard;
